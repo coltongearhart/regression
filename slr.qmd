@@ -1,0 +1,11 @@
+# Simple linear regression {#sec-slr}
+
+```{r}
+#| label: load-prereqs
+#| echo: false
+#| message: false
+
+# knitr options
+source("_common.R")
+
+```

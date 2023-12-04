@@ -1,0 +1,43 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Regression",
+    "section": "",
+    "text": "Overview\n\n\n\n\n\n\n\nQuarto blog publish details\n\n\n\nThis book was created using Quarto and published with Github Pages.\n\n\n\n\n\n\n\n\nGithub repository for code\n\n\n\nYou can find the code to reproduce this project at coltongearhart/regression.",
+    "crumbs": [
+      "Overview"
+    ]
+  },
+  {
+    "objectID": "part1-slr.html",
+    "href": "part1-slr.html",
+    "title": "Simple linear regression",
+    "section": "",
+    "text": "This section contains the Part 1: Simple Linear Regression.",
+    "crumbs": [
+      "Simple linear regression"
+    ]
+  },
+  {
+    "objectID": "part2-mlr.html",
+    "href": "part2-mlr.html",
+    "title": "Multiple linear regression",
+    "section": "",
+    "text": "This section contains the Part 2: Multiple Linear Regression.",
+    "crumbs": [
+      "Multiple linear regression"
+    ]
+  },
+  {
+    "objectID": "placeholder.html#placeholder",
+    "href": "placeholder.html#placeholder",
+    "title": "2  Placeholder",
+    "section": "2.1 Placeholder",
+    "text": "2.1 Placeholder\nContent",
+    "crumbs": [
+      "Multiple linear regression",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Placeholder</span>"
+    ]
+  }
+]

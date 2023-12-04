@@ -1,0 +1,2371 @@
+# Diagnostics and remedial measures {#sec-diag-remedial-measures}
+
+```{r}
+#| label: load-prereqs
+#| echo: false
+#| message: false
+
+# knitr options
+source("_common.R")
+
+```
+
+
+Two main ideas
+
+  - Diagnostics &rarr; Methods to check whether our model is reasonable for our data and representative of the system that we are studying.
+  
+    + Some diagnostics check the *assumptions* of our model. Other diagnostics check the *influence* of different data points.
+
+  - Remedies &rarr; Analytic strategies used to fix problems identified by the diagnostics.
+  
+Why do we need to check the model?
+
+  - The goal of building a model is to:
+    
+    + *Learn something* about the real world.
+
+    + *Predict outcomes* in the real world.
+
+  - To use a model successfully, we need to know its limitations:
+  
+    + Does it adequately describe the functional relationship of interest?
+    
+    + Is there reason to worry that inferences about the parameters might be flawed?
+    
+    + Is the error distribution appropriate?
+    
+  - All of these are checked via residual analysisl
+
+## Diagnostics for predictor variable 
+
+Overview
+
+  - We need diagnostic information about the predictor variable in order to:
+  
+    + See if there are any outlying $X$ values that could influence the appropriateness of the fitted regression function or if the $X$ distribution is skewed, which can impact some aspects of the model behavior / performance.
+    
+    + Get info about the range and concentration of the $X$ levels in the study. This is useful for figuring out the range of validity of the regression analysis.
+    
+    + Can use simple graphical tools to help.
+    
+Plots
+
+  - Dot plot &rarr; Good when the sample size is not large.
+	
+	  - Can look at min and max; are observations spread throughout this interval?, any far outlying observations?, replication at different $X$ levels?.
+	
+  - Sequence plot &rarr; Should be utilized whenever data are obtained in a sequence, such as over time or for adjacent geographic areas.
+	
+	  + Should look like a random walk (i.e. no obvious pattern).
+	  
+	  + For example, if one level of $X$ occurs way more frequently in the beginning and then another occurs way more at end, this info can be very helpful when looking at diagnostics later for how appropriate the model is.
+	
+  - Box plots &rarr; Good when have a larger sample size.
+	
+	  + Can look at min and max, location of IQR, outliers, shape (skewness).
+	
+  - Histograms &rarr; Good with really big sample sizes.
+  
+    + Can look for same characteristics as boxplots, as well as modality.
+
+Demo
+
+```{r}
+
+# generate several samples of X values
+x_1 <- extraDistr::rdunif(n = 15, min = 5, max = 15)
+x_2 <- extraDistr::rdunif(n = 50, min = 5, max = 15)
+x_3 <- runif(n = 1000, min = 5, max = 15)
+
+# create simple plots for diagnostics of X variable
+# NOTE -> just doing simple base R plots 
+
+# dot plot for small samples
+stripchart(x_1, method = "stack")
+
+# sequence plot for "sequential" data
+# -> data is random, so will be a random walk
+plot(x_1, type = "b")
+
+# boxplot for larger samples
+# -> add mark for mean
+boxplot(x_2, horizontal = TRUE)
+points(x = mean(x_2), y = 1, pch = 4)
+
+# histogram for really large sample
+hist(x_3)
+
+```
+
+## Residuals 
+
+Overview
+
+  - Goal of residual analysis &rarr; Assess the aptness of a statistical model.
+
+  - Why use residuals
+  
+    + Direct diagnostic plots for the response variable $Y$ are ordinarily not too useful in regression analysis because the response variable observations are a function of the level of predictor variable. 
+    
+    + So, instead we look at diagnostics for $Y$ indirectly by examining the residuals.
+    
+  - Residuals and model error
+  
+    + Recall residual $e_i = Y_i - \hat{Y_i}$ is an estimate of the unobservable model error $\epsilon = Y_i - E(Y_i)$.
+
+    + ** For our regression model, we assume $\epsilon_i \followsp{iid}{Normal}(0, \sigma^2$). So if the model is appropriate for the data at hand, the residuals should reflect these properties.
+    
+    + This is the basic idea of a residual analysis, which is a highly useful way to check if a model is appropriate.
+    
+### Properites of residuals {-} 
+
+  - Mean
+  
+    + The mean of the $n$ residuals for the SLR is
+    
+    $$
+    \bar{e} = \sum e_i = 0
+    $$
+    
+    + Since this is always 0, it doesn't give any info as to whether the true errors $\epsilon_i$ have expected value $E(\epsilon_i) = 0$.
+    
+  - Variance
+  
+    + The variance of the $n$ residuals for the SLR is
+    
+    $$
+    S^2 = \frac{\sum (e_i - \bar{e})^2}{n - 2} = \frac{\sum e_i^2}{n - 2} = \frac{SSE}{n - 2} = MSE
+    $$
+    
+    + Again, if the model is appropriate $MSE$ is an unbiased estimator of the variance of the error terms $\sigma^2$
+    
+  - Nonindependence
+  
+    + The residuals $e_i$ are not independent random variables because they involve the fitted values $\hat{Y_i}$, which are computed on the same $\hat{\beta}_0$ and $\hat{\beta}_1$.
+    
+    + As a result, the residuals are subject to two constraints: $\sum e_i = 0$ and $\sum X_i e_i = 0$.
+    
+    + However, when the sample size $n$ is much larger than the number of parameters $p$, we can ignore the minor dependence.
+    
+### Semistudentized residuals {-} 
+
+  - At times, it is helpful to standardize the residuals for residual analysis. Since the standard deviation of the error terms $\epsilon_i$ is $\sigma$, which is estimated by $\sqrt{MSE}$, we can naturally standardize with
+  
+  $$
+  e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}} 
+  $$
+  
+  - Studentized &rarr; If $\sqrt{MSE}$ were an estimate of the standard deviation of the residual $e_i$, we would call $e_i^*$ a studentized residual. But it is not...
+  
+  - Semistudentized &rarr; $\sigma_{e_i}$ is complex and varies for the different residuals $e_i$, and $\sqrt{MSE}$ is only an approximation of the standard deviation of $\sigma_{e_i}$. So, instead it is a semistudentized residual.
+  
+### Departures from model to Be studied by residuals {-} 
+
+  - We are going to use residuals to study the following departures from the SLR model with normal errors:
+  
+    1. The regression function is not linear &rarr; Is the functional form of the model appropriate?
+
+    2. The error terms do not have constant variance.
+
+    3. The error terms are not independent.
+
+    4. The model fits all but one or a few outlier observations &rarr; Do any of the data points have a disproportionate influence on the parameter estimates?
+     
+    5. The error terms are not normally distributed.
+
+    6. One or several important predictor variables have been omitted from the model.
+
+## Diagnostics for residuals 
+
+Types of plots
+
+  - Here are the informal diagnostic plots of residuals we will use to see if any of the above 6 departures from the SLR model are present,
+  
+  1. Residuals against predictor variable.
+  
+  2. Absolute or squared residuals against predictor variable.
+  
+  3. Residuals against fitted values.
+  
+  4. Residuals against time or other sequence.
+  
+  5. Residuals against omitted predictor variables.
+  
+  6. Boxplot of residuals.
+  
+  7. Normal probability plot of residuals.
+
+Demo
+
+  - How to make plots and what they look like when assumptions are met.
+  
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 2; sigma <- 5
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate normal error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod <- lm(y ~ x)
+
+# view diagnostic plots (base R)
+plot(mod)
+
+# view ggplot versions of diagnostic plots
+autoplot(mod)
+
+```
+
+Next section
+
+  - Now we will go through how to visually assess each assumption to see if it is met and diagnosis (identify) each violation if present.
+  
+  - At then end, we will discuss the impacts of each departure on things such as $MSE$, slope standard errors, prediction accuracy, etc.
+
+### Nonlinearity of regression function {-} 
+
+#### {.tabset .unnumbered} 
+
+##### Content {-} 
+
+Overview
+
+  - We can look at the following plots to check if a linear regression function is appropriate:
+  
+  1. *Residual plot against the fitted values* &rarr; This is the preferred plot for this assumption check.
+  
+      + When a linear regression model is appropriate, the residuals then fall within a horizontal band centered around 0, displaying no systematic tendencies to be positive and negative (randomly scattered around 0).
+    
+      ![](My files/Images/diagnostics-linearity.png){width=50%}
+      
+      + When the linearity assumption is violated, there are systematic deviations.
+  
+  2. *Residual plot against the predictor variable*
+  
+      + For *SLR only*, this shows the same info as the residuals vs fitted values because the $\hat{Y_i}$ are a linear function of the $X_i$.
+    
+      + So the basic pattern of the plotted points is not affected whether the residual plot is against the $X_i$ or the $\hat{Y_i}$ (only the $X$ scale values are affected).
+    
+      + For curvilinear regression and multiple regression, separate plots of the residuals against the fitted values and against the predictor variable(s) are usually helpful.
+  
+  3. *Scatterplot of $Y$ vs $X$* &rarr; If the actual trend in the data in linear, then it makes sense to fit a straight-line model to the data.
+  
+      ![](My files/Images/scatterplot-y-vs-x.png){width=50%}
+      
+      + But, not always as effective as the residual plots. Residual plots are preferred over scatteplot, because it has two advantages:
+    
+        1. Can also easily be used for checking other assumptions.
+      
+        2. There are occasions when the scaling of the scatter plot places the $Y_i$ observations close to the fitted values $\hat{Y_i}$, for instance, when there is a steep slope. It then becomes more difficult to study the appropriateness of a linear regression function from the scatterplot, while the residual plot can clearly show any systematic pattern in the deviations around the fitted regression line under these conditions.
+
+##### Ideal {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2)$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 2; sigma <- 5
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate normal error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod_ideal <- lm(y ~ x)
+
+```
+
+  - Residuals vs fitted plot
+
+    + R also adds a trend line, which we want to be approximately horizontal.
+  
+```{r}
+
+# residual vs fitted plot
+plot(mod_ideal, which = 1)
+
+# verify smoothing line that plot.lm() performs (see discussion in nonconstant variance ideal section)
+plot(mod_ideal, which = 1)
+lines(x = lowess(fitted(mod_ideal), y = resid(mod_ideal)), col = "blue")
+
+```
+
+  - Residuals vs $X$ plot
+  
+    + For SLR &rarr; Shows same pattern as above, different scale on $X$ axis.
+    
+```{r}
+
+# create residuals vs X plot
+# -> add smoothing line
+plot(x = x, y = residuals(mod_ideal), ylab = "residuals", main = "Residuals vs X")
+abline(h = 0, col = "grey", lty = "dashed")
+lines(lowess(x = x, y = resid(mod_ideal)), col = "red")
+
+```
+
+  - Demo for difference when in MLR 
+  
+    + Results &rarr; Can see different pattern (even if only slightly based on values chosen) pattern in each.
+  
+```{r}
+
+# initialize new items
+beta_2 <- 3
+
+# generate new X sample
+x_2 <- runif(n = n, min = 0, max = 5)
+
+# calculate new Y observations using same errors, but with both xs
+y_2 <- beta_0 + beta_1 * x + beta_2 * x_2  + epsilon
+
+# fit new MLR model
+mod_mlr <- lm(y_2 ~ x + x_2)
+
+```
+
+```{r}
+#| class.source = "fold-hide"
+
+# plot residuals vs fitted, X and X2
+# -> create dataset so can display all three plots
+# -> also add smoothing line to make differences in patterns more noticeable
+data.frame(X1 = x,
+           X2 = x_2,
+           fitted = fitted(mod_mlr),
+           residuals = residuals(mod_mlr)) %>%
+  pivot_longer(1:3,
+               names_to = "X_axis",
+               values_to = "value") %>% 
+  ggplot(aes(x = value,
+             y = residuals),
+         data = .) + 
+  geom_point() + 
+  geom_smooth(se = FALSE,
+              method = "loess",
+              formula = y ~ x) + 
+  facet_grid(. ~ X_axis,
+             scales = "free") + 
+  geom_hline(yintercept = 0,
+             col = "grey",
+             linetype = "dashed")
+
+```
+
+  - Scatterplot
+  
+```{r}
+
+# scatterplot of y vs x with regression line added
+plot(x = x, y = y, main = "Scatterplot of Y vs X")
+abline(mod_ideal, col = "red")
+
+```
+
+#### {-}
+
+Departures
+
+#### {.tabset .unnumbered} 
+
+##### Polynomial {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \text{Normal}(0, \sigma^2)$
+
+  - Note that this is still a linear model (even though there is a higher order term), becuase the model in linear *in the parameters*.
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; sigma <- 5; beta_0 <- 1; beta_1 <- 2;
+beta_2 <- 3
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate normal error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x  + beta_2 * x^2 + epsilon
+
+# fit model (only on SLR x with linear term)
+mod_squared_x <- lm(y ~ x)
+
+```
+
+  - Residuals vs fitted plot
+  
+```{r}
+
+# residual vs fitted plot
+plot(mod_squared_x, which = 1)
+
+```
+
+  - Scatterplot
+  
+```{r}
+
+# scatterplot of y vs x with regression line added
+plot(x = x, y = y, main = "Squared predictor")
+abline(mod_squared_x, col = "red")
+
+```
+
+  - Demo to show how steep slope can hide lack of fit in scatterplot, but residual plot still picks it up. 
+  
+    + Results &rarr; For a true quadratic model, the scatterplot of $Y$ vs $X$ looks just linear (not noticeable curvature) when there is a large $\beta_1$ term (coefficient of linear term). But this is misleading, especially after seeing the residual plot which shows the missing evidence of curvature.
+    
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 50; beta_0 <- 1; sigma <- 5
+
+# SMALL slope of linear term
+beta_1 <- 3
+beta_2 <- 2
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate normal error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x  + beta_2 * x^2 + epsilon
+
+# fit model (only on SLR x with linear term)
+mod_squared <- lm(y ~ x)
+
+# scatterplot of y vs x with regression line added
+# -> can see curvature
+plot(x = x, y = y, main = "Samll slope")
+abline(mod_squared, col = "red")
+
+# residuals vs fitted plot
+# -> curvature very obvious here
+plot(mod_squared, which = 1)
+
+```
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 50; beta_0 <- 1; sigma <- 5
+
+# LARGE slope of linear term
+beta_1 <- 10
+beta_2 <- 1
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate normal error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x  + beta_2 * x^2 + epsilon
+
+# fit model (only on SLR x with linear term)
+mod_squared <- lm(y ~ x)
+
+# scatterplot of y vs x with regression line added
+# -> curvature is hidden more, regression line looks okay
+plot(x = x, y = y, main = "Large slope")
+abline(mod_squared, col = "red")
+
+# residuals vs fitted plot
+# -> curvature still visible here
+plot(mod_squared, which = 1)
+
+```
+
+##### Nonlinear regression model {-} 
+
+Model statement &rarr; $Y_i = \beta_0 \, \e^{\beta_1 \, X_i} + \text{Normal}(0, \sigma^2)$
+
+  - Nonlinear because $Y_i$ cannot be expressed as a linear combination of the $\beta_i$s.
+  
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 0.1; beta_1 <- 0.5; sigma <- 5
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+y <- beta_0 * exp(beta_1 * x) + epsilon
+
+# fit model
+mod_nonlinear <- lm(y ~ x)
+
+```
+
+  - Scattterplot of $Y$ vs $X$ and residual plot
+  
+    + Can see obvious nonlinear pattern in scatterplot and systematic deviations in residual plot.
+
+```{r}
+
+# scatterplot of y vs x with regression line
+# -> obviously not a linear pattern
+plot(x = x, y = y, main = "Scatterplot of Y vs X")
+abline(mod_nonlinear, col = "red")
+
+# residual vs fitted plot
+# -> definite pattern to residuals
+plot(mod_nonlinear, 1)
+
+```
+
+#### {-}
+
+### Nonconstant variance {-} 
+
+#### {.tabset .unnumbered} 
+
+##### Content {-} 
+
+Overview
+
+  - We can look at the following plots to check if the error terms have constant variance:
+  
+  1. *Residual plot against the fitted values*
+  
+      + Again for SLR, this shows the same info as residuals vs $X$ plot, but in MLR we want to use the fitted values.
+      
+      + When there is a constant error variance, points again should fall within a horizontal band. So there is a constant spread of the residuals as move across the scope of fitted (or $X$) values.
+      
+      +  "Tipped over tornado" effect of the points indicates a non-constant variance (i.e. as the fitted values increase, the residuals vary more, or vice versa). Reverse megaphone (decreasing variance with increasing levels of $X$ or $\hat{Y}$) is possible as well or varying in some other complex fashion. A nonconstant variance in called *heteroscedasticity* (the assumption is a *homoscedastic* error variance). 
+    
+      ![](My files/Images/diagnostics-nonconstant-variance.png){width=50%}
+  
+  2. *Scale-location plot* &rarr; Refined version of above, preferred plot for this assumption.
+  
+     + Plots standardized residuals against fitted values. 
+     
+     + There are a few ways to transform the residuals for this type of plot, all of which get at the same purpose (options include: absolute value, square root of absolute value, squared, standardized (studentized, semistudentized), square root of standardized).
+     
+     ![](My files/Images/diagnostics-nonconstant-variance-scale-location.png){width=50%}
+    
+     + By doing this, it places all of the information on changing magnitudes of the residuals above the horizontal zero line, which makes it easier to see whether the magnitude of the residuals is changing with the level $\hat{Y}$ ($\pm$ is not important for this condition).
+     
+      + The scale-location plot specifically uses the standardized residuals (which have equal variance by assumption), and are given by $e_i^* = \frac{e_i}{\sqrt{MSE (1 - h_{ii})}}$, where the leverages $h_{ii}$ are the diagonal entries of the hat matrix. It then takes the absolute value and square root $\sqrt{\lvert e_i^* \rvert}$ to diminish the skewness because under $\text{Normal}(0, \sigma^2)$, $\sqrt{\lvert e_i^* \rvert}$ is much less skewed than $\lvert e_i^* \rvert$.
+      
+      ![](My files/Images/diagnostics-scale-location-standardized-residuals.png){width=50%}
+      
+  <!-- not totally sure why we need residuals to not be skewed for scale-location plot though -->
+     
+##### Ideal {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2)$
+
+  - Residuals vs fitted plot
+  
+    + Looking residuals to fall within horizontal bands on either side of 0.
+
+```{r}
+
+# using ideal model from linearity assumption demo
+
+# again, same plot as to check linearity
+plot(mod_ideal, which = 1)
+
+```
+
+  - Scale-location plot
+  
+    + Now we want a flat trend line.
+  
+    ```{r}
+
+# scale-location plot
+plot(mod_ideal, which = 3)
+
+    ```
+
+    + Demo of different ways to standardize residuals (including the scale-location plot)
+
+```{r}
+
+# scale-location plot
+plot(mod_ideal, which = 3)
+
+# demo of the standardized residuals used above
+# -> check help page for plot.lm() for more details on methods behind diagnostic plots
+
+# standardize the residuals
+# -> manual calculation using the formula for e* or r functions
+mse <- summary(mod_ideal)$sigma^2
+e_star <- resid(mod_ideal) %>% divide_by(sqrt(mse * (1 - hatvalues(mod_ideal)))) 
+e_star <- rstandard(mod_ideal)
+
+# view final transformation of residuals
+data.frame(e = resid(mod), e_star, f_e_star = sqrt(abs(e_star))) %>% 
+  head(n = 5) %>% 
+  display_nice(col.names = c("Residuals $e_i$", "Standardized residuals $e_i^*$", "$f(e_i^*) = \\sqrt{\\lvert e_i^* \\rvert}$"))
+
+# overlay function of standardized residuals to scale-location plot to confirm they line up 
+points(x = fitted(mod_ideal), y = sqrt(abs(e_star)), col = "blue", pch = 3)
+
+```
+
+```{r}
+#| class.source = "fold-hide"
+
+# demo different residual plots AND different smoothers
+
+# create dataset of different standardized residuals so can display all
+# 0) residuals
+# 1) f(e*) from above (sqrt of abs of standardized residuals from scale-location)
+# 2) semistudentized residuals = e / sqrt(MSE)
+# 3) abs(residuals)
+# 4) sqrt(abs(residuals))
+# 5) residuals^2
+e <- resid(mod_ideal)
+data_plot <- data.frame("fitted" = fitted(mod_ideal),
+                        e,
+                        f_e_star = sqrt(abs(e_star)),
+                        e_semi = e / sqrt(mse),
+                        e_abs = abs(e),
+                        e_abs_sqrt = sqrt(abs(e)),
+                        e_squared = e^2) %>%
+  pivot_longer(c(starts_with("e"), "f_e_star"),
+               names_to = "type",
+               values_to = "residuals")
+
+# create dataset for lowess smoothers of each residual type
+data_lowess <- data_plot %>% 
+  split(.$type) %>% map2(names(.), \(df, type) data.frame(lowess(x = df$fitted, y = df$residuals), type = type)) %>% 
+  reduce(bind_rows)
+
+# set more informative labels for the facets
+labels_residuals <- c(e = "residuals",
+                      f_e_star = "f(standardized residuals",
+                      e_semi = "residuals / sqrt(MSE)",
+                      e_abs = "abs(residuals)",
+                      e_abs_sqrt = "sqrt(abs(residuals))",
+                      e_squared = "residuals^2")
+
+# then plot with different smoothing lines
+# smoothing line
+# -> geom_smooth() default method is loess smoother, which is a local polynomial regression fit
+# -> plot() uses lowess smoother, which uses locally-weighted polynomial regression 
+# -> summary -> similar methods, slight difference
+# --> lowess is for adding a smooth curve to a scatterplot, i.e., for univariate smoothing, while loess is for fitting a smooth surface to multivariate data
+data_plot %>% 
+  ggplot(aes(x = fitted,
+           y = residuals),
+       data = .) + 
+  geom_point() + 
+  geom_smooth(se = FALSE,
+              method = "loess",
+              formula = y ~ x) + 
+    geom_line(aes(x = x,
+                y = y),
+            data = data_lowess,
+            col = "red") + 
+  facet_wrap(. ~ type,
+             scales = "free",
+             labeller = as_labeller(labels_residuals)) + 
+  geom_hline(yintercept = 0,
+             col = "grey",
+             linetype = "dashed")
+
+```
+  
+#### {-} 
+
+Departures
+
+#### {.tabset .unnumbered} 
+
+##### Increasing variance {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2_i = 5 X_i)$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters
+n <- 50; beta_0 <- 2; beta_1 <- 5
+
+# generate X values
+x <- runif(n = n, min = 1, max = 15)
+
+# specify a vector of variances, which is a function of X
+sigma <- 5 * x
+
+# generate response Y
+y <- rnorm(n = n, mean = beta_0 + beta_1 * x, sd = sigma)
+
+# fit model
+mod_increasing_error_variance <- lm(y ~ x)
+
+```
+
+  - Scatterplot
+  
+    + Can see more variation around ftted line as $X$ increases.
+    
+```{r}
+
+# view scatterplot with regression line
+plot(x = x, y = y)
+abline(mod_increasing_error_variance, col = "red")
+
+```
+
+  - Residuals vs fitted plot
+  
+    + Looking for a pattern that doesn't follow horizontal bands as move left to right, trend line may still be horizontal though. 
+ 
+```{r}
+
+# residual plot
+plot(mod_increasing_error_variance, which = 1)
+
+```
+
+  - Scale-location plot
+  
+    + Now trend line will not be horizontal after transforming residuals, should increase with an increasing variance.
+    
+```{r}
+
+# scale-location plot
+plot(mod_increasing_error_variance, which = 3)
+
+```
+
+##### Complex variance {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0,  \text{ decreasing then increasing } \sigma^2_i)$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters
+n <- 50; beta_0 <- 2; beta_1 <- 5
+
+# -> specify a vector of variances instead so it sequentially increases
+sigma <- c(seq(from = 20, to = 1, length.out = n / 2), seq(from = 1, to = 20, length.out = n / 2))
+
+# generate X values
+# -> need pattern of variances to follow as X increases, so sort Xs after
+x <- runif(n = n, min = 5, max = 15) %>% sort
+
+# generate response Y
+y <- rnorm(n = n, mean = beta_0 + beta_1 * x, sd = sigma)
+
+# fit model
+mod_complex_error_variance <- lm(y ~ x)
+
+```
+
+```{r}
+
+# view scatterplot with regression line
+# -> now see values are closer to line in middle of plot
+plot(x = x, y = y)
+abline(mod_complex_error_variance, col = "red")
+
+# residual plot
+# -> see ribbon-like pattern
+plot(mod_complex_error_variance, which = 1)
+
+# scale-location plot
+# -> see U kinda pattern
+plot(mod_complex_error_variance, which = 3)
+
+```
+
+#### {-}
+
+### Presence of unusual observations {-} 
+
+#### {.tabset .unnumbered} 
+
+##### Content {-} 
+
+Overview
+
+  - Unusual observations can create much difficulty when fitting models. When present, they can lead to a misleading fit because the line was estimated by minimizing the squared deviations.
+  
+    + Thus, a fitted line may be pulled disproportionately toward an unusual observation. Unusual observations near far from $\bar{X}$ have a larger impact on the model and estimates than those near $\bar{X}$ (this is the idea of leverage / influence).
+    
+    ![](My files/Images/outliers-relative-xbar.png){width=30%}
+
+  - There are two types unusual observations and how we define them, check for them, and their impact is different.
+  
+    1. **Outliers** &rarr; Extreme values of the response (outliers in $Y$).
+   
+      + A rough rule of thumb &rarr; When the sample size is large, semistudentized (or standardized) residuals with absolute value more than 3 or 4 can be considered outliers (i.e. outliers if $\lvert \frac{e_i}{\sqrt{MSE}} \text{ or } e_i^* \rvert \ge 3 \text{ or } 4$).
+       
+      + We can look at the following plots to check if residual outliers are present:
+  
+      a. *Residual plot against the fitted values (or $X$)*
+  
+      - Just looking for points far away from the pattern of the rest. In SLR, can also look at the scatterplot of $Y$ vs $X$ for points far from overall pattern.
+      
+      ![](My files/Images/diagnostics-outlier-y.png){width=30%}
+      
+      - Plotting of semistudentized residuals is helpful for distinguishing outiers because it's easy to identify residuals that lie many standard deviations from zero.
+        
+      ![](My files/Images/diagnostics-outlier-semistudentized.png){width=30%}
+    
+      b. *Boxplots, histograms, Normal QQ of the residuals (or standardized residuals)*
+  
+      - Can also look for outliers in the usual way based on these plots. Note that different visuals / rules will give more or less evidence for outliers.
+        
+      ![](My files/Images/diagnostics-outliers-other-plots.png){width=50%}
+  
+    2. **High leverage points** &rarr; Observations whose predictor values are far from the center of the predictor space (extreme values (outliers) of $X$ or unusual combination of $X$s).
+    
+      c. Plots &rarr; *Residuals vs Leverage plot* (or Cook's distance plot, Cook's dist vs Leverage (1 - Leverage) plot) &rarr; These use measures not covered yet.
+      
+    (3.) **Influential points** &rarr; High leverage points that actually *influence* the slope of the regression line (outlier in $X$ AND $Y$).
+      
+      d. Plots &rarr; In order to determine if a point is influential, visualize the regression line with and without the point. Does the slope of the line change considerably? If so, then the point is influential. If not, then it’s not an influential point.
+      
+      ![](My files/Images/diagnostics-high-leverage-influential.png){width=50%}
+
+Removing unusual observations
+
+  - Because unusual observations can create lots of difficulty, when we find one, we initially think that the observation resulted from a mistake or some extraneous effect. So it should be removed.
+  
+  - On the other hand, unusual observations may convey significant information (such as if it occurs because of an interaction with another predictor variable omitted from the model).
+
+  - A safe rule &rarr; Discard an unusual observation only if there is direct evidence that it represents an error in recording, a miscalculation, a malfunctioning of equipment, or a similar type of circumstance.
+
+##### Ideal {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2)$
+
+  - Residuals vs fitted plot
+  
+    + Looking for observations with residuals far below or above 0.
+
+```{r}
+
+# using ideal model from linearity assumption demo
+# -> randomness may result in an outlier or two
+
+# again, same plot as to check linearity and nonconstant variance
+plot(mod_ideal, which = 1)
+
+# by default, on all the diagnostic plots R labels the 3 observations with the most extreme residuals 
+# -> this says nothing about being potential outliers, just the top three
+# -> can change how many get labeled and what the label is (by default it is the observation number)
+plot(mod_ideal, which = 1, id.n = 10, labels.id = paste("x = ", round(x, 3), "\n y = ", round(y, 3)))
+
+# could also add lines for 3 * sqrt(MSE) to get the same comparison as below, just in units of the original residuals 
+plot(mod_ideal, which = 1)
+mse <- summary(mod_ideal)$sigma^2
+abline(h = c(-3 * sqrt(mse), 3 * sqrt(mse)), col = "orange")
+
+```
+
+  - Standardized residuals vs fitted plot
+  
+    + Looking for observations beyond with residuals 3 or 4 away from zero after standardizing.
+    
+    + Both ways of standardizing get essentially the same outcomes $\Longrightarrow$ An outlier in one will be an outlier in the other, so can just use the defualt R g
+  
+```{r}
+
+# show how to check the standardized residual plots and compare different versions
+
+# create dataset of two different standardized residuals for variation of residual plot
+# 1) semistudentized residuals
+# 2) e* from above (standardized residuals from scale-location)
+data_plot <- data.frame("fitted" = fitted(mod_ideal),
+                        e_semi = resid(mod_ideal) / sqrt(mse),
+                        e_star = rstandard(mod_ideal)) %>%
+  pivot_longer(starts_with("e"),
+               names_to = "type",
+               values_to = "residuals")
+               
+# create residual plot with smoothing line for both types of residuals
+# -> add bands at +/- 3 "standardized units" from zero
+data_plot %>% 
+  ggplot(aes(x = fitted,
+             y = residuals,
+             color = type),
+         data = .,
+         alpha = 0.01) + 
+  geom_point() + 
+  geom_smooth(se = FALSE,
+              method = "loess",
+              formula = y ~ x) + 
+  geom_hline(yintercept = c(0,-3,3),
+             col = c("grey", "orange", "orange"),
+             linetype = c("dashed", "solid", "solid")) + 
+  scale_color_manual(name = "Type of residaul",
+                     values = c(e_semi = "#F8766D", e_star = "#00BFC4"), # use hexcode of default colors when two values
+                     labels = c(e_semi = "semistudentized", e_star =  "standardized"))
+
+```
+
+  - Boxplot, histogram and Normal QQ plot of residuals
+  
+    + Should not see any observations far away from the general patterns.
+
+```{r}
+
+# boxplot of residuals
+boxplot(resid(mod_ideal), horizontal = TRUE,  main = "Boxplot of residuals")
+
+# histogram of residuals
+hist(resid(mod_ideal), main = "Histogram  of residuals")
+
+# normal qq plot
+plot(mod_ideal, which = 2)
+
+```
+
+  - Residuals vs Leverage plot, Cook's distance plot and Cook's dist vs Leverage / (1 - Leverage) plot
+
+```{r}
+
+# diagnostic plots of: residuals vs lev, cooks dist, and cooks dist vs lev
+autoplot(mod_ideal, which = c(5,4,6))
+
+# residuals vs lev plot uses standardized residuals (and not transforming them with sqrt(abs(.)) like the scale-location plot)
+# -> so could add the +/- 3 lines to this plot (and for now ignore the leverage lines)
+plot(mod_ideal, which = 5)
+abline(h = c(-3, 3), col = "orange")
+
+```
+  
+#### {-}
+
+Departures
+
+#### {.tabset .unnumbered} 
+
+##### Outlier {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2), \hspace{20pt} \text{except} \hspace{10pt} Y_{n+1} = \beta_0^* + \beta_1^* X_i + \text{Normal}(0, \sigma^2)$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 4; sigma <- 5
+
+# generate X values and y values in a dataframe
+# (SIDENOTE -> needs to be a separate mutate() statement so y uses the x's just generated and not ones from a previous vector)
+data_without <- data.frame(x = runif(n = n, min = 5, max = 15)) %>% 
+  mutate(y = rnorm(n = n, mean = beta_0 + beta_1 * x, sd = sigma))
+
+```
+
+```{r}
+
+# introduce outlier
+# -> new point follows different population regression model, but with typical X value
+# --> X ranges from 5 to 15 from above
+data_new <- data.frame(x = 10) %>% 
+  mutate(y = rnorm(n = 1, mean = (beta_0 + 4) + (beta_1 + 4) * x, sd = sigma))
+data_outlier <- bind_rows(data_without, data_new)
+
+```
+
+  - Diagnostic plots with outlier (typical $X$ but extreme $Y$ $\Longrightarrow$ Outlier in $Y$)
+  
+    + Can see a point with unusually large residuals (outlier in boxplot, way above / below in residual plot).
+
+```{r}
+
+# scatterplot of data with outlier
+data_outlier %$% plot(x = x, y = y)
+
+# fit model with outlier
+mod_outlier <- data_outlier %$% lm(y ~ x)
+
+# boxplot of residuals
+boxplot(resid(mod_outlier), horizontal = TRUE, main  = "Boxplot of residuals")
+
+# if there is an outlier in the boxplot, can extract it
+# -> then find the corresponding (x,y) pair
+(outlier <- boxplot(resid(mod_outlier), horizontal = TRUE)$out)
+data_outlier[which(mod_outlier$residuals == outlier),] %>% display_nice
+
+# residual vs fitted plot with reference lines to confirm outlier
+plot(mod_outlier, which = 1)
+mse <- summary(mod_outlier)$sigma^2
+abline(h = c(-3 * sqrt(mse), 3 * sqrt(mse)), col = "orange")
+
+# get standardized residual value of the identified outlier
+rstandard(mod_outlier)[31]
+
+```
+
+```{r}
+
+# view regression lines with and without outlier
+data_outlier %$% plot(x = x, y = y, main = "Outlier")
+abline(mod_outlier, col = "red")
+data_outlier[-31,] %$% abline(lm(y ~ x), col = "purple")
+
+```
+
+##### High-leverage point {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2), \hspace{20pt} \text{except} \hspace{10pt} Y_{n+1} = \beta_0 + \beta_1 X_i^* + \text{Normal}(0, \sigma^2)$
+
+```{r}
+
+# introduce high-leverage point
+# -> new point follows same population regression model, just with extreme X value
+data_new <- data.frame(x = 20) %>% 
+  mutate(y = rnorm(n = 1, mean = beta_0 + beta_1 * x, sd = sigma))
+data_high_leverage <- bind_rows(data_without, data_new)
+
+```
+
+  - Diagnostic plots with high-leverage point (extreme $X$ but follow pattern of $Y$ $\Longrightarrow$ Outlier in $X$)
+  
+    + Residual of high-leverage point will be typical, but far away horizontally from the rest of the points.
+
+```{r}
+
+# scatterplot of data with high-leverage point
+data_high_leverage %$% plot(x = x, y = y)
+
+# fit model with high-leverage point
+mod_high_leverage <- data_high_leverage %$% lm(y ~ x)
+
+# residual vs leverage plot with reference lines to confirm high-leverage (outlier in X) and also outlier (in Y)
+plot(mod_high_leverage, which = 5)
+abline(h = c(-3,3), col = "orange")
+
+```
+
+```{r}
+
+# view regression lines with and without outlier
+data_high_leverage %$% plot(x = x, y = y, main = "High-leverage point")
+abline(mod_high_leverage, col = "red")
+data_high_leverage[-31,] %$% abline(lm(y ~ x), col = "purple")
+
+```
+
+##### Influential point {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2), \hspace{20pt} \text{except} \hspace{10pt} Y_{n+1} = \beta_0^* + \beta_1^* X_i^* + \text{Normal}(0, \sigma^2)$
+
+```{r}
+
+# introduce influential point
+# -> new point follows different population regression model AND extreme X value
+data_new <- data.frame(x = 20) %>% 
+  mutate(y = rnorm(n = 1, mean = (beta_0 + 4) + (beta_1 + 4) * x, sd = sigma))
+data_influential <- bind_rows(data_without, data_new)
+
+```
+
+  - Diagnostic plots with influential point (extreme $X$ and does NOT follow patter of $Y$ $\Longrightarrow$ Outlier in $X$ and $Y$)
+  
+    + Residual of influential point will be extreme AND far away horizontally from the rest of the points.
+
+```{r}
+
+# scatterplot of data with influential point
+data_influential %$% plot(x = x, y = y, main = "Influential point")
+
+# fit model with influential point
+mod_influential <- data_influential %$% lm(y ~ x)
+
+# residual vs leverage plot with reference lines to confirm high-leverage and not outlier
+plot(mod_influential, which = 5)
+abline(h = c(-3,3), col = "orange")
+
+# view regression lines with and without outlier
+data_influential %$% plot(x = x, y = y, main = "Influential point")
+abline(mod_influential, col = "red")
+data_influential[-31,] %$% abline(lm(y ~ x), col = "purple")
+
+```
+
+#### {-} 
+
+### Nonindependence of error terms {-} 
+
+#### {.tabset .unnumbered} 
+
+##### Content {-} 
+
+Overview
+
+  - Ideally, any potential source of dependence is handled at the experimental design stage (or the sampling scheme), so that it is either eliminated by randomization or explicitly included in the data and we have one observation per subject.
+  
+  - Whenever data are obtained in a time sequence or some other type of sequence, such as for adjacent geographic areas, we can examine the potential dependence of error terms using a sequence plot of residuals.
+  
+      + This is used to see if there is any correlation between error terms that are near each other in the sequence.
+  
+  - *Sequence plot of residuals*
+      
+    + We want to plot the residuals against *time, collection order, spatial coordinates, or some other indicator of the sequence that we think might affect the data*.
+    
+    + If errors are independent, residuals hould look like a random walk around the base line zero (i.e. no obvious pattern).
+    
+    + Dependence (lack of randomness) can appear as a trend or cyclical pattern
+    
+    ![](My files/Images/diagnostics-sequence-plot-time.png){width=70%}
+    
+Modelling with nonindependence or apparent nonindependence
+
+  - It can be useful to view the problem of nonindependence of the error terms as one in which and important variable has been omitted from the model (whether it be time, observation number, etc.).
+  
+  - More subtle dependencies can be difficult to detect, especially if the information needed to detect them has not been included with the dataset. 
+  
+  - When the residuals are plotted against $X$, the plot may not appear to be random. But the basic problem could be from a poorly fitting regression function rather than a lack of independence of the error terms. Example, where a quadratic term should be included:
+      
+  ![](My files/Images/diagnostics-residual-plot-squared-missing.png){width=30%}
+    
+##### Ideal {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2)$
+
+  - Sequence plot of residuals vs observation number
+  
+    + Looking for random walk.
+
+```{r}
+
+# using ideal model from linearity assumption demo
+
+# sequence plot of residuals vs observation number
+e <- resid(mod_ideal)
+plot(x = 1:length(e), y = e, type = "b", main = "Sequence plot of residuals vs collection order", xlab = "obs #")
+abline(h = 0, col = "grey", lty = "dashed")
+
+```
+
+#### {-}
+
+Departures
+
+#### {.tabset .unnumbered} 
+
+##### Dependent errors {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{20pt} \text{where} \hspace{10pt} \epsilon_i \follow{Normal}(\mu = \epsilon_{i - 1}, \sigma^2)$
+
+  - Error terms are dependent now because the mean for $\epsilon_i$ mean is based (dependent) on the previous error term $\epsilon_{i - 1}$.
+  
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 2; sigma <- 5
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate dependent normal error terms
+# -> setup to first generate the deviations from rnorm()
+# -> the first deviation is from mean = 0, the second will now be from (centered on) the first deviation
+# --> so just add the first deviation and the new second deviations together, which will give the effect of a new mean from which rnorm() generated the next deviation
+epsilon <- rnorm(n = n, mean = 0, sd = sigma) %>% cumsum
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod_dependent_error <- lm(y ~ x)
+
+```
+
+```{r}
+
+# scatterplot of y vs x with regression line
+# -> nothing looks amiss
+plot(x = x, y = y, main = "Scatterplot - Dependent errors")
+abline(mod_dependent_error, col = "red")
+
+# residual vs fitted plot
+# -> again, seems fine
+plot(mod_dependent_error, 1, "Residuals vs fitted - Dependent errors")
+
+```
+
+  - Sequence plot with dependent errors ($\epsilon_i$ are no longer *iid*).
+  
+    + Now there is not a random walk around zero.
+
+```{r}
+
+# sequence plot of residuals vs observation number
+e <- resid(mod_dependent)
+plot(x = 1:length(e), y = e, type = "b", main = "Dependent errors", xlab = "obs #")
+abline(h = 0, col = "grey", lty = "dashed")
+
+```
+
+##### Linear trend effect {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{20pt} \text{where} \hspace{10pt} \epsilon_i \follow{Normal}(\text{increasing } \mu, \sigma^2)$
+
+  - Dependent now because successive error terms are more likely to be greater.
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 2; sigma <- 5
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate dependent normal error terms
+# -> increasing means
+epsilon <- rnorm(n = n, mean = seq(from = -20, to = 20, length.out = n), sd = sigma)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod_linear_trend_error <- lm(y ~ x)
+
+```
+
+  - Sequence plot with linear trend effect (still dependent).
+  
+    + Clear increase from in residuals with collection order &rarr; Early points more have negative residuals and later ones are positive.
+
+```{r}
+
+# sequence plot of residuals vs observation number
+e <- resid(mod_linear_trend_error)
+plot(x = 1:length(e), y = e, type = "b", main = "Linear trend effect", xlab = "obs #")
+abline(h = 0, col = "grey", lty = "dashed")
+
+```
+
+##### Cyclical nonindependence {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{20pt} \text{where} \hspace{10pt} \epsilon_i \follow{Normal}(\text{cyclical } \mu, \sigma^2)$
+
+  - Dependent now because adjacent errors are more likely to be closer to each other.
+  
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 2; sigma <- 5
+
+# generate X values
+x <- runif(n = n, min = 5, max = 15)
+
+# generate dependent normal error terms
+# -> cyclical (decreasing, then increasing, then decreasing, repeat) means
+epsilon <- rnorm(n = n, mean = c(seq(from = -20, to = 20, length.out = n / 3),
+                                 seq(from = 20, to = -20, length.out = n / 3),
+                                 seq(from = -20, to = 20, length.out = n / 3)),
+                 sd = sigma)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod_cyclical_error <- lm(y ~ x)
+
+```
+
+  - Sequence plot with cyclical pattern in errors (still dependent).
+  
+    + Cyclical pattern in residuals against collection order.
+
+```{r}
+
+# sequence plot of residuals vs observation number
+e <- resid(mod_cyclical_error)
+plot(x = 1:length(e), y = e, type = "b", main = "Cyclical nonindependence", xlab = "obs #")
+abline(h = 0, col = "grey", lty = "dashed")
+
+```
+
+#### {-} 
+
+### Nonnormality of errors {-} 
+
+#### {.tabset .unnumbered} 
+
+##### Content {-} 
+
+Overview
+
+  - Small departures from normality do not create any serious problems, but major departures should be of concern.
+  
+  - We can check the normality of error terms in a variety of errors:
+  
+  1. *Distribution plots of residuals* &rarr; This is one of the two preferred plots.
+  
+      + Boxplots are helpful for seeing if residuals are symmetric and if there are any possible outliers.
+      
+      + Histograms can also be used for the same purpose, looking for roughly normal. But the sample size needs to be reasonably large for this plot to convey reliable information about the shape of the distribution of error terms (there can be lots of fluctuation in the shape with small samples) $\Longrightarrow$ Moderate departures from normality do not imply a serious violation of this assumption.
+      
+      + For both of these plots, as long as there is not severe departures, it is okay.
+    
+  2. *Comparison of relative frequencies* &rarr; Use the empirical rule to compare observed relative frequencies to expected under normality.
+  
+     + Using $\sqrt{MSE}$ as an estimate for $\sigma$, for large sample size $n$ we expect approximately:
+     
+     1. 68\% of residuals to fall within $\pm \sqrt{MSE}$.
+     2. 95\% of residuals to fall within $\pm 2 \sqrt{MSE}$. 
+     3. 99.7\% of residuals to fall within $\pm 3 \sqrt{MSE}$. 
+
+     + If the sample size is moderately large, then we can the corresponding $t_{n-1}$ critical values (multipliers).
+     
+     + Just looking for relative consistency with these rules.
+     
+     ![](My files/Images/diagnostics-normality-empirical-rule.png){width=50%}
+    
+  3. *Normal probability (QQ) plot of residuals* &rarr; This is the other preffered plot.
+  
+      + Each standardized residual is plotted against its theoretical percentile (aka quantile, which gives us the expected value) under normality. Note that there are a few ways to make the QQ plots (different ways of standardizing residuals and different algorithms for theoretical quantiles), but none of these variations affect the nature of the plot.
+      
+      + A plot that is nearly linear suggests agreement with normality, whereas a plot that departs substantially from linearity suggests that the error distribution is not normal.
+      
+      + Again a moderate departure from normality is of little concern, only extreme departures are of note.
+      
+      ![](My files/Images/diagnostics-qq-plots-histograms.png){width=80%}
+      
+Difficulties in assessing normality
+
+  - The analysis for model departures regarding normality is often more difficult than departures of other types because...
+  
+    + Random variation can be particularly mischievous when studying the nature of a probability distribution unless the sample size is quite large.
+	  
+	  + Even worse, other types of departures can and do affect the distribution of the residuals.
+	  
+	  + e.g. Residuals may appear to be not normally distributed because an inappropriate regression function is used or because the error variance is not constant.
+	  
+	- So, it is usually a good strategy to investigate these other types of departures first, before assessing the normality of the error terms.
+      
+##### Ideal {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Normal}(0, \sigma^2)$
+
+  - Distribution plots
+  
+    + Looking roughly symmetric boxplot and a roughly symmetric histogram, both with no extreme outliers.
+
+```{r}
+
+# using ideal model from linearity assumption demo
+
+# again, same distribution plots used to check residuals for outliers
+# boxplot of residuals
+boxplot(resid(mod_ideal), horizontal = TRUE,  main = "Boxplot of residuals")
+
+# histogram of residuals
+hist(resid(mod_ideal), main = "Histogram  of residuals")
+
+```
+
+  - Comparison of relative frequencies of residuals
+  
+    + Percentages should match the empirical rule.
+    
+```{r}
+
+# create relative frequency table for interval probabilities of residuals
+# -> assuming here 30 is large enough to use Z multipliers
+# -> pass z multipliers to map() statement calculating proportion of abs value residuals less than multiplier * sqrt(MSE) -> (gets interval rel freq because centered around zero)
+mse <- summary(mod_ideal)$sigma^2
+e <- resid(mod_ideal)
+c(1:3) %>% 
+  set_names(c("± sqrt(MSE)", "± 2 sqrt(MSE)","± 3 sqrt(MSE)")) %>% 
+  map_dbl(\(z) round(mean(abs(e) <= z * sqrt(mse)), 3))
+
+```
+
+  - Normal QQ plot of residuals
+  
+    + Want standard residuals to follow the trend line.
+  
+```{r}
+
+# normal qq plot
+plot(mod_ideal, which = 2)
+
+```
+  
+#### {-} 
+
+Departures
+
+#### {.tabset .unnumbered} 
+
+##### Skewed errors {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Exponential}(\lambda = 1/5)$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters
+n <- 50; beta_0 <- 2; beta_1 <- 5
+
+# generate X values
+x <- runif(n = n, min = 1, max = 15)
+
+# generate right-skewed error terms from exponential distribution
+epsilon <- rexp(n = n, rate = 1/5)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod_skewed_error <- lm(y ~ x)
+
+```
+
+<!-- not sure if need to correct error terms to have mean zero; epsilon * = epsilon - mean(epsilon); (so satisfies BLUE assumptions)?? -->
+
+  - Comparison of frequencies, distribution plots and QQ plot of residuals
+  
+    + Can see relative frequencies don't match the empirical rule; right skew in boxplot (with high outliers) and histogram; concave up pattern in qq plot.
+
+```{r}
+
+# comparison of frequencies
+mse <- summary(mod_skewed_error)$sigma^2
+e <- resid(mod_skewed_error)
+c(1:3) %>% 
+  set_names(c("± sqrt(MSE)", "± 2 sqrt(MSE)","± 3 sqrt(MSE)")) %>% 
+  map_dbl(\(z) round(mean(abs(e) <= z * sqrt(mse)), 3))
+
+# boxplot of residuals
+boxplot(resid(mod_skewed_error), horizontal = TRUE,  main = "Right-skewed error")
+
+# histogram of residuals
+hist(resid(mod_skewed_error), freq = FALSE, main = "Right-skewed error")
+x_plot <- seq(from = -3, to = 3, by = 0.01)
+lines(x = x_plot, dnorm(x = x_plot))
+
+# normal qq plot
+plot(mod_skewed_error, which = 2)
+
+```
+
+##### Light-tailed errors {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{Uniform}(a = -2, b = 2)$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters
+n <- 50; beta_0 <- 2; beta_1 <- 5
+
+# generate X values
+x <- runif(n = n, min = 1, max = 15)
+
+# generate heavy-tailed error terms from uniform distribution
+epsilon <- runif(n = n, min = -2, max = 2)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod_light_tailed_error <- lm(y ~ x)
+
+```
+
+  - Same methods &rarr; Relative frequencies don't line up; likely no outliers on boxplot; the histogram may show more data closer to the center; S-shape in QQ plot.
+
+```{r}
+
+# comparison of frequencies
+mse <- summary(mod_light_tailed_error)$sigma^2
+e <- resid(mod_light_tailed_error)
+c(1:3) %>% 
+  set_names(c("± sqrt(MSE)", "± 2 sqrt(MSE)","± 3 sqrt(MSE)")) %>% 
+  map_dbl(\(z) round(mean(abs(e) <= z * sqrt(mse)), 3))
+
+# boxplot of residuals
+boxplot(resid(mod_light_tailed_error), horizontal = TRUE,  main = "Light-tailed error")
+
+# histogram of standardized residuals (so can overlay Z density curve)
+hist(rstandard(mod_light_tailed_error), freq = FALSE, breaks = 20, main = "Light-tailed error")
+x_plot <- seq(from = -3, to = 3, by = 0.01)
+lines(x = x_plot, dnorm(x = x_plot))
+
+# normal qq plot
+plot(mod_light_tailed_error, which = 2)
+
+```
+
+##### Heavy-tailed errors {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_i + \text{t}_4$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters
+n <- 50; beta_0 <- 2; beta_1 <- 5
+
+# generate X values
+x <- runif(n = n, min = 1, max = 15)
+
+# generate heavy-tailed error terms from t-distribution
+# -> df = 4 so not the most extreme
+epsilon <- rt(n = n, df = 4)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + epsilon
+
+# fit model
+mod_heavy_tailed_error <- lm(y ~ x)
+
+```
+
+  - Same methods &rarr; Again, relative frequencies don't line up; likely outliers on both sides of boxplot; the histogram will may show more data away from the center; flipped S-shape in QQ plot.
+
+```{r}
+
+# comparison of frequencies
+mse <- summary(mod_heavy_tailed)$sigma^2
+e <- resid(mod_heavy_tailed)
+c(1:3) %>% 
+  set_names(c("± sqrt(MSE)", "± 2 sqrt(MSE)","± 3 sqrt(MSE)")) %>% 
+  map_dbl(\(z) round(mean(abs(e) <= z * sqrt(mse)), 3))
+
+# boxplot of residuals
+boxplot(resid(mod_heavy_tailed), horizontal = TRUE,  main = "Heavy-tailed error")
+
+# histogram of standarized residuals (so can overlay Z density curve)
+hist(rstandard(mod_heavy_tailed), freq = FALSE, breaks = 20, main = "Heavy-tailed error")
+x_plot <- seq(from = -3, to = 3, by = 0.01)
+lines(x = x_plot, dnorm(x = x_plot))
+
+# normal qq plot
+plot(mod_heavy_tailed, which = 2)
+
+```
+
+#### {-} 
+
+### Omission of important predictor variables {-} 
+
+#### {.tabset .unnumbered} 
+
+##### Content {-} 
+
+Overview
+
+  - Residuals should also be plotted against variables omitted from the model that might have important effects on the response.
+  
+    + Allows us to see whether or not the residuals tend to vary systematically with the level of the additional predictor variable (can be qualitative or quantitative).
+    
+    ![](My files/Images/diagnostics-residual-vs-omittted-x.png){width=50%}
+
+  - Only a few of the factors operating on any response variable $Y$ in real-world situations can be included explicitly in a regression model (depends on what data was collected).
+    
+    + So when using residual analysis to identify other important predictors, we are simply testing the adequacy of the model and seeing if it could be improved materially by adding one or more predictor variables.
+    
+    + In doing so, we can provide important additional descriptive and predictive power to the model.
+    
+##### Ideal {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_{1,i} + 0 \, X_{2,i} + \text{Normal}(0, \sigma^2)$
+
+   - Simplifies to: $Y_i = \beta_0 + \beta_1 X_{1,i} + \beta_2 X_{2,i} + \epsilon_i \hspace{20pt} \text{with unrelated} X_{2,i}$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 3; sigma <- 5
+
+# unimportant predictor
+beta_2 <- 0
+
+# generate X samples
+x_1 <- runif(n = n, min = 5, max = 15)
+x_2 <- runif(n = n, min = 0, max = 5)
+
+# generate normal error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate Y observations using with both xs
+# -> beta_2 = 0 cancels out x_2 terms
+y <- beta_0 + beta_1 * x_1 + beta_2 * x_2 + epsilon
+
+# fit simplified (correct) model
+mod_correct <- lm(y ~ x_1)
+
+```
+
+  - Residuals vs fitted plot
+  
+    + Looks like random noise, no systematic deviations when residuals for correct model are plotted against unimportant (unrelated) omitted predictor.
+
+```{r}
+
+# residual plot against unimportant predictor not included in model
+# -> no systematic variation of residuals by additional predictor
+plot(x = x_2, y = resid(mod_correct), main = "Residuals vs unimportant predictor")
+abline(h = 0, col = "grey", lty = "dashed")
+lines(lowess(x = x_2, y = resid(mod_correct)), col = "red")
+
+```
+  
+#### {-}
+
+Departures
+
+#### {.tabset .unnumbered} 
+
+##### Missing important predictor {-} 
+
+Model statement &rarr; $Y_i = \beta_0 + \beta_1 X_{1,i} + \beta_2 X_{2,i} + \text{Normal}(0, \sigma^2)$
+
+```{r}
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 3; sigma <- 5
+
+# important predictor
+beta_2 <- 5
+
+# generate X samples
+x_1 <- runif(n = n, min = 5, max = 15)
+x_2 <- runif(n = n, min = 0, max = 5)
+
+# generate normal error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate Y observations using with both xs
+y <- beta_0 + beta_1 * x_1 + beta_2 * x_2 + epsilon
+
+# fit incorrect model (missing X2)
+mod_missing_important_x <- lm(y ~ x_1)
+
+```
+
+  - Residuals vs fitted plot
+  
+    + Now there is a pattern in the residuals for the omitted important predictor.
+
+```{r}
+
+# residual plot against important predictor not included in model
+# -> now there is a clear pattern
+plot(x = x_2, y = resid(mod_missing_important_x), main = "Missing predictor")
+abline(h = 0, col = "grey", lty = "dashed")
+lines(lowess(x = x_2, y = resid(mod_missing_important_x)), col = "red")
+
+```
+
+#### {-}
+
+## Effects of departures 
+
+
+
+
+
+
+
+```{r}
+#| eval = FALSE,
+#| echo = FALSE
+
+# departure effects simulation placeholder
+
+```
+
+<!-- skipping all of the following sections for now, but NEED TO COME BACK TO -->
+<!-- ### Overview of tests involving residuals  -->
+<!-- ### Correlation test for normality  -->
+<!-- ### Tests for constancy of error variance  -->
+<!-- ### $F$ test for lack of fit  -->
+
+## Overview of remedial measures 
+
+#### {.tabset .unnumbered} 
+
+##### Overview {-} 
+
+  - If the normal error SLR model is not appropriate for a dataset, there are two basic choices, both of which have their advantages and disadvantages:
+  
+    1. Abandon this model and develop and use a more appropriate model.
+    
+      + Pro &rarr; May lead to a more complex model that could yield better insights.
+      
+      + Con &rarr; May also lead to more complex procedures for estimating the parameters.
+    
+    2. Use some transformation on the data so that the normal error SLR model is appropriate for the transformed data.
+        
+      + Pro &rarr; Leads to relatively simple methods of estimation with smaller models (less parameters), which is desirable when the sample size is small.
+      
+      + Con &rarr; Transformations may obscure the fundamental interconnections between the variables, though at other times they may illuminate them.
+      
+    - Now we consider only transformations (will cover more complex models in later chapters).
+      
+      ![](My files/Images/remedial-measures-summary.png){width=50%}
+
+##### More details on transformations {-} 
+
+Here is a more in depth discussion of when to use which transformation:
+
+Nonlinearity of the regression function
+
+  - When the regression function is not linear, a direct approach is to modify the SLR regression model by altering the nature of the regression function (these methods will be discussed much later). For example,
+  
+    + Quadratic regression function (this is an example of a polynomial regression function) &rarr; $E(Y) = \beta_0 + \beta_1 X + \beta_2 X^2$
+    
+    + Exponential regression function (another example of a nonlinear regression function) &rarr; $E(Y) = \beta_0 \cdot \beta_1^X$
+    
+  - The transformation approach uses a transformation to linearize (at least approximately linearize) a nonlinear regression function.
+  
+  - When the nature of the regression function is unknown, exploratory analysis that does not require specifying a particular type of function is often useful (such as LOWESS regression).
+  
+Nonconstancy of the error variance
+
+  - When the error variance is not constant but varies in a systematic fashion, a direct approach is to modify the model to allow for this and use the method of *weighted least squares* to obtain the estimators of the parameters.
+  
+  - Transformations can also be effective in stabilizing the variance, some will be shown shortly.
+  
+Nonindependence of error terms
+
+  - When the error terms are correlated, the easiest method is to switch to a time series model. 
+
+Nonnormality of error terms
+
+  - Lack of normality and nonconstant error variances occur together. Fortunately, it is often the case that the same transformation that helps stabilize the variance is also helpful in approximately normalizing the error terms.
+  
+  - This is why we should address the nonconstant variance (apply the appropriate stabilizing transformation), then do residual analysis to see if there are still serious departures from normality present.
+
+Omission of important predictor variables
+
+  - When residual analysis indicates that an important predictor variable has been omitted from the model, the solution is to modify the model with multiple regression (two or more predictor variables).
+
+Unusual observations
+
+  - When unusual observations are present (could be outliers, high-leverage points, or influential points) using LSE or MLE may lead to serious distortions in the estimated regression function.
+  
+  - When these unusual obesrvations are not data errors (and thus shouldn't be thrown out), it may be desirable to use an estimation procedure that places less emphasis on them. One type of these models is discuss much later.
+
+#### {-} 
+
+## Transformations 
+
+  - Now we will talk about the use of transformations on one or both of the original variables before carrying out the regression analysis.
+  
+  -  Simple transformations of either the response variable $Y$ or the predictor variable $X$, or of both, are often sufficient to make the SLR model appropriate for the transformed data.
+
+### Transformations for nonlinear relation only {-} 
+
+Overview
+
+  - Goal &rarr; Linearize a nonlinear regression relation.
+
+  - Use when &rarr; Distribution of error terms is reasonably close to a normal distribution AND have approximately constant variance.
+
+  - Strategy &rarr; Transformations on $X$ should be attempted.
+	
+	  + Transformations on $Y$, such as $Y' = \sqrt{Y}$, may not be desirable here because they can materially change the shape of the distribution of the error terms from the normal distribution and may also lead to substantially differing error term variances.
+	  
+	  + e.g.) $Y = \beta_0 + \beta_1 X + \epsilon$, where $\epsilon \follow{Normal}$ $\rightarrow$ $\sqrt{Y} = \beta_0 + \beta_1 X + \text{new }\epsilon$
+	
+Specific transformations
+
+  - Below are some prototype nonlinear regression relations with some simple transformations on $X$ that may be helpful for linearizing without affecting the distribution of $Y$.
+  
+    + Several transformations can be tried.
+	  
+	  + Scatter plots and residual plots based on each should be made and analyzed to decide which transformation is most effective.
+	  
+	  ![](My files/Images/transformations-nonlinear.png){width=50%}
+
+  - At times, it may be helpful to introduce a constant into the transformation.
+	
+	  - e.g. If some of the $X$ data are near zero and the reciprocal transformation is desired, we can shift the origin by using the transformation $X' = \frac{1}{X + k}$, where $k$ is an appropriately chosen constant.
+	
+Demo
+
+#### {.tabset .unnumbered} 
+
+##### Increasing at decreasing rate {-} 
+
+```{r}
+#| echo = FALSE
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 2; beta_1 <- 10; sigma <- 0.25
+
+# generate X values
+x <- runif(n = n, min = 0, max = 20)
+
+# generate error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+# -> have a nonlinear pattern with X (violate linearity assumption)
+# -> only modifying the mean structure of the model so that the error distribution remains unchanged and is what it should be
+y <- (beta_0 + beta_1 * x)^0.3 + epsilon
+
+```
+
+  - Scatterplot of relationship between $Y$ and $X$
+  
+    + Main issue &rarr; See curvilinear pattern (in this case $Y$ grows slower as $X$ increases). So standard SLR model not appropriate (note that in reality, we have no idea what type model this came from).
+    
+    + Roughly same variance in $Y$ as $X$ increases (imagining spread of observations relative to the smooth curve; the residual plot looks bad because of the lack of fit) and QQ plot looks decent enough &rarr; So only issue is the linearity, which means we want to transform $X$ based on the specific pattern.
+
+```{r}
+#| echo = FALSE
+
+# scatter plot with poorly fit regression line and smoothed curve added
+plot(x = x, y = y, main = "Nonlinear ~ Increasing to an asymptote pattern")
+abline(lm(y ~ x), col = "red")
+lines(lowess(x, y), col = "blue")
+
+# residual plot and normal qq plot
+plot(lm(y ~ x), which = 1:2)
+
+```
+
+  - Attempt two transformations chosen based on the observed pattern: 1a) $X' = \log_{10}(X)$ 1b) $X' = \ln(X)$ and 2) $X' = \sqrt{X}$. Then view transformed scatterplots.
+  
+    + All greatly improve the linear aspect of the regression. Note that $\log_{10}(X)$ and $\ln(X)$ have the same linearizing effect, obviously the scales are different for the results.
+    
+    + The variability of the scatter at the different $X$ levels is the same as before, since we did not make a transformation on $Y$.
+
+```{r}
+#| echo = FALSE
+
+# view scatterplots and regression lines for potential transformations
+
+# show ln and log10 perform the same function
+data.frame(x, y) %>% 
+  ggplot(aes(y = y),
+         data = .) + 
+  geom_point(aes(x = log10(x),
+                 color = "log10(X)")) + 
+  geom_point(aes(x = log(x),
+                 color = "ln(X)")) + 
+  geom_smooth(aes(x = log10(x),
+                  color = "log10(X)"),
+              method = "lm",
+              se = FALSE) + 
+  geom_smooth(aes(x = log(x),
+                  color = "ln(X)"),
+              method = "lm",
+              se = FALSE) + 
+  scale_color_manual(name = "Transformation", values = c("log10(X)" = "orange", "ln(X)" = "blue")) + 
+  labs(x = "x")
+
+plot(x = sqrt(x), y = y, main = "Transformation = sqrt(X)")
+abline(lm(y ~ sqrt(x)), col = "red")
+
+```
+
+  - Look at diagnostics for fitted models based on transformed $X$s.
+  
+    + Residual plots are just fine now and normal QQ plots still look good.
+
+```{r}
+
+# fit models on transformed X variables
+mod_log10_x <- lm(y ~ log10(x))
+mod_ln_x <- lm(y ~ log(x))
+mod_sqrt_x <- lm(y ~ sqrt(x))
+
+# view some diagnostic plots for models with transformations
+plot(mod_log10_x, which = 1:2)
+plot(mod_ln_x, which = 1:2)
+plot(mod_sqrt_x, which = 1:2)
+
+# view model summaries (just the R^2)
+# -> ln and log10 models give different coefficients, but SAME MSE and R^2, see last tab 'effect of scalars and constants' for why
+summary(mod_log10_x)
+summary(mod_ln_x)
+summary(mod_sqrt_x)$r.squared
+
+```
+
+  + Compare these the models $R^2$ to the original untransformed: `r round(summary(lm(y ~ x))$r.squared, 3)`
+  
+##### Increasing at increasing rate {-} 
+
+```{r}
+#| echo = FALSE
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 0.5; beta_1 <- 2; sigma <- 2
+
+# generate X values
+x <- runif(n = n, min = 0, max = 2)
+
+# generate error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+# -> have a nonlinear pattern with X (violate linearity assumption)
+# -> only modifying the mean structure of the model so that the error distribution remains unchanged and is what it should be
+y <- beta_0 * exp(beta_1 * x) + epsilon
+
+# NOTE: X scale (location, e.g. 0 to 2 vs 20 to 22) obviously plays a part when generating the data because of the function to get Y. But once have Y, shifting the X data doesn't affect the relationship between X* and Y
+# -> for example, generate X and Y = f(X). Then using X* = X + 10 and original Y still as the sample
+# BUT it DOES affect a transformation because the effect won't be additive anymore (i.e. uniform for all x values)
+# -> e.g. X* = (X + 10)^2
+
+```
+
+  - Scatterplot of relationship between $Y$ and $X$
+  
+    + See curvilinear pattern (in this case $Y$ grows faster as $X$ increases) $\Longrightarrow$ SLR model not appropriate.
+    
+    + Constant variance through smooth curve and okay QQ plot $\Longrightarrow$ Try $X$ transformation to straighten out $Y$.
+
+```{r}
+#| echo = FALSE
+
+# scatter plot with poorly fit regression line and smoothed curve added
+plot(x = x, y = y, main = "Nonlinear ~ Exponential growth pattern")
+abline(lm(y ~ x), col = "red")
+lines(lowess(x, y), col = "blue")
+
+# residual plot and normal qq plot
+plot(lm(y ~ x), which = 1:2)
+
+```
+
+  - Attempt two transformations chosen based on the observed pattern: 1) $X' = X^2$ and 2) $X' = \e^X$.
+  
+    + Both seem to improve the linearity, although not perfectly.
+
+```{r}
+#| echo = FALSE
+
+# view scatterplots and regression lines for two potential transformations
+plot(x = x^2, y = y, main = "Transformation = X^2")
+abline(lm(y ~ I(x^2)), col = "red")
+
+plot(x = exp(x), y = y, main = "Transformation = exp(X)")
+abline(lm(y ~ exp(x)), col = "red")
+
+```
+
+  - Look at diagnostics for fitted models based on transformed $X$s.
+  
+    + Still a bit of curvature in the residual plot, but normal QQ plots still look good.
+
+```{r}
+
+# fit models on transformed X variables
+mod_squared_x <- lm(y ~ I(x^2))
+mod_exp_x <- lm(y ~ exp(x))
+
+# view some diagnostic plots for models with transformations
+plot(mod_squared_x, which = 1:2)
+plot(mod_exp_x, which = 1:2)
+
+# view model summaries (just the R^2)
+summary(mod_squared_x)$r.squared
+summary(mod_exp_x)$r.squared
+
+```
+
+  + Compare these the models $R^2$ to the original untransformed: `r round(summary(lm(y ~ x))$r.squared, 3)`
+  
+##### Decreasing at decreasing rate {-} 
+
+```{r}
+#| echo = FALSE
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 3; beta_1 <- 5; sigma <- 0.25
+
+# generate X values
+x <- runif(n = n, min = 0, max = 1)
+
+# generate error terms
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+
+# calculate observations Y
+# -> have a nonlinear pattern with X (violate linearity assumption)
+# -> only modifying the mean structure of the model so that the error distribution remains unchanged and is what it should be
+y <- beta_0 * exp(-beta_1 * x) + epsilon
+
+```
+
+  - Scatterplot of relationship between $Y$ and $X$
+  
+    + See curvilinear pattern (in this case $Y$ decreases slower as $X$ increases) $\Longrightarrow$ SLR again model not appropriate.
+    
+    + Still constant variance and approximately normal residuals, $\Longrightarrow$ Just transform $X$.
+
+```{r}
+#| echo = FALSE
+
+# scatter plot with poorly fit regression line and smoothed curve added
+plot(x = x, y = y, main = "Nonlinear ~ Exponential decay pattern")
+abline(lm(y ~ x), col = "red")
+lines(lowess(x, y), col = "blue")
+
+# residual plot and normal qq plot
+plot(lm(y ~ x), which = 1:2)
+
+```
+
+  - Attempt two transformations chosen based on the observed pattern: 1a) $X' = 1 / X$ 1b) $X' = 1 / (X + k)$ and 2) $X' = \e^{-X}$.
+  
+    + $1 / X$ does not result in a linear relationship, so no need to continue with that. However all $X$ values are in between 0 and 1, so we can try to introduce a constant to move data away from origin, say $X' = 1 / (1 + X)$. This works better. $\e^{-X}$ seems to helps as well.
+    
+    + Note that both transformations are decreasing, which means the association between $Y$ and $X'$ gets flipped and is now increasing.
+
+```{r}
+#| echo = FALSE
+
+# view scatterplots and regression lines for two potential transformations
+plot(x = 1/x, y = y, main = "Transformation = 1/X")
+abline(lm(y ~ I(1/x)), col = "red")
+
+k <- 1
+plot(x = 1/(x+k), y = y, main = "Transformation = 1/(X+1)")
+abline(lm(y ~ I(1/(x+k))), col = "red")
+
+plot(x = exp(-x), y = y, main = "Transformation = exp(X)")
+abline(lm(y ~ exp(-x)), col = "red")
+
+```
+
+  - Look at diagnostics for fitted models based on transformed $X$s.
+  
+    + Still a bit of curvature in the residual plot, but normal QQ plots still look good.
+
+```{r}
+
+# fit models on transformed X variables
+mod_reciprocal_x_k <- lm(y ~ I(1/(x+1)))
+mod_exp_neg_x <- lm(y ~ exp(-x))
+
+# view some diagnostic plots for models with transformations
+plot(mod_reciprocal_x_k, which = 1:2)
+plot(mod_exp_neg_x, which = 1:2)
+
+# view model summaries (just the R^2)
+summary(mod_reciprocal_x_k)$r.squared
+summary(mod_exp_neg_x)$r.squared
+
+```
+
+  + Compare these the models $R^2$ to the original untransformed: `r round(summary(lm(y ~ x))$r.squared, 3)`
+  
+##### Effect of scalars and constants {-} 
+
+Quick demo of introducing constants to one or both sides of regression equation (so to the sample essentially) to see how impact results
+
+Results
+
+  - Coefficients
+  
+    + Adding constants (all combos $X + k$, $Y + k$ and both) &rarr; Changes intercept, doesn't affect slope.
+    
+    + Multiplying by scalar &rarr; $k \cdot X$ doesn't affect intercept, but does affect slope; $k \cdot Y$ does affect intercept and slope; Both $k \cdot X$ and $k \cdot Y$ has same intercept as only $k \cdot Y$ (because $k \cdot X$ doesn't affect it), but the same slope as the original $X$ and $Y$ (in essence cancelling each others' effect).
+    
+  - $R^2$ and $F$-stat
+  
+    + All models have the same.
+    
+  - $MSE$ and likelihood-related statistics ($loglik$, $AIC$, $BIC$)
+  
+    + Only $k \cdot Y$ models have different $MSE$ (larger because $Y$ values are stretched with $\lvert k \rvert > 1$) and likelihood-related statistics (optimizing a function of $Y$).
+
+```{r}
+#| echo = FALSE
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 30; beta_0 <- 1; beta_1 <- 2; sigma <- 3
+
+# generate data
+x <- runif(n = n, min = 0, max = 15)
+epsilon <- rnorm(n = n, mean = 0, sd = sigma)
+y <- beta_0 + beta_1 * x + epsilon
+
+```
+
+```{r}
+#| echo = FALSE
+
+# scatterplots with regression lines for different models
+k1 <- 3
+ggplot() + 
+  geom_point(aes(x = x,
+                 y = y,
+                 color = "y ~ x")) + 
+  geom_smooth(aes(x = x,
+                  y = y,
+                  color = "y ~ x"),
+              method = "lm",
+              se = FALSE) + 
+  geom_point(aes(x = x + k1,
+                 y = y,
+                 color = "y ~ x + k"),
+             alpha = 0.50) + 
+  geom_smooth(aes(x = x + k1,
+                  y = y,
+                  color = "y ~ x + k"),
+              method = "lm",
+              se = FALSE) + 
+  geom_point(aes(x = x,
+                 y = y + k1,
+                 color = "y + k ~ x"),
+             alpha = 0.50) + 
+  geom_smooth(aes(x = x,
+                  y = y + k1,
+                  color = "y + k ~ x"),
+              method = "lm",
+              se = FALSE) + 
+  geom_point(aes(x = x + k1,
+                 y = y + k1,
+                 color = "y + k ~ x + k"),
+             alpha = 0.50) + 
+  geom_smooth(aes(x = x + k1,
+                  y = y + k1,
+                  color = "y + k ~ x + k"),
+              method = "lm",
+              se = FALSE) + 
+  scale_color_manual(name = "Model",
+                     breaks = c("y ~ x", "y ~ x + k", "y + k ~ x",  "y + k ~ x + k"),
+                     values = c("y ~ x" = "black", "y ~ x + k" = "blue", "y + k ~ x" = "orange", "y + k ~ x + k" = "red")) + 
+  labs(title = "Adding constants")
+
+k2 <- 2
+ggplot() + 
+  geom_point(aes(x = x,
+                 y = y,
+                 color = "y ~ x")) + 
+  geom_smooth(aes(x = x,
+                  y = y,
+                  color = "y ~ x"),
+              method = "lm",
+              se = FALSE) + 
+  geom_point(aes(x = k2 * x,
+                 y = y,
+                 color = "y ~ kx"),
+             alpha = 0.50) + 
+  geom_smooth(aes(x = k2 * x,
+                  y = y,
+                  color = "y ~ kx"),
+              method = "lm",
+              se = FALSE) + 
+  geom_point(aes(x = x,
+                 y = k2 * y,
+                 color = "ky ~ x"),
+             alpha = 0.50) + 
+  geom_smooth(aes(x = x,
+                  y = k2 * y,
+                  color = "ky ~ x"),
+              method = "lm",
+              se = FALSE) + 
+  geom_point(aes(x = k2 * x,
+                 y = k2 * y,
+                 color = "ky ~ kx"),
+             alpha = 0.50) + 
+  geom_smooth(aes(x = k2 * x,
+                  y = k2 * y,
+                  color = "ky ~ kx"),
+              method = "lm",
+              se = FALSE) + 
+  scale_color_manual(name = "Model",
+                     breaks = c("y ~ x", "y ~ kx", "ky ~ x", "ky ~ kx"),
+                     values = c("y ~ x" = "black", "y ~ kx" = "blue", "ky ~ x" = "orange", "ky ~ kx" = "red")) + 
+  coord_fixed() + 
+  labs(title = "Multiplying by scalars")
+
+```
+
+```{r}
+#| echo = FALSE
+
+# fit models and display
+# ->< start with list of all different models then pass to saving info function
+results <- list(
+  lm(y ~ x),
+  lm(y ~ I(x+k1)),
+  lm(I(y+k1) ~ x),
+  lm(I(y+k1) ~ I(x+k1)),
+  lm(y ~ I(k2*x)),
+  lm(I(k2*y) ~ x),
+  lm(I(k2*y) ~ I(k2*x)),
+  lm(y ~ log(x)),
+  lm(y ~ log10(x))) %>% 
+  map(function(mod) {
+    m = summary(mod)$coef # save coefficients table
+    coefs = data.frame(matrix(data = c(m[1,1], m[1,2], m[2,1], m[2,2]), nrow = 1)) # extract estimate and st error for intercept and X and put all info in one row (4 columns)
+    names(coefs) = c("b0", "se(b0)", "b1", "se(b1)") # name them
+    call = data.frame(call = paste(as.character(mod$call), collapse = " = ")) # extract model call and save as character string, then dataframe
+    cbind(call, coefs, glance(mod)[,1:9]) # combine all info into one long row
+  }) %>% 
+  reduce(rbind) %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+results %>% display_nice
+
+```
+
+$log_{10}(X)$ and $\ln(X)$
+
+  - These equate to the models $y ~ \ln(X)$ and $y ~ k \cdot log_{10}(X)$, so we can switch between the two and these results show why these two transformations are essentially equivalent. Only the slopes of the resulting models differ, every other model summary is the same.
+  
+  ![](My files/Images/transformations-log10-vs-ln.png){width=50%}
+
+#### {-} 
+
+### Transformations for Nonnormality and Unequal Error Variances {-} 
+
+Overview
+
+  - Unequal error variances and nonnormality of the error terms frequently appear together.
+  
+  - Often, these two departures show up as increasing skewness and increasing variability of the distributions of the error terms as the mean response $E(Y)$ increases.
+	
+	  + e.g. Regression on yearly household expenditures on vacation versus household income. There will tend to be more variation and greater positive skewness (i.e. some very high yearly vacation expenditures) for high-income households than for low-income households, who tend to consistently spend much less for vacations.
+  
+  - Goal &rarr; Fix nonnormality and nonconstant variance of regression relation.
+
+  - Strategy &rarr; We need a transformation on $Y$ because the shapes and spreads of the distributions of $Y$ need to be changed. 
+	
+    + A transformation like this may also help to linearize a curvilinear regression relation.
+    
+    + Other times, a simultaneous transformation on $X$ may be needed to obtain or maintain a linear regression relation.
+	
+Specific transformations
+
+  - Below are some prototype regression relations with some simple transformations on $Y$ that may be helpful for fixing non normality and unequal variances of the error distributions.
+  
+  	+ Several alternative transformations on $Y$ may be tried,  as well as some simultaneous transformations on $X$.
+  	
+  	+ Again, scatter plots and residual plots should be made to determine the most effective transformation(s).
+  
+    ![](My files/Images/transformations-nonnormal-and-nonconstant-var.png){width=50%}
+    
+  - Same as with the reciprocal transformation $X' = \frac{1}{X + k}$,we can  consider use of constant values to validate the transformation function. e.g. If $Y$ is negative, we can shift the origin for the log transformation $Y' = \ln(Y + k)$ so all $Y + k > 0$ for all $Y$.
+  
+Demo
+
+#### {.tabset .unnumbered} 
+
+##### Increasing at decreasing rate, with increasing variance {-} 
+
+```{r}
+#| echo = FALSE
+
+# initialize items
+# -> sample size, population parameters
+n <- 30; beta_0 <- 2; beta_1 <- 10
+
+# generate X values
+x <- runif(n = n, min = 0, max = 20)
+
+# generate error terms
+# -> uniform errors that can increase with x
+epsilon <- runif(n = n, min = 0, max = x/4)
+
+# calculate observations Y
+# -> structurally should have linear relationship in population and the other violations are what make appear nonlinear
+# -> but for simulating, just using same form as nonlinear departure
+y <- (beta_0 + beta_1 * x)^0.3 + epsilon
+
+# scatter plot with poorly fit regression line and smoothed curve added
+plot(x = x, y = y, main = "Nonnormal errors with increasing variance \n ~ Increasing to an asymptote pattern")
+abline(lm(y ~ x), col = "red")
+lines(lowess(x, y), col = "blue")
+
+```
+
+- Scatterplot of relationship between $Y$ and $X$
+  
+  + Main issue &rarr; See curvilinear pattern (in this case $Y$ grows slower as $X$ increases) AND nonconstant variance. Because of the nonconstant variance, this leads us to think that there is issues with the error variance, perhaps also the structure of the model (but impopssible to verify this totally). No serious departures from normality.
+  
+  + Before attempting transformations to linearize (working on $X$) or nonlinear regression, we should transform $Y$ based on this pattern. This transformation may help to linearize and improve the normality as well (even though not of concern). If still not good, can try transformation on $X$ in conjunction.
+
+```{r}
+#| echo = FALSE
+
+# scatter plot with poorly fit regression line and smoothed curve added
+plot(x = x, y = y, main = "Nonnormal errors with increasing variance \n ~ Increasing to an asymptote pattern")
+abline(lm(y ~ x), col = "red")
+lines(lowess(x, y), col = "blue")
+
+# residual plot and normal qq plot
+plot(lm(y ~ x), which = 1:2)
+
+```
+
+  - Attempt transformations chosen based on the observed pattern: $Y' = \sqrt{Y}$. Then view transformed scatterplot.
+  
+    + TRANSFORMATION DIDN'T SEEM TO WORK???
+    
+    <!-- NOTE: detaching -> skipping simulations for the rest of the prototypes so can move on to new stuff -->
+    
+```{r}
+#| echo = FALSE
+
+# view scatterplot and regression lines for potential transformations
+plot(x = x, y = sqrt(y), main = "Transformation = sqrt(Y)")
+abline(lm(sqrt(y) ~x), col = "red")
+plot(x = sqrt(x), y = sqrt(y), main = "Transformation = sqrt(Y)")
+abline(lm(sqrt(y) ~ sqrt(x)), col = "red")
+
+```
+
+##### Decreasing at decreasing rate, with decreasing variance {-} 
+
+##### Increasing linear trend, with increasing variance {-} 
+
+#### {-} 
+
+### Box-Cox transformations {-} 
+
+
+## (come up with new title) Using the transformed model 
+
+Follow along with slides and implement some examples
+
+  + We can also then get the fitted regression function in the original units of $X$ if desired by "back-transforming" 
+
+
+
