@@ -12,9 +12,9 @@ book:
 
     - part: part1-slr.qmd
       chapters:
-        - slr.qmd
-        #- inference.qmd
-        #- diagnostics-and-remedial-measures.qmd
+        - notes-slr.qmd
+        #- notes-inference.qmd
+        #- notes-diagnostics-and-remedial-measures.qmd
 
     - part: part2-mlr.qmd
       chapters:

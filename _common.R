@@ -17,6 +17,7 @@ options(scipen = 999)
 
 # load packages for common functions
 library(tidyverse)
+library(magrittr)
 library(kableExtra)
 
 # default function to display dataframes nicely

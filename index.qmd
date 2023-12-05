@@ -1,6 +1,6 @@
 # Overview {.unnumbered}
 
-<!-- insert summary paragraph -->
+These course notes introduce regression models and accompanying assumptions. In addition, they cover the theory of least squares to understand the statistical inference procedures behind linear models. Extensive applications of modeling in R will be demonstrated, with a goal of being able to understand strengths and limitations of models. These will be applied to predict and perform inference, while developing sensitivity to important model assumptions.
 
 ::: callout-note
 ## Quarto blog publish details
