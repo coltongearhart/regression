@@ -106,7 +106,7 @@ data_ships <- data.frame(X = seq(from = 10, to = 19, by = 1)) %>%
          Y = f_X + epsilon)
 
 # display data
-data_ships %>% display_nice(col.names = c("$X$", "$f(X) = E(Y \\mid X)$", "$\\epsilon \\sim N(0,1)$", "$Y = f(X) + \\epsilon$"))
+data_ships %>% display_nice(col.names = c("X", "f(X) = E(Y | X)", "$epsilon ~ N(0,1)", "Y = f(X) + epsilon"))
 
 
 
@@ -440,7 +440,7 @@ y <- beta_0 + beta_1 * x + epsilon
 # display observed sample data
 data.frame(x, y) %>% 
   head(10) %>% 
-  display_nice(col.names = c("$x$", "$y$"))
+  display_nice(col.names = c("x", "y"))
 
 # plot sample data
 plot(x = x, y = y)

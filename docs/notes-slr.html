@@ -60,7 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./part2-mlr.html" rel="next">
+<link href="./notes-inference.html" rel="next">
 <link href="./part1-slr.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -162,6 +162,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple linear regression</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></span></a>
+  </div>
+</li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -176,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./placeholder.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Placeholder</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Placeholder</span></span></a>
   </div>
 </li>
       </ul>
@@ -278,75 +284,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>         Y <span class="op">=</span> <span class="va">f_X</span> <span class="op">+</span> <span class="va">epsilon</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># display data</span></span>
-<span><span class="va">data_ships</span> <span class="op">%&gt;%</span> <span class="fu">display_nice</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"$X$"</span>, <span class="st">"$f(X) = E(Y \\mid X)$"</span>, <span class="st">"$\\epsilon \\sim N(0,1)$"</span>, <span class="st">"$Y = f(X) + \\epsilon$"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">data_ships</span> <span class="op">%&gt;%</span> <span class="fu">display_nice</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span>, <span class="st">"f(X) = E(Y | X)"</span>, <span class="st">"$epsilon ~ N(0,1)"</span>, <span class="st">"Y = f(X) + epsilon"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <table data-quarto-disable-processing="true" class="table table-striped" style="width: auto !important; ">
 <thead><tr>
-<th style="text-align:right;"> $X$ </th>
-   <th style="text-align:right;"> $f(X) = E(Y \mid X)$ </th>
-   <th style="text-align:right;"> $\epsilon \sim N(0,1)$ </th>
-   <th style="text-align:right;"> $Y = f(X) + \epsilon$ </th>
+<th style="text-align:right;"> X </th>
+   <th style="text-align:right;"> f(X) = E(Y | X) </th>
+   <th style="text-align:right;"> $epsilon ~ N(0,1) </th>
+   <th style="text-align:right;"> Y = f(X) + epsilon </th>
   </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:right;"> 10 </td>
    <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.806 </td>
-   <td style="text-align:right;"> 13.806 </td>
+   <td style="text-align:right;"> -1.050 </td>
+   <td style="text-align:right;"> 11.950 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 11 </td>
    <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 1.418 </td>
-   <td style="text-align:right;"> 15.418 </td>
+   <td style="text-align:right;"> 1.318 </td>
+   <td style="text-align:right;"> 15.318 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 12 </td>
    <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 0.040 </td>
-   <td style="text-align:right;"> 15.040 </td>
+   <td style="text-align:right;"> -1.008 </td>
+   <td style="text-align:right;"> 13.992 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 13 </td>
    <td style="text-align:right;"> 16 </td>
-   <td style="text-align:right;"> 0.284 </td>
-   <td style="text-align:right;"> 16.284 </td>
+   <td style="text-align:right;"> 0.034 </td>
+   <td style="text-align:right;"> 16.034 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 14 </td>
    <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> 0.176 </td>
-   <td style="text-align:right;"> 17.176 </td>
+   <td style="text-align:right;"> 0.375 </td>
+   <td style="text-align:right;"> 17.375 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 15 </td>
    <td style="text-align:right;"> 18 </td>
-   <td style="text-align:right;"> -0.755 </td>
-   <td style="text-align:right;"> 17.245 </td>
+   <td style="text-align:right;"> -1.184 </td>
+   <td style="text-align:right;"> 16.816 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 16 </td>
    <td style="text-align:right;"> 19 </td>
-   <td style="text-align:right;"> -0.033 </td>
-   <td style="text-align:right;"> 18.967 </td>
+   <td style="text-align:right;"> -0.898 </td>
+   <td style="text-align:right;"> 18.102 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 17 </td>
    <td style="text-align:right;"> 20 </td>
-   <td style="text-align:right;"> -0.726 </td>
-   <td style="text-align:right;"> 19.274 </td>
+   <td style="text-align:right;"> 1.079 </td>
+   <td style="text-align:right;"> 21.079 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 18 </td>
    <td style="text-align:right;"> 21 </td>
-   <td style="text-align:right;"> 1.280 </td>
-   <td style="text-align:right;"> 22.280 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 22.000 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 19 </td>
    <td style="text-align:right;"> 22 </td>
-   <td style="text-align:right;"> -0.377 </td>
-   <td style="text-align:right;"> 21.623 </td>
+   <td style="text-align:right;"> -0.068 </td>
+   <td style="text-align:right;"> 21.932 </td>
   </tr>
 </tbody>
 </table>
@@ -695,53 +701,53 @@ Y_i = \beta_0^* + \beta_1 (X_i - \bar{X}) + \epsilon_i, \hspace{20pt} \text{wher
 <details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># display observed sample data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">display_nice</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"$x$"</span>, <span class="st">"$y$"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">display_nice</span><span class="op">(</span>col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <table data-quarto-disable-processing="true" class="table table-striped" style="width: auto !important; ">
 <thead><tr>
-<th style="text-align:right;"> $x$ </th>
-   <th style="text-align:right;"> $y$ </th>
+<th style="text-align:right;"> x </th>
+   <th style="text-align:right;"> y </th>
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:right;"> 9.765 </td>
-   <td style="text-align:right;"> 20.351 </td>
+<td style="text-align:right;"> 7.917 </td>
+   <td style="text-align:right;"> 18.127 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 8.491 </td>
-   <td style="text-align:right;"> 16.669 </td>
+<td style="text-align:right;"> 9.795 </td>
+   <td style="text-align:right;"> 21.438 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 12.340 </td>
-   <td style="text-align:right;"> 27.569 </td>
+<td style="text-align:right;"> 11.515 </td>
+   <td style="text-align:right;"> 24.736 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 9.387 </td>
-   <td style="text-align:right;"> 18.608 </td>
+<td style="text-align:right;"> 6.321 </td>
+   <td style="text-align:right;"> 12.550 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 5.947 </td>
-   <td style="text-align:right;"> 13.192 </td>
+<td style="text-align:right;"> 8.426 </td>
+   <td style="text-align:right;"> 18.699 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 5.691 </td>
-   <td style="text-align:right;"> 12.419 </td>
+<td style="text-align:right;"> 13.068 </td>
+   <td style="text-align:right;"> 26.100 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 10.377 </td>
-   <td style="text-align:right;"> 22.871 </td>
+<td style="text-align:right;"> 7.389 </td>
+   <td style="text-align:right;"> 13.980 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 12.972 </td>
-   <td style="text-align:right;"> 26.589 </td>
+<td style="text-align:right;"> 5.484 </td>
+   <td style="text-align:right;"> 13.794 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 11.687 </td>
-   <td style="text-align:right;"> 22.450 </td>
+<td style="text-align:right;"> 9.983 </td>
+   <td style="text-align:right;"> 20.721 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 11.041 </td>
-   <td style="text-align:right;"> 22.329 </td>
+<td style="text-align:right;"> 9.129 </td>
+   <td style="text-align:right;"> 20.242 </td>
   </tr>
 </tbody>
 </table>
@@ -789,11 +795,11 @@ Y_i = \beta_0^* + \beta_1 (X_i - \bar{X}) + \epsilon_i, \hspace{20pt} \text{wher
 <span><span class="va">mod_slr</span><span class="op">$</span><span class="va">coefficients</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)           x 
-   1.382626    1.978814 </code></pre>
+   2.248209    1.841830 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># or can do:</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># or can do</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">mod_slr</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">mod_slr</span><span class="op">)</span> <span class="co"># alias for coefficients()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -819,11 +825,11 @@ Y_i = \beta_0^* + \beta_1 (X_i - \bar{X}) + \epsilon_i, \hspace{20pt} \text{wher
        TRUE        TRUE 
 
 $`c(b_0, b_1)`
-[1] 1.382626 1.978814
+[1] 2.248209 1.841830
 
 $`mod_slr$coefficients`
 (Intercept)           x 
-   1.382626    1.978814 </code></pre>
+   2.248209    1.841830 </code></pre>
 </div>
 </div>
 </div>
@@ -832,8 +838,6 @@ $`mod_slr$coefficients`
 <p>LSE for other models</p>
 <ul>
 <li><p>Can also derive LSE estimators for other models using the same process.</p></li>
-<li><p>Sometimes a transformation can make deriving estimators easier. This way we can get the model in a familiar form and derive like usual (simpler). Then we just have to make the appropriate substitutions at the end in order to get the estimators for the original models.</p></li>
-<li><p>This strategy lessons the number of models we have to know how to derive (is just for deriving; no need to do it when fitting models because it’s an extra middle step that doesn’t change leads to equivalent results).</p></li>
 <li>
 <p>Example 1</p>
 <ul>
@@ -895,8 +899,8 @@ $`mod_slr$coefficients`
 <span><span class="co"># display estimated coefficient</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">mod_noint</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       x 
-1.895757 </code></pre>
+<pre><code>      x 
+2.17725 </code></pre>
 </div>
 </div>
 </div>
@@ -914,11 +918,11 @@ $`mod_slr$coefficients`
 TRUE 
 
 $b
-[1] 1.895757
+[1] 2.17725
 
 $`coefficients(mod_noint)`
-       x 
-1.895757 </code></pre>
+      x 
+2.17725 </code></pre>
 </div>
 </div>
 </div>
@@ -928,7 +932,9 @@ $`coefficients(mod_noint)`
 <li>
 <p>Example 2</p>
 <ul>
-<li>Regression through the origin with squared predictor variable: <span class="math inline">\(Y = \beta_1 X^2 + \epsilon\)</span>.</li>
+<li><p>Regression through the origin with squared predictor variable: <span class="math inline">\(Y = \beta_1 X^2 + \epsilon\)</span>.</p></li>
+<li><p>Sometimes a transformation can make deriving estimators easier. This way we can get the model in a familiar form and derive like usual (simpler). Then we just have to make the appropriate substitutions at the end in order to get the estimators for the original models.</p></li>
+<li><p>This strategy lessens the number of models we have to know how to derive (note this is just for deriving; no need to do it when fitting models because it’s an extra middle step that doesn’t change anything, leads to equivalent results).</p></li>
 </ul>
 </li>
 </ul>
@@ -988,8 +994,8 @@ $`coefficients(mod_noint)`
 <span><span class="co"># display estimated coefficient</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">mod_noint_squared</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  I(x^2) 
-1.991871 </code></pre>
+<pre><code> I(x^2) 
+1.99715 </code></pre>
 </div>
 </div>
 </div>
@@ -1007,11 +1013,11 @@ I(x^2)
   TRUE 
 
 $b
-[1] 1.991871
+[1] 1.99715
 
 $`coef(mod_noint_squared)`
-  I(x^2) 
-1.991871 </code></pre>
+ I(x^2) 
+1.99715 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1034,21 +1040,21 @@ $`coef(mod_noint_squared)`
 
 $`head(mod_noint_squared$x)`
       I(x^2)
-1 19.2116270
-2  2.7604183
-3 16.1747149
-4 22.2916984
-5  0.1274457
-6  0.0110680
+1 17.5787765
+2 16.4235865
+3  1.9257954
+4  0.6732229
+5  1.3335716
+6 18.0385428
 
 $`head(mod_transformed$x)`
       x_star
-1 19.2116270
-2  2.7604183
-3 16.1747149
-4 22.2916984
-5  0.1274457
-6  0.0110680</code></pre>
+1 17.5787765
+2 16.4235865
+3  1.9257954
+4  0.6732229
+5  1.3335716
+6 18.0385428</code></pre>
 </div>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate estimates B using LSE formula</span></span>
 <span><span class="va">b_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x_star</span> <span class="op">*</span> <span class="va">y</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x_star</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
@@ -1060,10 +1066,10 @@ $`head(mod_transformed$x)`
 [1] TRUE
 
 $b
-[1] 1.991871
+[1] 1.99715
 
 $b_star
-[1] 1.991871</code></pre>
+[1] 1.99715</code></pre>
 </div>
 </div>
 </div>
@@ -1074,7 +1080,7 @@ $b_star
 <li>
 <p><strong>Gauss-Markov theorem</strong>: If the conditions of the SLR model hold (i.e.&nbsp;<span class="math inline">\(Y_i= \beta_0 + \beta_1 X_i + \epsilon_i\)</span>, where <span class="math inline">\(\epsilon_i\)</span> have mean zero, variance <span class="math inline">\(\sigma^2\)</span> and are uncorrelated), then the LSE <span class="math inline">\(\hat{\beta}_0\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span> are the <strong>Best Linear Unbiased Estimators (BLUE)</strong> (note that <span class="math inline">\(\epsilon_i\)</span> do not have to be normal).</p>
 <ol type="1">
-<li><p>Linear estimators → Through lots of algebra (shown later), <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span> can be written as be written as a linear combination of the <span class="math inline">\(Y_i\)</span>: <span class="math inline">\(\sum k_i Y_i\)</span>, where <span class="math inline">\(a_i\)</span> are constant. Thus they are linear estimators.</p></li>
+<li><p>Linear estimators → Through lots of algebra (shown later), <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span> can be written as be written as a linear combination of the <span class="math inline">\(Y_i\)</span>: <span class="math inline">\(\sum k_i Y_i\)</span>, where <span class="math inline">\(k_i\)</span> are constant. Thus they are linear estimators.</p></li>
 <li><p>Unbiased estimators → Their expected values are <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, respectively. So neither estimator tends to overestimate or underestimate systematically.</p></li>
 <li><p>Best → More precise than <em>all other linear unbiased estimators of</em> <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> (smaller variance of the sampling distributions).</p></li>
 </ol>
@@ -1120,7 +1126,7 @@ S^2 = \frac{\sum_{i = 1}^n (Y_i - \bar{Y})^2}{n - 1}
 \]</span></p>
 <p>Regression model</p>
 <ul>
-<li>Same logic as above, except we use the residuals as the deviations because each <span class="math inline">\(Y_i\)</span> comes from a different probability distribution with different (depends on the <span class="math inline">\(X_i\)</span> level).</li>
+<li>Same logic as above, except we use the residuals as the deviations because each <span class="math inline">\(Y_i\)</span> comes from a different probability distribution with different <span class="math inline">\(X\)</span> (depends on the <span class="math inline">\(X_i\)</span> level).</li>
 </ul>
 <p><span class="math display">\[
 \text{Error (residual) sum of squares} \hspace{10pt} SSE = \sum_{i = 1}^n (Y_i - \hat{Y_i})^2 = \sum_{i = 1}^n e_i^2
@@ -1164,27 +1170,27 @@ lm(formula = y ~ x)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--1.6127 -0.7758 -0.1787  0.6272  2.2029 
+-2.6748 -1.1341  0.2154  1.0948  2.1662 
 
 Coefficients:
-            Estimate Std. Error t value            Pr(&gt;|t|)    
-(Intercept)  0.93619    0.71412   1.311               0.201    
-x            1.98386    0.06883  28.822 &lt;0.0000000000000002 ***
+            Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept)  2.82054    0.85005   3.318              0.00252 ** 
+x            1.82294    0.08081  22.558 &lt; 0.0000000000000002 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 1.077 on 28 degrees of freedom
-Multiple R-squared:  0.9674,    Adjusted R-squared:  0.9662 
-F-statistic: 830.7 on 1 and 28 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 1.287 on 28 degrees of freedom
+Multiple R-squared:  0.9478,    Adjusted R-squared:  0.946 
+F-statistic: 508.9 on 1 and 28 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># display S and MSE = S^2</span></span>
 <span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.076598</code></pre>
+<pre><code>[1] 1.287457</code></pre>
 </div>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span><span class="op">^</span><span class="fl">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.159063</code></pre>
+<pre><code>[1] 1.657546</code></pre>
 </div>
 </div>
 <p>These are estimates of population quantities for the error terms, and when simulating the data we assumed <span class="math inline">\(\epsilon_i \sim \text{Uniform}\,(a, b) \Longrightarrow \sigma^2 = V(\epsilon_i) = \frac{(b - a)^2}{12}\)</span>. For <span class="math inline">\(a\)</span> = -2 and <span class="math inline">\(b\)</span> = 2, <span class="math inline">\(V(\epsilon_i)\)</span> = 1.333.</p>
@@ -1226,10 +1232,10 @@ F-statistic: 830.7 on 1 and 28 DF,  p-value: &lt; 0.00000000000000022</code></pr
 [1] TRUE
 
 $`summ$sigma`
-[1] 1.076598
+[1] 1.287457
 
 $s
-[1] 1.076598</code></pre>
+[1] 1.287457</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; MSE</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span><span class="op">^</span><span class="fl">2</span>, <span class="va">mse</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1238,10 +1244,10 @@ $s
 [1] TRUE
 
 $`summ$sigma^2`
-[1] 1.159063
+[1] 1.657546
 
 $mse
-[1] 1.159063</code></pre>
+[1] 1.657546</code></pre>
 </div>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; SSE = MSE * df</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">summ</span><span class="op">$</span><span class="va">df</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">sse</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1250,10 +1256,10 @@ $mse
 [1] TRUE
 
 $`summ$sigma^2 * summ$df[2]`
-[1] 32.45377
+[1] 46.41128
 
 $sse
-[1] 32.45377</code></pre>
+[1] 46.41128</code></pre>
 </div>
 </div>
 <!-- alternate formula for sse = syy - beta1-hat sxy: from notes; not sure if needed -->
@@ -1268,7 +1274,7 @@ $sse
 </ul>
 <p>Assumptions on error term distribution</p>
 <ul>
-<li><p>These are need <span class="math inline">\(\epsilon_i\)</span> is needed to set up interval estimates and make tests.</p></li>
+<li><p>These assumptions on <span class="math inline">\(\epsilon_i\)</span> are needed to set up interval estimates and make tests.</p></li>
 <li><p>The standard assumption is that the error terms are normally distributed. This greatly simplifies the theory of regression analysis and is justifiable in many real-world situations where regression analysis is applied.</p></li>
 </ul>
 <p>New regression model</p>
@@ -1387,7 +1393,7 @@ L(\boldsymbol{\theta} \mid \mathbf{y}) = \prod_{i = 1}^n f(\mathbf{y} \mid \bold
 <li><p>MLE <span class="math inline">\(\hat{\sigma}^2\)</span> is biased → <span class="math inline">\(E(\hat{\sigma}^2) = \frac{n - 2}{n} \sigma^2\)</span>, which is an underestimation of <span class="math inline">\(\sigma^2\)</span>. Because of this, MSE is generally used because it is unbiased. However, <span class="math inline">\(\hat{\sigma}^2\)</span> is asymptotically unbiased (as <span class="math inline">\(n \rightarrow \infty\)</span>) and has a smaller variance than MSE, which may be preferred in some scenarios (tradeoff between bias and precision).</p></li>
 </ul>
 </li>
-<li><p>Generally MLE give the same results as LSE.</p></li>
+<li><p>Generally MLE gives the same results as LSE.</p></li>
 </ul>
 <!-- investigate this, when, why? when is one better? !!!! what about when not normal??-->
 </div>
@@ -1862,8 +1868,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./part2-mlr.html" class="pagination-link" aria-label="Multiple linear regression">
-        <span class="nav-page-text">Multiple linear regression</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./notes-inference.html" class="pagination-link" aria-label="<span class='chapter-number'>2</span>&nbsp; <span class='chapter-title'>Inference</span>">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -1975,7 +1981,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-110"><a href="#cb41-110" aria-hidden="true" tabindex="-1"></a>         <span class="at">Y =</span> f_X <span class="sc">+</span> epsilon)</span>
 <span id="cb41-111"><a href="#cb41-111" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-112"><a href="#cb41-112" aria-hidden="true" tabindex="-1"></a><span class="co"># display data</span></span>
-<span id="cb41-113"><a href="#cb41-113" aria-hidden="true" tabindex="-1"></a>data_ships <span class="sc">%&gt;%</span> <span class="fu">display_nice</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"$X$"</span>, <span class="st">"$f(X) = E(Y </span><span class="sc">\\</span><span class="st">mid X)$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">epsilon </span><span class="sc">\\</span><span class="st">sim N(0,1)$"</span>, <span class="st">"$Y = f(X) + </span><span class="sc">\\</span><span class="st">epsilon$"</span>))</span>
+<span id="cb41-113"><a href="#cb41-113" aria-hidden="true" tabindex="-1"></a>data_ships <span class="sc">%&gt;%</span> <span class="fu">display_nice</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"f(X) = E(Y | X)"</span>, <span class="st">"$epsilon ~ N(0,1)"</span>, <span class="st">"Y = f(X) + epsilon"</span>))</span>
 <span id="cb41-114"><a href="#cb41-114" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-115"><a href="#cb41-115" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-116"><a href="#cb41-116" aria-hidden="true" tabindex="-1"></a></span>
@@ -2309,7 +2315,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-448"><a href="#cb41-448" aria-hidden="true" tabindex="-1"></a><span class="co"># display observed sample data</span></span>
 <span id="cb41-449"><a href="#cb41-449" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(x, y) <span class="sc">%&gt;%</span> </span>
 <span id="cb41-450"><a href="#cb41-450" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb41-451"><a href="#cb41-451" aria-hidden="true" tabindex="-1"></a>  <span class="fu">display_nice</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"$x$"</span>, <span class="st">"$y$"</span>))</span>
+<span id="cb41-451"><a href="#cb41-451" aria-hidden="true" tabindex="-1"></a>  <span class="fu">display_nice</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>))</span>
 <span id="cb41-452"><a href="#cb41-452" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-453"><a href="#cb41-453" aria-hidden="true" tabindex="-1"></a><span class="co"># plot sample data</span></span>
 <span id="cb41-454"><a href="#cb41-454" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
@@ -2346,7 +2352,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-491"><a href="#cb41-491" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb41-492"><a href="#cb41-492" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval = FALSE</span></span>
 <span id="cb41-493"><a href="#cb41-493" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-494"><a href="#cb41-494" aria-hidden="true" tabindex="-1"></a><span class="co"># or can do:</span></span>
+<span id="cb41-494"><a href="#cb41-494" aria-hidden="true" tabindex="-1"></a><span class="co"># or can do</span></span>
 <span id="cb41-495"><a href="#cb41-495" aria-hidden="true" tabindex="-1"></a><span class="fu">coefficients</span>(mod_slr)</span>
 <span id="cb41-496"><a href="#cb41-496" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod_slr) <span class="co"># alias for coefficients()</span></span>
 <span id="cb41-497"><a href="#cb41-497" aria-hidden="true" tabindex="-1"></a></span>
@@ -2382,83 +2388,83 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-531"><a href="#cb41-531" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-532"><a href="#cb41-532" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Can also derive LSE estimators for other models using the same process.</span>
 <span id="cb41-533"><a href="#cb41-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-534"><a href="#cb41-534" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Sometimes a transformation can make deriving estimators easier. This way we can get the model in a familiar form and derive like usual (simpler). Then we just have to make the appropriate substitutions at the end in order to get the estimators for the original models.</span>
+<span id="cb41-534"><a href="#cb41-534" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Example 1</span>
 <span id="cb41-535"><a href="#cb41-535" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-536"><a href="#cb41-536" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>This strategy lessons the number of models we have to know how to derive (is just for deriving; no need to do it when fitting models because it's an extra middle step that doesn't change leads to equivalent results).</span>
+<span id="cb41-536"><a href="#cb41-536" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Regression through the origin: $Y = \beta X + \epsilon$.</span>
 <span id="cb41-537"><a href="#cb41-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-538"><a href="#cb41-538" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Example 1</span>
-<span id="cb41-539"><a href="#cb41-539" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-540"><a href="#cb41-540" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Regression through the origin: $Y = \beta X + \epsilon$.</span>
-<span id="cb41-541"><a href="#cb41-541" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-542"><a href="#cb41-542" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb41-543"><a href="#cb41-543" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Setup and Derivation</span></span>
-<span id="cb41-544"><a href="#cb41-544" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-547"><a href="#cb41-547" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb41-548"><a href="#cb41-548" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb41-549"><a href="#cb41-549" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-550"><a href="#cb41-550" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate sample regression through the origin dataset from population model</span></span>
-<span id="cb41-551"><a href="#cb41-551" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; E ~ Uniform(a, b)</span></span>
-<span id="cb41-552"><a href="#cb41-552" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; Y = BX + E</span></span>
-<span id="cb41-553"><a href="#cb41-553" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; Y | X ~ Uniform(B*X + a, B*X + b)</span></span>
-<span id="cb41-554"><a href="#cb41-554" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-555"><a href="#cb41-555" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize items</span></span>
-<span id="cb41-556"><a href="#cb41-556" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; sample size, population parameters and error distribution parameters</span></span>
-<span id="cb41-557"><a href="#cb41-557" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
-<span id="cb41-558"><a href="#cb41-558" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb41-559"><a href="#cb41-559" aria-hidden="true" tabindex="-1"></a>min <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">3</span></span>
-<span id="cb41-560"><a href="#cb41-560" aria-hidden="true" tabindex="-1"></a>max <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb41-561"><a href="#cb41-561" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-562"><a href="#cb41-562" aria-hidden="true" tabindex="-1"></a><span class="co"># generate X values</span></span>
-<span id="cb41-563"><a href="#cb41-563" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">max =</span> <span class="dv">5</span>)</span>
-<span id="cb41-564"><a href="#cb41-564" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-565"><a href="#cb41-565" aria-hidden="true" tabindex="-1"></a><span class="co"># Y | X ~ Uniform(min = BX + a, max = BX + b)</span></span>
-<span id="cb41-566"><a href="#cb41-566" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> beta <span class="sc">*</span> x <span class="sc">+</span> min, <span class="at">max =</span> beta <span class="sc">*</span> x <span class="sc">+</span> max)</span>
-<span id="cb41-567"><a href="#cb41-567" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-568"><a href="#cb41-568" aria-hidden="true" tabindex="-1"></a><span class="co"># plot sample data</span></span>
-<span id="cb41-569"><a href="#cb41-569" aria-hidden="true" tabindex="-1"></a><span class="co"># add regression line to plot and reference line for origin</span></span>
-<span id="cb41-570"><a href="#cb41-570" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
-<span id="cb41-571"><a href="#cb41-571" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> x <span class="sc">-</span> <span class="dv">1</span>), <span class="at">col =</span> <span class="st">"red"</span>)</span>
-<span id="cb41-572"><a href="#cb41-572" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"lightgrey"</span>)</span>
-<span id="cb41-573"><a href="#cb41-573" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"lightgrey"</span>)</span>
-<span id="cb41-574"><a href="#cb41-574" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x =</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">labels =</span> <span class="fu">bquote</span>(<span class="fu">hat</span>(Y) <span class="sc">*</span> <span class="st">" = "</span> <span class="sc">*</span> <span class="fu">hat</span>(beta) <span class="sc">*</span> <span class="st">"X"</span>) , <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb41-538"><a href="#cb41-538" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb41-539"><a href="#cb41-539" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Setup and Derivation</span></span>
+<span id="cb41-540"><a href="#cb41-540" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-543"><a href="#cb41-543" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-544"><a href="#cb41-544" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb41-545"><a href="#cb41-545" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-546"><a href="#cb41-546" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate sample regression through the origin dataset from population model</span></span>
+<span id="cb41-547"><a href="#cb41-547" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; E ~ Uniform(a, b)</span></span>
+<span id="cb41-548"><a href="#cb41-548" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; Y = BX + E</span></span>
+<span id="cb41-549"><a href="#cb41-549" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; Y | X ~ Uniform(B*X + a, B*X + b)</span></span>
+<span id="cb41-550"><a href="#cb41-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-551"><a href="#cb41-551" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize items</span></span>
+<span id="cb41-552"><a href="#cb41-552" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; sample size, population parameters and error distribution parameters</span></span>
+<span id="cb41-553"><a href="#cb41-553" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb41-554"><a href="#cb41-554" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb41-555"><a href="#cb41-555" aria-hidden="true" tabindex="-1"></a>min <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">3</span></span>
+<span id="cb41-556"><a href="#cb41-556" aria-hidden="true" tabindex="-1"></a>max <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb41-557"><a href="#cb41-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-558"><a href="#cb41-558" aria-hidden="true" tabindex="-1"></a><span class="co"># generate X values</span></span>
+<span id="cb41-559"><a href="#cb41-559" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">max =</span> <span class="dv">5</span>)</span>
+<span id="cb41-560"><a href="#cb41-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-561"><a href="#cb41-561" aria-hidden="true" tabindex="-1"></a><span class="co"># Y | X ~ Uniform(min = BX + a, max = BX + b)</span></span>
+<span id="cb41-562"><a href="#cb41-562" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> beta <span class="sc">*</span> x <span class="sc">+</span> min, <span class="at">max =</span> beta <span class="sc">*</span> x <span class="sc">+</span> max)</span>
+<span id="cb41-563"><a href="#cb41-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-564"><a href="#cb41-564" aria-hidden="true" tabindex="-1"></a><span class="co"># plot sample data</span></span>
+<span id="cb41-565"><a href="#cb41-565" aria-hidden="true" tabindex="-1"></a><span class="co"># add regression line to plot and reference line for origin</span></span>
+<span id="cb41-566"><a href="#cb41-566" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb41-567"><a href="#cb41-567" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> x <span class="sc">-</span> <span class="dv">1</span>), <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb41-568"><a href="#cb41-568" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb41-569"><a href="#cb41-569" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb41-570"><a href="#cb41-570" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x =</span> <span class="dv">3</span>, <span class="at">y =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">labels =</span> <span class="fu">bquote</span>(<span class="fu">hat</span>(Y) <span class="sc">*</span> <span class="st">" = "</span> <span class="sc">*</span> <span class="fu">hat</span>(beta) <span class="sc">*</span> <span class="st">"X"</span>) , <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb41-571"><a href="#cb41-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-572"><a href="#cb41-572" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-573"><a href="#cb41-573" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-574"><a href="#cb41-574" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Derivation of estimator:</span>
 <span id="cb41-575"><a href="#cb41-575" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-576"><a href="#cb41-576" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-576"><a href="#cb41-576" aria-hidden="true" tabindex="-1"></a><span class="al">![](files/images/slr-lse-derivation-origin.png)</span>{width="40%"}</span>
 <span id="cb41-577"><a href="#cb41-577" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-578"><a href="#cb41-578" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Derivation of estimator:</span>
+<span id="cb41-578"><a href="#cb41-578" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R Functions</span></span>
 <span id="cb41-579"><a href="#cb41-579" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-580"><a href="#cb41-580" aria-hidden="true" tabindex="-1"></a><span class="al">![](files/images/slr-lse-derivation-origin.png)</span>{width="40%"}</span>
-<span id="cb41-581"><a href="#cb41-581" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-582"><a href="#cb41-582" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R Functions</span></span>
-<span id="cb41-583"><a href="#cb41-583" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-586"><a href="#cb41-586" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb41-587"><a href="#cb41-587" aria-hidden="true" tabindex="-1"></a><span class="co"># fit SLR model without intercept</span></span>
-<span id="cb41-588"><a href="#cb41-588" aria-hidden="true" tabindex="-1"></a>mod_noint <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> x)</span>
-<span id="cb41-589"><a href="#cb41-589" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-590"><a href="#cb41-590" aria-hidden="true" tabindex="-1"></a><span class="co"># display estimated coefficient</span></span>
-<span id="cb41-591"><a href="#cb41-591" aria-hidden="true" tabindex="-1"></a><span class="fu">coefficients</span>(mod_noint)</span>
+<span id="cb41-582"><a href="#cb41-582" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-583"><a href="#cb41-583" aria-hidden="true" tabindex="-1"></a><span class="co"># fit SLR model without intercept</span></span>
+<span id="cb41-584"><a href="#cb41-584" aria-hidden="true" tabindex="-1"></a>mod_noint <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> x)</span>
+<span id="cb41-585"><a href="#cb41-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-586"><a href="#cb41-586" aria-hidden="true" tabindex="-1"></a><span class="co"># display estimated coefficient</span></span>
+<span id="cb41-587"><a href="#cb41-587" aria-hidden="true" tabindex="-1"></a><span class="fu">coefficients</span>(mod_noint)</span>
+<span id="cb41-588"><a href="#cb41-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-589"><a href="#cb41-589" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-590"><a href="#cb41-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-591"><a href="#cb41-591" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Manual</span></span>
 <span id="cb41-592"><a href="#cb41-592" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-593"><a href="#cb41-593" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb41-594"><a href="#cb41-594" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-595"><a href="#cb41-595" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Manual</span></span>
-<span id="cb41-596"><a href="#cb41-596" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-599"><a href="#cb41-599" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb41-600"><a href="#cb41-600" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate estimate B using LSE formula</span></span>
-<span id="cb41-601"><a href="#cb41-601" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">sum</span>(x <span class="sc">*</span> y) <span class="sc">/</span> <span class="fu">sum</span>(x<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb41-602"><a href="#cb41-602" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-603"><a href="#cb41-603" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb41-604"><a href="#cb41-604" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-607"><a href="#cb41-607" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb41-608"><a href="#cb41-608" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb41-609"><a href="#cb41-609" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-610"><a href="#cb41-610" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to results from lm()</span></span>
-<span id="cb41-611"><a href="#cb41-611" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(b, <span class="fu">coefficients</span>(mod_noint))</span>
-<span id="cb41-612"><a href="#cb41-612" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-613"><a href="#cb41-613" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb41-614"><a href="#cb41-614" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb41-615"><a href="#cb41-615" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-616"><a href="#cb41-616" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Example 2</span>
+<span id="cb41-595"><a href="#cb41-595" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-596"><a href="#cb41-596" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate estimate B using LSE formula</span></span>
+<span id="cb41-597"><a href="#cb41-597" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">sum</span>(x <span class="sc">*</span> y) <span class="sc">/</span> <span class="fu">sum</span>(x<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb41-598"><a href="#cb41-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-599"><a href="#cb41-599" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-600"><a href="#cb41-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-603"><a href="#cb41-603" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb41-604"><a href="#cb41-604" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb41-605"><a href="#cb41-605" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-606"><a href="#cb41-606" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to results from lm()</span></span>
+<span id="cb41-607"><a href="#cb41-607" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(b, <span class="fu">coefficients</span>(mod_noint))</span>
+<span id="cb41-608"><a href="#cb41-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-609"><a href="#cb41-609" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb41-610"><a href="#cb41-610" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb41-611"><a href="#cb41-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-612"><a href="#cb41-612" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Example 2</span>
+<span id="cb41-613"><a href="#cb41-613" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-614"><a href="#cb41-614" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Regression through the origin with squared predictor variable: $Y = \beta_1 X^2 + \epsilon$.</span>
+<span id="cb41-615"><a href="#cb41-615" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-616"><a href="#cb41-616" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Sometimes a transformation can make deriving estimators easier. This way we can get the model in a familiar form and derive like usual (simpler). Then we just have to make the appropriate substitutions at the end in order to get the estimators for the original models.</span>
 <span id="cb41-617"><a href="#cb41-617" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-618"><a href="#cb41-618" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Regression through the origin with squared predictor variable: $Y = \beta_1 X^2 + \epsilon$.</span>
+<span id="cb41-618"><a href="#cb41-618" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This strategy lessens the number of models we have to know how to derive (note this is just for deriving; no need to do it when fitting models because it's an extra middle step that doesn't change anything, leads to equivalent results).</span>
 <span id="cb41-619"><a href="#cb41-619" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-620"><a href="#cb41-620" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
 <span id="cb41-621"><a href="#cb41-621" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Setup and Derivation</span></span>
@@ -2549,7 +2555,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-716"><a href="#cb41-716" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-717"><a href="#cb41-717" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Gauss-Markov theorem**: If the conditions of the SLR model hold (i.e. $Y_i= \beta_0 + \beta_1 X_i + \epsilon_i$, where $\epsilon_i$ have mean zero, variance $\sigma^2$ and are uncorrelated), then the LSE $\hat{\beta}_0$ and $\hat{\beta}_1$ are the **Best Linear Unbiased Estimators (BLUE)** (note that $\epsilon_i$ do not have to be normal).</span>
 <span id="cb41-718"><a href="#cb41-718" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-719"><a href="#cb41-719" aria-hidden="true" tabindex="-1"></a><span class="ss">    1.  </span>Linear estimators → Through lots of algebra (shown later), $\hat{\beta_0}$ and $\hat{\beta}_1$ can be written as be written as a linear combination of the $Y_i$: $\sum k_i Y_i$, where $a_i$ are constant. Thus they are linear estimators.</span>
+<span id="cb41-719"><a href="#cb41-719" aria-hidden="true" tabindex="-1"></a><span class="ss">    1.  </span>Linear estimators → Through lots of algebra (shown later), $\hat{\beta_0}$ and $\hat{\beta}_1$ can be written as be written as a linear combination of the $Y_i$: $\sum k_i Y_i$, where $k_i$ are constant. Thus they are linear estimators.</span>
 <span id="cb41-720"><a href="#cb41-720" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-721"><a href="#cb41-721" aria-hidden="true" tabindex="-1"></a><span class="ss">    2.  </span>Unbiased estimators → Their expected values are $\beta_0$ and $\beta_1$, respectively. So neither estimator tends to overestimate or underestimate systematically.</span>
 <span id="cb41-722"><a href="#cb41-722" aria-hidden="true" tabindex="-1"></a></span>
@@ -2599,7 +2605,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-766"><a href="#cb41-766" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-767"><a href="#cb41-767" aria-hidden="true" tabindex="-1"></a>Regression model</span>
 <span id="cb41-768"><a href="#cb41-768" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-769"><a href="#cb41-769" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Same logic as above, except we use the residuals as the deviations because each $Y_i$ comes from a different probability distribution with different (depends on the $X_i$ level).</span>
+<span id="cb41-769"><a href="#cb41-769" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Same logic as above, except we use the residuals as the deviations because each $Y_i$ comes from a different probability distribution with different $X$ (depends on the $X_i$ level).</span>
 <span id="cb41-770"><a href="#cb41-770" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-771"><a href="#cb41-771" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb41-772"><a href="#cb41-772" aria-hidden="true" tabindex="-1"></a>\text{Error (residual) sum of squares} \hspace{10pt} SSE = \sum_{i = 1}^n (Y_i - \hat{Y_i})^2 = \sum_{i = 1}^n e_i^2</span>
@@ -2696,7 +2702,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-867"><a href="#cb41-867" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-868"><a href="#cb41-868" aria-hidden="true" tabindex="-1"></a>Assumptions on error term distribution</span>
 <span id="cb41-869"><a href="#cb41-869" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-870"><a href="#cb41-870" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>These are need $\epsilon_i$ is needed to set up interval estimates and make tests.</span>
+<span id="cb41-870"><a href="#cb41-870" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>These assumptions on $\epsilon_i$ are needed to set up interval estimates and make tests.</span>
 <span id="cb41-871"><a href="#cb41-871" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-872"><a href="#cb41-872" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>The standard assumption is that the error terms are normally distributed. This greatly simplifies the theory of regression analysis and is justifiable in many real-world situations where regression analysis is applied.</span>
 <span id="cb41-873"><a href="#cb41-873" aria-hidden="true" tabindex="-1"></a></span>
@@ -2799,7 +2805,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-970"><a href="#cb41-970" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-971"><a href="#cb41-971" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>MLE $\hat{\sigma}^2$ is biased → $E(\hat{\sigma}^2) = \frac{n - 2}{n} \sigma^2$, which is an underestimation of $\sigma^2$. Because of this, MSE is generally used because it is unbiased. However, $\hat{\sigma}^2$ is asymptotically unbiased (as $n \rightarrow \infty$) and has a smaller variance than MSE, which may be preferred in some scenarios (tradeoff between bias and precision).</span>
 <span id="cb41-972"><a href="#cb41-972" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-973"><a href="#cb41-973" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Generally MLE give the same results as LSE.</span>
+<span id="cb41-973"><a href="#cb41-973" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Generally MLE gives the same results as LSE.</span>
 <span id="cb41-974"><a href="#cb41-974" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-975"><a href="#cb41-975" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- investigate this, when, why? when is one better? !!!! what about when not normal??--&gt;</span></span>
 <span id="cb41-976"><a href="#cb41-976" aria-hidden="true" tabindex="-1"></a></span>
