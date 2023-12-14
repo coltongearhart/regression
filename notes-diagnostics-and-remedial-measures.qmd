@@ -2720,3 +2720,128 @@ lines(x = x_h$x, y = (preds[,"upr"])^-2,  type = "l", col = "blue")
 - For very non-normal errors, especially those arising from discrete responses, generalized linear models are often a better option, but linear regression may be "good enough".
 
 ![](files/images/transformation-map.png){width=80%}
+
+## Exploration of shape regression function
+
+Motivation
+
+- Scatter plots often indicate readily the nature of the regression function. But at other times however, the scatter plot is complex and it becomes difficult to see the nature of the regression relationship, if any, from the plot. In these cases, it is helpful to explore the nature of the regression relationship by fitting a smoothed curve without any constraints on the regression function.
+
+- These smoothed curves are also called *nonparametric regression curves*. They are useful not only for exploring regression relationships but also for confirming the nature of the regression function.
+
+- There are lots of methods for time series, such as *moving averages* (or the same thing but with medians to reduce the influence of outlying observations). But these methods are for when the $X$ values (time points) are equally spaced out.
+
+- There are also many smoothing methods for regression data, with a main one being lowess method.
+
+### Lowess method
+
+Overview
+
+- The *lowess method (locally weighted regression scatter plot smoothing)* obtains a smoothed curve by fitting successive linear regression functions in local neighborhoods and taking the fitted value at that particular $X$ as the smoothed value.
+
+Procedure
+
+- The lowess method uses a number of refinements in obtaining the final smoothed values to improve the smoothing and to make the procedure robust to outlying observations.
+
+1. The linear regression is weighted to give cases further from the middle $X$ level in each neighborhood smaller weights.
+
+2. To make the procedure robust to outlying observations, the linear regression fitting is repeated, with the weights revised so that cases that had large residuals in the first fitting receive smaller weights in the second fitting.
+
+3. To improve the robustness of the procedure further, step 2 is repeated one or more times by revising the weights according to the size of the residuals in the latest fitting.
+
+- To implement the lowess procedure, one must choose (→ in practice):
+
+    - The size of the successive neighborhoods to be used when fitting each linear regression → This is the primary choice. 
+    
+    - The weight function that gives less weight to neighborhood cases with $X$ values far from each center $X$ level → Default weight functios suggested by the creator are adequate for many circumstances.
+    
+    - Another weight function that gives less weight to cases with large residuals → Default.
+    
+    - The number of iterations to make the procedure robust must be chosen → Two iterations appears to be sufficient.
+    
+- Choosing the neighborhood size
+
+    - The larger the size, the smoother the function but the greater the danger that the smoothing will lose essential features of the regression relationship.
+    
+    - It may require some experimentation with different neighborhood sizes in order to find the size that best brings out the regression relationship.
+    
+Demo
+
+```{r}
+
+# get dataset
+plasma <- ALSM::Plasma
+
+# plot dataset with lowess smoother
+# arguments (with defaults)
+# -> f = the smoother span (proportion of points in the plot which influence the smooth at each value) ~ neighborood size
+plot(plasma$x, plasma$y)
+lines(lowess(x = plasma$x, y = plasma$y, f = 2/3, iter = 3))
+lines(lowess(x = plasma$x, y = plasma$y, f = 1/4, iter = 3), col = "blue")
+
+```
+
+Notes
+
+- Smoothed curves, such as the lowess curve, do not provide an analytical expression for the functional form of the regression relationship. They only suggest the shape of the regression curve.
+
+- The lowess procedure is not restricted to fitting linear regression functions in each neighborhood. Higher-degree polynomials can also be utilized with this method.
+
+- Showed previously that lowess is used in residual plots to show their pattern
+
+### Use of smoothed curves to confirm the fitted regression function
+
+Overview
+
+- Smoothed curves are useful not only in the exploratory a regression model is selected but they are also helpful in confirming the regression function chosen.
+
+- The procedure for confirmation is simple: The curve is plotted together with the confidence band for the fitted regression function. If the smoothed curve falls within the confidence band, we have supporting evidence of the appropriateness of the fitted regression function.
+
+Demo
+
+
+```{r}
+
+# fit untransformed model
+mod_plasma <- lm(y ~ x, data = plasma)
+
+# calculate confidence band using R functions
+# -> using textbook function (to confirm)
+x_h <- data.frame(x = seq(from = min(plasma$x), to = max(plasma$x), by = 0.1))
+conf_band1 <- ALSM::ci.reg(mod_plasma, newdata = x_h, type = "w")
+
+# -> using predict() for in practice
+alpha <- 0.05
+W <- sqrt(2 * qf(1 - alpha, df1 = length(coef(mod_plasma)), df2 = df.residual(mod_plasma)))
+conf_band2 <- predict(mod_plasma, newdata = x_h) %>% 
+  data.frame(fit = .) %>% 
+  mutate(x = x_h$x,
+         se = predict(mod_plasma, newdata = x_h, interval = "pred", se.fit = TRUE)$se.fit,
+         lwr = fit - W * se,
+         upr = fit + W * se)
+
+# plot smooth curve and actual confidence bands
+plot(x = plasma$x, y = plasma$y, main = "Untransformed model")
+lines(lowess(x = plasma$x, y = plasma$y, f = 2/3, iter = 3))
+conf_band2 %$% lines(x = x, y = lwr, col = "green")
+conf_band2 %$% lines(x = x, y = upr, col = "green")
+conf_band1 %$% lines(x = x, y = Lower.Band, col = "blue", lty = 2)
+conf_band1 %$% lines(x = x, y = Upper.Band, col = "blue", lty = 2)
+
+```
+
+```{r}
+
+# fit transformed model
+mod_plasma_prime <- lm(1 / sqrt(y) ~ x, data = plasma)
+
+# calculate confidence bands
+conf_bands <- ALSM::ci.reg(mod_plasma_prime, newdata = x_h, type = "w")
+
+# plot smooth curve and actual confidence bands after back transforming
+plot(x = plasma$x, y = plasma$y, main = "Transformed model")
+lines(lowess(x = plasma$x, y = plasma$y, f = 2/3, iter = 3))
+conf_bands %$% lines(x = x, y = Lower.Band^(-2), col = "blue")
+conf_bands %$% lines(x = x, y = Upper.Band^(-2), col = "blue")
+
+```
