@@ -14,7 +14,7 @@ book:
       chapters:
         - notes-slr.qmd
         - notes-inference.qmd
-        #- notes-diagnostics-and-remedial-measures.qmd
+        - notes-diagnostics-and-remedial-measures.qmd
 
     - part: part2-mlr.qmd
       chapters:

@@ -524,13 +524,15 @@ $$
     E(\hat{Y_h}) &= E(Y_h) \\
     V(\hat{Y_h}) &= \sigma^2 \bigg[\frac{1}{n} + \frac{(X_h - \bar{X})^2}{\sum(X_i - \bar{X})^2}\bigg]
   \end{align*}
-  $$
+$$
 
 -   Estimate variance (and standard deviation) by substituting $MSE$. This gives us:
 
 $$
   S^2_{\hat{Y_h}} = MSE \bigg[\frac{1}{n} + \frac{(X_h - \bar{X})^2}{\sum(X_i - \bar{X})^2}\bigg] \hspace{20pt} \longrightarrow \hspace{20pt} S_{\hat{Y_h}} = \sqrt{S^2_{\hat{Y_h}}} = S \sqrt{\frac{1}{n} + \frac{(X_h - \bar{X})^2}{S_{XX}}}
-  $$ Notes
+$$
+
+Notes
 
 -   The variability of the sampling distribution of $Y_h$ is affected by how far $X_h$ is from $\bar{X}$ (from the numerator of second term in $V(\hat{Y_h})$) $\Longrightarrow$ $V(\hat{Y_h})$ increases the further $X_h$ is from $\bar{X}$.
 
@@ -876,7 +878,7 @@ predict(mod, newdata = x_h)
 # calculate lower and upper bounds of prediction interval Y_h(new)
 # -> by default does 95% CI and returns the point estimate (fit) as well
 predict(mod, newdata = x_h, interval = "prediction")
-predict(mod, newdata = x_h, interval = "co")
+predict(mod, newdata = x_h, interval = "confidence")
 
 # show items related to standard error of ESTIMATION se(Y_h-hat)
 # -> ALWAYS returns this, even if specify interval = "pred"...
@@ -1249,10 +1251,7 @@ data_conf_band <- data.frame(x_h = x_h$x, fit, se_fit, lower, upper, width = upp
 
 # illustrate process of confidence bands over X range
 data_conf_band %>% 
-  kable(col.names = c("X_h", "fit = Y_h-hat", "SE(fit) = S_{Y_h-hat}", "LB = Y_h-hat - W x S_{Y_h-hat}", "UB = $Y_h-hat + W x S_{Y_h-hat}$", "Width"),
-        digits = 3) %>% 
-  kable_styling(full_width = FALSE,
-                position = "left")
+  display_nice(col.names = c("X_h", "fit = Y_h-hat", "SE(fit) = S_{Y_h-hat}", "LB = Y_h-hat - W x S_{Y_h-hat}", "UB = Y_h-hat + W x S_{Y_h-hat}", "Width"))
 
 # compare results to ci.reg(type = "w)
 compare(head(ALSM::ci.reg(mod, newdata = x_h, type = "w", alpha = 0.05)), head(data_conf_band[,c(1,2,4,5)]))
@@ -1341,6 +1340,84 @@ ggplot() +
 ```
 
 Where the multipliers are $t_{\alpha / 2, n - p}$ and $W = 2 \cdot F_{1 - \alpha; p, n - p}$.
+
+#### In practice
+
+Demo to verify confidence bands and prediction bands from `predict()`.
+
+```{r}
+
+# create two datasets of should be equivalent confidence limits (from different functions)
+data_bands_plot1 <-predict(mod, newdata = x_h, interval = "conf") %>% 
+  data.frame() %>% 
+  mutate(fun = "pred") %>% 
+  bind_rows(
+    ALSM::ci.reg(mod, newdata = x_h, type = "m") %>% 
+      data.frame %>% 
+      mutate(fun = "ci.reg") %>% 
+      select(fit = Fit, lwr = Lower.Band, upr = Upper.Band, fun)
+  ) %>% 
+  bind_cols(bind_rows(x_h, x_h), .)
+
+ggplot(data = data_bands_plot1) + 
+  geom_line(aes(x = x,
+                y = fit)) + 
+  geom_line(aes(x = x,
+                y = lwr, 
+                color = fun,
+                linetype = fun)) + 
+  geom_line(aes(x = x,
+                y = upr,
+                color = fun,
+                linetype = fun))
+
+# SAME
+
+# try again for predictions
+# create two datasets of should be equivalent prediction limits (from different functions)
+data_bands_plot2 <-predict(mod, newdata = x_h, interval = "pred") %>% 
+  data.frame() %>% 
+  mutate(fun = "pred") %>% 
+  bind_rows(
+    ALSM::ci.reg(mod, newdata = x_h, type = "n") %>% 
+      data.frame %>% 
+      mutate(fun = "ci.reg") %>% 
+      select(fit = Fit, lwr = Lower.Band, upr = Upper.Band, fun)
+  ) %>% 
+  bind_cols(bind_rows(x_h, x_h), .)
+
+ggplot(data = data_bands_plot2) + 
+  geom_line(aes(x = x,
+                y = fit)) + 
+  geom_line(aes(x = x,
+                y = lwr, 
+                color = fun,
+                linetype = fun)) + 
+  geom_line(aes(x = x,
+                y = upr,
+                color = fun,
+                linetype = fun))
+
+# SAME
+
+```
+
+So can just use `predict()` with dataset spread over range of predictor to form **pointwise** confidence / prediction bands. Assuming this is still valid because limits of the confidence band for the regression line at *any* value $X_h$ are not substantially wider than the confidence limits for the mean response at that *single* $X_h$ level.
+
+```{r}
+
+# create dataset of both pointwise confidence and prediction limits
+confs <- predict(mod, newdata = x_h, interval = "conf")
+preds <- predict(mod, newdata = x_h, interval = "pred")
+plot(x = data_original$x, y = data_original$y, type = "p")
+lines(x = x_h$x, y = confs[,"fit"],  type = "l", col = "grey")
+lines(x = x_h$x, y = confs[,"lwr"],  type = "l", col = "green")
+lines(x = x_h$x, y = confs[,"upr"],  type = "l", col = "green")
+lines(x = x_h$x, y = preds[,"lwr"],  type = "l", col = "blue")
+lines(x = x_h$x, y = preds[,"upr"],  type = "l", col = "blue")
+
+```
+
 :::
 
 ## Analysis of variance approach to regression

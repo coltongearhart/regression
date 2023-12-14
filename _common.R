@@ -19,6 +19,7 @@ options(scipen = 999)
 library(tidyverse)
 library(magrittr)
 library(kableExtra)
+library(broom)
 
 # default function to display dataframes nicely
 # options -> vector of column names (gets processed by kable(), so can be latex), number of rows to display, and rounding digits
