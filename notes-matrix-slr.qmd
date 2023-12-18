@@ -1,0 +1,209 @@
+# Matrix approach to SLR
+
+
+<!-- % define LaTeX macros (/shortcuts) -->
+
+<!-- % define vector (without parentheses, so when writing out in like a definition) of the form X_1, ..., X_n, where X and n are variable. NOTE: to call use $\vecn{X}{n}$ -->
+
+\newcommand{\vecn}[2]{#1_1, \ldots, #1_{#2}}
+
+<!-- % shortcut for ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\follow}[1]{\sim \text{#1}\,}
+
+<!-- % (followsp is short for 'follow special') shortcut that can be used for iid or ind ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\followsp}[2]{\overset{#1}\sim \text{#2}\,}
+
+<!-- % define independence symbol (it basically makes two orthogonal symbols very close to each other. The number of \! controls the space between each of the orthogonal symbols) -->
+
+\newcommand{\ind}{\perp \!\!\! \perp}
+
+<!-- % shortcut for Cov(X,Y) with formatting for Cov -->
+
+\newcommand{\cov}[1]{\mathrm{Cov}(#1)}
+
+<!-- % shortcut for Corr(X,Y) with formatting for Corr -->
+
+\newcommand{\corr}[1]{\mathrm{Corr}(#1)}
+
+<!-- % shortcut for non-italic e in math mode -->
+
+\newcommand{\e}{\mathrm{e}}
+
+<!-- % shortcut for matrix notation -->
+
+\newcommand{\mat}[3]{\underset{#2 \times #3}{\boldsymbol{#1}}}
+
+## Matrix algebra
+
+![](files/images/matrix-algebra.png){width="50%"}
+
+## Regression matrices
+
+<embed src="files/docs/regression-matrices.pdf" type="application/pdf" width="100%" height="1000px"></embed>
+
+## SLR in matrix form
+
+(Assuming matrix knowledge (or at least can be found elsewhere))
+
+** Nice site showing r examples of most of the following: [important-matrices-in-regression](https://zief0002.github.io/matrix-algebra/important-matrices-in-regression.html)
+
+### Model statement
+
+$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{10pt} \text{where} \hspace{10pt} \epsilon_i \overset{iid}\sim \text{Normal}\,(0,\sigma^2)$
+
+$\Longrightarrow \hspace{20pt} \mat{Y}{n}{1} = \mat{X}{n}{2} \, \mat{\beta}{2}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$
+
+because / where $\hspace{10pt} \mat{E(\epsilon)}{n}{1} = \mat{0}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{\sigma^2(\epsilon)}{n}{n} = \mat{\sigma^2 I}{n}{n}$
+
+### Least squares estimation of regression parameters
+
+The normal equations 
+$$
+\begin{align*}
+  \hat{\beta}_0 + \hat{\beta}_1 \sum X_i &= \sum Y_i \\
+  \hat{\beta}_0 \sum X_i + \hat{\beta}_1 \sum X_i^2 &= \sum X_i Y_i
+\end{align*}
+$$
+
+in matrix terms are
+
+$\mat{X'X}{2}{2} \, \mat{\hat{\beta}}{2}{1} = \mat{X'Y}{2}{1}$
+
+where $\hspace{10pt} \mat{\hat{\beta'}}{1}{2} = [\hat{\beta}_1, \hat{\beta}_2] \hspace{10pt}$ is the vector of least squares regression coefficients.
+
+### Estimated regression coefficients
+
+Simply use some matrix algebra:
+
+$(\mat{X'X}{2}{2})^{-1} \mat{X'X}{2}{2} \mat{\hat{\beta}}{2}{1} = (\mat{X'X}{2}{2})^{-1}\mat{X'Y}{2}{1}$
+
+$\Longrightarrow$ $\mat{\hat{\beta}}{2}{1} = (\mat{X'X}{2}{2})^{-1}\mat{X'Y}{2}{1}$
+
+### Fitted values
+
+The vector of the fitted values $\hat{Y}_i$ is $\mat{Y'}{1}{n} = [\hat{Y}_1, \ldots, \hat{Y}_n]$.
+
+In matrix notation, we have the following which can also be expressed using the**hat matrix**:
+
+$$
+\begin{align*}
+  \mat{Y}{n}{1} &= \mat{X}{n}{2} \, \mat{\hat{\beta}}{2}{1} \\
+   &= \mat{X}{n}{2} \, (\mat{X'X}{2}{2})^{-1}\mat{X'Y}{2}{1}\\
+   &= \mat{H}{n}{n} \, \mat{Y}{n}{1}
+\end{align*}
+$$
+
+where $\hspace{10pt} \mat{H}{n}{n} = \boldsymbol{X(X'X)^{-1}X'}$.
+
+We see from above that the fitted values $\hat{Y}_i$ can be expressed as linear combinations of the response variable observations $Y_i$ , with the coefficients being elements of the matrix $\boldsymbol{H}$. And the hat matrix involves only the observations of the predictor variable $X$.
+
+Notes about hat matrix:
+
+- Symmetric (and thus square: $n \times n$ dimensions)
+
+- Idempotent $\Longrightarrow$ $\boldsymbol{H}\boldsymbol{H} = \boldsymbol{H}$
+
+- Plays an important role in diagnostics for regression analysis when we determine the influence of outliers.
+
+### Residuals
+
+Let the vector of the residuals $e_i = Y_i - \hat{Y}_i$ be
+
+$\mat{e'}{1}{n} = [e_1, \ldots, e_n]$
+
+In matrix notation, we have:
+
+$\mat{e}{n}{1} = \mat{Y}{n}{1} - \mat{\hat{Y}}{n}{1} = \mat{Y}{n}{1} - \mat{X}{n}{2} \, \mat{\hat{\beta}}{2}{1}$
+
+Variance covariance matrix of residuals
+
+- The residuals $e_i$, like the fitted values $\hat{Y}_i$ , can be expressed as linear combinations of the response variable observations $Y_i$ 
+
+$\boldsymbol{e} = \boldsymbol{Y} - \boldsymbol{\hat{Y}} = \boldsymbol{Y} - \boldsymbol{HY} = (\boldsymbol{I} - \boldsymbol{H})\boldsymbol{Y}$
+
+Thus we have the important result:
+
+$\mat{e'}{1}{n} = (\mat{I}{n}{n} - \mat{H}{n}{n}) \, \mat{Y}{n}{1}$
+
+The matrix $\mat{I}{n}{n} - \mat{H}{n}{n}$ is symmetric and idempotent like $\boldsymbol{H}$.
+
+The variance-covariance of the vector of residuals involves this matrix:
+
+$$
+\begin{align*}
+  \mat{\sigma^2\{e\}}{n}{n} &= \boldsymbol{\sigma^2\{(\boldsymbol{I} - \boldsymbol{H})\boldsymbol{Y}\}} \\
+   &= (\boldsymbol{I} - \boldsymbol{H})\boldsymbol{\sigma^2\{Y\}}(\boldsymbol{I} - \boldsymbol{H})' \\ 
+   &= \sigma^2 (\boldsymbol{I} - \boldsymbol{H}) (\boldsymbol{I} - \boldsymbol{H}) \hspace{20pt} \text{because symmetry and }\boldsymbol{\sigma^2\{Y\}} = \boldsymbol{\sigma^2\{\epsilon\}}= \sigma^2 \boldsymbol{I} \\
+   &= \sigma^2 (\mat{I}{n}{n} - \mat{H}{n}{n})
+\end{align*}
+$$
+
+and is estimated by 
+
+$\mat{s^2\{e\}}{n}{n} = MSE (\mat{I}{n}{n} - \mat{H}{n}{n})$
+
+## ANOVA results
+
+Total sum of squares: $SSTO = \sum (Y_i - \bar{Y})^2 = \sum Y_i^2 - \frac{(\sum Y_i)^2}{n}$.
+
+- In matrix form: $SSTO = \boldsymbol{Y'}\boldsymbol{Y} - (\frac{1}{n})\boldsymbol{Y'}\boldsymbol{J}\boldsymbol{Y}$
+
+Sum of squared errors can be expressed similarly: $SSE = \sum e_i^2 = \sum (Y_i - \hat{Y_i})^2$
+
+- In matrix form: $SSE = \boldsymbol{e'}\boldsymbol{e} = (\boldsymbol{Y} - \boldsymbol{X\hat{\beta}})'(\boldsymbol{Y} - \boldsymbol{X\hat{\beta}})$.
+
+- This can be shown equivalent to (not worrying about derivation of this or next one):
+
+    - $SSE = \boldsymbol{Y'Y} - \boldsymbol{\hat{\beta}'X'Y}$
+
+Sum of squares regression: $SSR = \sum (\hat{Y_i} - \bar{Y})^2$
+
+- In matrix form: $SSR = \boldsymbol{\hat{\beta}'X'Y} - (\frac{1}{n})\boldsymbol{Y'}\boldsymbol{J}\boldsymbol{Y}$
+
+### Sums of squares as quadradic forms
+
+Quadratic form:
+
+$$\mat{Y'AY}{1}{1} = \sum_{i = 1}^n \sum_{j = 1}^na_{ij} Y_i Y_j$$
+
+where $a_{ij} = a_{ji}$ and $\boldsymbol{A}$ is a symmetric $n \times n$ called the *matrix of the quadratic form*.
+
+The ANOVA sums of squares $SSTO$, $SSE$, and $SSR$ are all quadratic forms, as can be
+seen by reexpressing $\boldsymbol{\hat{\beta}'X'}$:
+
+$$
+\begin{align*}
+\boldsymbol{\hat{\beta}'X'} &= (\boldsymbol{X\hat{\beta}})' \\
+  &= \boldsymbol{\hat{Y}}' \\ 
+  &= (\boldsymbol{HY})' \\ 
+  &= \boldsymbol{Y'H} \hspace{20pt} \text{because symmetry}
+\end{align*}
+$$
+
+This result enables us to express the ANOVA sums of squares as follows:
+
+$$
+\begin{align*}
+SSTO &= \boldsymbol{Y} \big[\boldsymbol{I} - \big(\frac{1}{n}\big) \boldsymbol{J}\big] \boldsymbol{Y} \\
+SSE &= \boldsymbol{Y'}(\boldsymbol{I - H})\boldsymbol{Y} \\
+SSR &= \boldsymbol{Y} \big[\boldsymbol{H} - \big(\frac{1}{n}\big) \boldsymbol{J}\big] \boldsymbol{Y}  \\ 
+\end{align*}
+$$
+
+## Inferences in regression analysis
+
+### Regression coefficients
+
+![](files/images/regression-coefficients-varcov.png)
+
+(Can find proof in textbook)
+
+### Mean response
+
+![](files/images/mean-response-matrix-form.png)
+
+### Prediction of new observation
+
+![](files/images/prediction-new-response-matrix-form.png)

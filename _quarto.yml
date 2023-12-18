@@ -16,6 +16,7 @@ book:
         - notes-inference.qmd
         - notes-diagnostics-and-remedial-measures.qmd
         # - notes-other-topics-in-regression.qmd
+        - notes-matrix-slr.qmd
         
 
     - part: part2-mlr.qmd

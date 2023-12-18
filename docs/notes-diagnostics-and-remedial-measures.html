@@ -60,7 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./part2-mlr.html" rel="next">
+<link href="./notes-matrix-slr.html" rel="next">
 <link href="./notes-inference.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -174,6 +174,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Diagnostics and remedial measures</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes-matrix-slr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix approach to SLR</span></span></a>
+  </div>
+</li>
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -188,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./placeholder.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Placeholder</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Placeholder</span></span></a>
   </div>
 </li>
       </ul>
@@ -1012,29 +1018,29 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:right;"> 0.170 </td>
-   <td style="text-align:right;"> 0.240 </td>
-   <td style="text-align:right;"> 0.489 </td>
+<td style="text-align:right;"> -5.609 </td>
+   <td style="text-align:right;"> 0.740 </td>
+   <td style="text-align:right;"> 0.860 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> -1.474 </td>
-   <td style="text-align:right;"> -0.623 </td>
-   <td style="text-align:right;"> 0.790 </td>
+<td style="text-align:right;"> 1.533 </td>
+   <td style="text-align:right;"> -0.812 </td>
+   <td style="text-align:right;"> 0.901 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 4.795 </td>
-   <td style="text-align:right;"> -1.039 </td>
-   <td style="text-align:right;"> 1.019 </td>
+<td style="text-align:right;"> -1.470 </td>
+   <td style="text-align:right;"> 1.373 </td>
+   <td style="text-align:right;"> 1.172 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 4.075 </td>
-   <td style="text-align:right;"> 0.683 </td>
-   <td style="text-align:right;"> 0.826 </td>
+<td style="text-align:right;"> 3.374 </td>
+   <td style="text-align:right;"> 0.942 </td>
+   <td style="text-align:right;"> 0.971 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> -7.217 </td>
-   <td style="text-align:right;"> 1.353 </td>
-   <td style="text-align:right;"> 1.163 </td>
+<td style="text-align:right;"> -2.786 </td>
+   <td style="text-align:right;"> -0.741 </td>
+   <td style="text-align:right;"> 0.861 </td>
   </tr>
 </tbody>
 </table>
@@ -1542,7 +1548,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      31 
-45.27275 </code></pre>
+48.11999 </code></pre>
 </div>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data_outlier</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">mod_outlier</span><span class="op">$</span><span class="va">residuals</span> <span class="op">==</span> <span class="va">outlier</span><span class="op">)</span>,<span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">display_nice</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1555,7 +1561,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <tbody><tr>
 <td style="text-align:left;"> 31 </td>
    <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 85.73 </td>
+   <td style="text-align:right;"> 90.982 </td>
   </tr></tbody>
 </table>
 </div>
@@ -1573,7 +1579,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">rstandard</a></span><span class="op">(</span><span class="va">mod_outlier</span><span class="op">)</span><span class="op">[</span><span class="fl">31</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      31 
-4.717472 </code></pre>
+4.771146 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -2111,7 +2117,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span>  <span class="fu">map_dbl</span><span class="op">(</span>\<span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">z</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ± sqrt(MSE) ± 2 sqrt(MSE) ± 3 sqrt(MSE) 
-         0.66          0.98          1.00 </code></pre>
+         0.86          0.94          0.98 </code></pre>
 </div>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># boxplot of residuals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_skewed_error</span><span class="op">)</span>, horizontal <span class="op">=</span> <span class="cn">TRUE</span>,  main <span class="op">=</span> <span class="st">"Right-skewed error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2172,7 +2178,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span>  <span class="fu">map_dbl</span><span class="op">(</span>\<span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">z</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ± sqrt(MSE) ± 2 sqrt(MSE) ± 3 sqrt(MSE) 
-         0.62          1.00          1.00 </code></pre>
+         0.64          1.00          1.00 </code></pre>
 </div>
 <div class="sourceCode" id="cb88"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># boxplot of residuals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_light_tailed_error</span><span class="op">)</span>, horizontal <span class="op">=</span> <span class="cn">TRUE</span>,  main <span class="op">=</span> <span class="st">"Light-tailed error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2235,7 +2241,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span>  <span class="fu">map_dbl</span><span class="op">(</span>\<span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">z</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ± sqrt(MSE) ± 2 sqrt(MSE) ± 3 sqrt(MSE) 
-         0.74          0.96          0.98 </code></pre>
+         0.72          0.92          1.00 </code></pre>
 </div>
 <div class="sourceCode" id="cb94"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># boxplot of residuals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_heavy_tailed_error</span><span class="op">)</span>, horizontal <span class="op">=</span> <span class="cn">TRUE</span>,  main <span class="op">=</span> <span class="st">"Heavy-tailed error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2644,18 +2650,18 @@ lm(formula = y ~ log10(x))
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--0.60666 -0.21897 -0.02887  0.17248  0.75709 
+-0.49272 -0.15378 -0.02955  0.14849  0.33696 
 
 Coefficients:
-            Estimate Std. Error t value         Pr(&gt;|t|)    
-(Intercept)   1.9083     0.1689   11.29 0.00000000000612 ***
-log10(x)      2.1025     0.1757   11.97 0.00000000000159 ***
+            Estimate Std. Error t value           Pr(&gt;|t|)    
+(Intercept)   1.6534     0.1585   10.43 0.0000000000375585 ***
+log10(x)      2.4167     0.1572   15.38 0.0000000000000035 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.356 on 28 degrees of freedom
-Multiple R-squared:  0.8365,    Adjusted R-squared:  0.8306 
-F-statistic: 143.2 on 1 and 28 DF,  p-value: 0.000000000001586</code></pre>
+Residual standard error: 0.2301 on 28 degrees of freedom
+Multiple R-squared:  0.8941,    Adjusted R-squared:  0.8903 
+F-statistic: 236.5 on 1 and 28 DF,  p-value: 0.000000000000003503</code></pre>
 </div>
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_ln_x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -2665,26 +2671,26 @@ lm(formula = y ~ log(x))
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--0.60666 -0.21897 -0.02887  0.17248  0.75709 
+-0.49272 -0.15378 -0.02955  0.14849  0.33696 
 
 Coefficients:
-            Estimate Std. Error t value         Pr(&gt;|t|)    
-(Intercept)   1.9083     0.1689   11.29 0.00000000000612 ***
-log(x)        0.9131     0.0763   11.97 0.00000000000159 ***
+            Estimate Std. Error t value           Pr(&gt;|t|)    
+(Intercept)  1.65335    0.15849   10.43 0.0000000000375585 ***
+log(x)       1.04955    0.06825   15.38 0.0000000000000035 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.356 on 28 degrees of freedom
-Multiple R-squared:  0.8365,    Adjusted R-squared:  0.8306 
-F-statistic: 143.2 on 1 and 28 DF,  p-value: 0.000000000001586</code></pre>
+Residual standard error: 0.2301 on 28 degrees of freedom
+Multiple R-squared:  0.8941,    Adjusted R-squared:  0.8903 
+F-statistic: 236.5 on 1 and 28 DF,  p-value: 0.000000000000003503</code></pre>
 </div>
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_sqrt_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.9185838</code></pre>
+<pre><code>[1] 0.8812317</code></pre>
 </div>
 </div>
 <ul>
-<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.923</li>
+<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.842</li>
 </ul>
 </div>
 <div id="tabset-14-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-14-2-tab">
@@ -2782,15 +2788,15 @@ F-statistic: 143.2 on 1 and 28 DF,  p-value: 0.000000000001586</code></pre>
 <div class="sourceCode" id="cb112"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># view model summaries (just the R^2)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_squared_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.93541</code></pre>
+<pre><code>[1] 0.9035504</code></pre>
 </div>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_exp_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.945506</code></pre>
+<pre><code>[1] 0.9186434</code></pre>
 </div>
 </div>
 <ul>
-<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.822</li>
+<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.79</li>
 </ul>
 </div>
 <div id="tabset-14-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-14-3-tab">
@@ -2895,15 +2901,15 @@ F-statistic: 143.2 on 1 and 28 DF,  p-value: 0.000000000001586</code></pre>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># view model summaries (just the R^2)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_reciprocal_x_k</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8782781</code></pre>
+<pre><code>[1] 0.8528587</code></pre>
 </div>
 <div class="sourceCode" id="cb120"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_exp_neg_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.865937</code></pre>
+<pre><code>[1] 0.8281665</code></pre>
 </div>
 </div>
 <ul>
-<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.822</li>
+<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.76</li>
 </ul>
 </div>
 <div id="tabset-14-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-14-4-tab">
@@ -2966,147 +2972,147 @@ F-statistic: 143.2 on 1 and 28 DF,  p-value: 0.000000000001586</code></pre>
 <tbody>
 <tr>
 <td style="text-align:left;"> lm = y ~ x </td>
-   <td style="text-align:right;"> 1.422 </td>
-   <td style="text-align:right;"> 0.871 </td>
-   <td style="text-align:right;"> 1.912 </td>
-   <td style="text-align:right;"> 0.088 </td>
-   <td style="text-align:right;"> 0.944 </td>
-   <td style="text-align:right;"> 0.942 </td>
-   <td style="text-align:right;"> 2.426 </td>
-   <td style="text-align:right;"> 474.739 </td>
+   <td style="text-align:right;"> -0.964 </td>
+   <td style="text-align:right;"> 1.141 </td>
+   <td style="text-align:right;"> 2.062 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;"> 0.917 </td>
+   <td style="text-align:right;"> 0.914 </td>
+   <td style="text-align:right;"> 2.743 </td>
+   <td style="text-align:right;"> 309.098 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -68.126 </td>
-   <td style="text-align:right;"> 142.252 </td>
-   <td style="text-align:right;"> 146.456 </td>
+   <td style="text-align:right;"> -71.806 </td>
+   <td style="text-align:right;"> 149.611 </td>
+   <td style="text-align:right;"> 153.815 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ I(x + k1) </td>
-   <td style="text-align:right;"> -4.314 </td>
-   <td style="text-align:right;"> 1.106 </td>
-   <td style="text-align:right;"> 1.912 </td>
-   <td style="text-align:right;"> 0.088 </td>
-   <td style="text-align:right;"> 0.944 </td>
-   <td style="text-align:right;"> 0.942 </td>
-   <td style="text-align:right;"> 2.426 </td>
-   <td style="text-align:right;"> 474.739 </td>
+   <td style="text-align:right;"> -7.149 </td>
+   <td style="text-align:right;"> 1.465 </td>
+   <td style="text-align:right;"> 2.062 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;"> 0.917 </td>
+   <td style="text-align:right;"> 0.914 </td>
+   <td style="text-align:right;"> 2.743 </td>
+   <td style="text-align:right;"> 309.098 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -68.126 </td>
-   <td style="text-align:right;"> 142.252 </td>
-   <td style="text-align:right;"> 146.456 </td>
+   <td style="text-align:right;"> -71.806 </td>
+   <td style="text-align:right;"> 149.611 </td>
+   <td style="text-align:right;"> 153.815 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(y + k1) ~ x </td>
-   <td style="text-align:right;"> 4.422 </td>
-   <td style="text-align:right;"> 0.871 </td>
-   <td style="text-align:right;"> 1.912 </td>
-   <td style="text-align:right;"> 0.088 </td>
-   <td style="text-align:right;"> 0.944 </td>
-   <td style="text-align:right;"> 0.942 </td>
-   <td style="text-align:right;"> 2.426 </td>
-   <td style="text-align:right;"> 474.739 </td>
+   <td style="text-align:right;"> 2.036 </td>
+   <td style="text-align:right;"> 1.141 </td>
+   <td style="text-align:right;"> 2.062 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;"> 0.917 </td>
+   <td style="text-align:right;"> 0.914 </td>
+   <td style="text-align:right;"> 2.743 </td>
+   <td style="text-align:right;"> 309.098 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -68.126 </td>
-   <td style="text-align:right;"> 142.252 </td>
-   <td style="text-align:right;"> 146.456 </td>
+   <td style="text-align:right;"> -71.806 </td>
+   <td style="text-align:right;"> 149.611 </td>
+   <td style="text-align:right;"> 153.815 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(y + k1) ~ I(x + k1) </td>
-   <td style="text-align:right;"> -1.314 </td>
-   <td style="text-align:right;"> 1.106 </td>
-   <td style="text-align:right;"> 1.912 </td>
-   <td style="text-align:right;"> 0.088 </td>
-   <td style="text-align:right;"> 0.944 </td>
-   <td style="text-align:right;"> 0.942 </td>
-   <td style="text-align:right;"> 2.426 </td>
-   <td style="text-align:right;"> 474.739 </td>
+   <td style="text-align:right;"> -4.149 </td>
+   <td style="text-align:right;"> 1.465 </td>
+   <td style="text-align:right;"> 2.062 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;"> 0.917 </td>
+   <td style="text-align:right;"> 0.914 </td>
+   <td style="text-align:right;"> 2.743 </td>
+   <td style="text-align:right;"> 309.098 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -68.126 </td>
-   <td style="text-align:right;"> 142.252 </td>
-   <td style="text-align:right;"> 146.456 </td>
+   <td style="text-align:right;"> -71.806 </td>
+   <td style="text-align:right;"> 149.611 </td>
+   <td style="text-align:right;"> 153.815 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ I(k2 * x) </td>
-   <td style="text-align:right;"> 1.422 </td>
-   <td style="text-align:right;"> 0.871 </td>
-   <td style="text-align:right;"> 0.956 </td>
-   <td style="text-align:right;"> 0.044 </td>
-   <td style="text-align:right;"> 0.944 </td>
-   <td style="text-align:right;"> 0.942 </td>
-   <td style="text-align:right;"> 2.426 </td>
-   <td style="text-align:right;"> 474.739 </td>
+   <td style="text-align:right;"> -0.964 </td>
+   <td style="text-align:right;"> 1.141 </td>
+   <td style="text-align:right;"> 1.031 </td>
+   <td style="text-align:right;"> 0.059 </td>
+   <td style="text-align:right;"> 0.917 </td>
+   <td style="text-align:right;"> 0.914 </td>
+   <td style="text-align:right;"> 2.743 </td>
+   <td style="text-align:right;"> 309.098 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -68.126 </td>
-   <td style="text-align:right;"> 142.252 </td>
-   <td style="text-align:right;"> 146.456 </td>
+   <td style="text-align:right;"> -71.806 </td>
+   <td style="text-align:right;"> 149.611 </td>
+   <td style="text-align:right;"> 153.815 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(k2 * y) ~ x </td>
-   <td style="text-align:right;"> 2.845 </td>
-   <td style="text-align:right;"> 1.742 </td>
-   <td style="text-align:right;"> 3.824 </td>
-   <td style="text-align:right;"> 0.176 </td>
-   <td style="text-align:right;"> 0.944 </td>
-   <td style="text-align:right;"> 0.942 </td>
-   <td style="text-align:right;"> 4.853 </td>
-   <td style="text-align:right;"> 474.739 </td>
+   <td style="text-align:right;"> -1.928 </td>
+   <td style="text-align:right;"> 2.281 </td>
+   <td style="text-align:right;"> 4.124 </td>
+   <td style="text-align:right;"> 0.235 </td>
+   <td style="text-align:right;"> 0.917 </td>
+   <td style="text-align:right;"> 0.914 </td>
+   <td style="text-align:right;"> 5.486 </td>
+   <td style="text-align:right;"> 309.098 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -88.921 </td>
-   <td style="text-align:right;"> 183.841 </td>
-   <td style="text-align:right;"> 188.045 </td>
+   <td style="text-align:right;"> -92.600 </td>
+   <td style="text-align:right;"> 191.200 </td>
+   <td style="text-align:right;"> 195.404 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(k2 * y) ~ I(k2 * x) </td>
-   <td style="text-align:right;"> 2.845 </td>
-   <td style="text-align:right;"> 1.742 </td>
-   <td style="text-align:right;"> 1.912 </td>
-   <td style="text-align:right;"> 0.088 </td>
-   <td style="text-align:right;"> 0.944 </td>
-   <td style="text-align:right;"> 0.942 </td>
-   <td style="text-align:right;"> 4.853 </td>
-   <td style="text-align:right;"> 474.739 </td>
+   <td style="text-align:right;"> -1.928 </td>
+   <td style="text-align:right;"> 2.281 </td>
+   <td style="text-align:right;"> 2.062 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;"> 0.917 </td>
+   <td style="text-align:right;"> 0.914 </td>
+   <td style="text-align:right;"> 5.486 </td>
+   <td style="text-align:right;"> 309.098 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -88.921 </td>
-   <td style="text-align:right;"> 183.841 </td>
-   <td style="text-align:right;"> 188.045 </td>
+   <td style="text-align:right;"> -92.600 </td>
+   <td style="text-align:right;"> 191.200 </td>
+   <td style="text-align:right;"> 195.404 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ log(x) </td>
-   <td style="text-align:right;"> 4.738 </td>
-   <td style="text-align:right;"> 1.422 </td>
-   <td style="text-align:right;"> 7.548 </td>
-   <td style="text-align:right;"> 0.679 </td>
-   <td style="text-align:right;"> 0.815 </td>
+   <td style="text-align:right;"> -5.005 </td>
+   <td style="text-align:right;"> 2.162 </td>
+   <td style="text-align:right;"> 11.176 </td>
+   <td style="text-align:right;"> 1.026 </td>
    <td style="text-align:right;"> 0.809 </td>
-   <td style="text-align:right;"> 4.417 </td>
-   <td style="text-align:right;"> 123.694 </td>
+   <td style="text-align:right;"> 0.802 </td>
+   <td style="text-align:right;"> 4.158 </td>
+   <td style="text-align:right;"> 118.708 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -86.099 </td>
-   <td style="text-align:right;"> 178.198 </td>
-   <td style="text-align:right;"> 182.402 </td>
+   <td style="text-align:right;"> -84.284 </td>
+   <td style="text-align:right;"> 174.569 </td>
+   <td style="text-align:right;"> 178.773 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ log10(x) </td>
-   <td style="text-align:right;"> 4.738 </td>
-   <td style="text-align:right;"> 1.422 </td>
-   <td style="text-align:right;"> 17.379 </td>
-   <td style="text-align:right;"> 1.563 </td>
-   <td style="text-align:right;"> 0.815 </td>
+   <td style="text-align:right;"> -5.005 </td>
+   <td style="text-align:right;"> 2.162 </td>
+   <td style="text-align:right;"> 25.734 </td>
+   <td style="text-align:right;"> 2.362 </td>
    <td style="text-align:right;"> 0.809 </td>
-   <td style="text-align:right;"> 4.417 </td>
-   <td style="text-align:right;"> 123.694 </td>
+   <td style="text-align:right;"> 0.802 </td>
+   <td style="text-align:right;"> 4.158 </td>
+   <td style="text-align:right;"> 118.708 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -86.099 </td>
-   <td style="text-align:right;"> 178.198 </td>
-   <td style="text-align:right;"> 182.402 </td>
+   <td style="text-align:right;"> -84.284 </td>
+   <td style="text-align:right;"> 174.569 </td>
+   <td style="text-align:right;"> 178.773 </td>
   </tr>
 </tbody>
 </table>
@@ -3322,7 +3328,7 @@ Y^\lambda = \beta_0 + \beta_1 X_i + \epsilon_i
 </div>
 <div class="sourceCode" id="cb126"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bc</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.max</a></span><span class="op">(</span><span class="va">bc</span><span class="op">$</span><span class="va">y</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6666667</code></pre>
+<pre><code>[1] 0.7070707</code></pre>
 </div>
 <div class="sourceCode" id="cb128"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># run boxcox procedure</span></span>
 <span><span class="co"># -&gt; plot of SSE</span></span>
@@ -3335,27 +3341,27 @@ Y^\lambda = \beta_0 + \beta_1 X_i + \epsilon_i
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   lambda        SSE
-1    -1.0 14294.8020
-2    -0.9 11300.5005
-3    -0.8  8956.5299
-4    -0.7  7117.9615
-5    -0.6  5673.4563
-6    -0.5  4537.2704
-7    -0.4  3643.2145
-8    -0.3  2940.0796
-9    -0.2  2388.1655
-10   -0.1  1956.6423
-21    0.0  1621.5387
-11    0.1  1364.2070
-12    0.2  1170.1487
-13    0.3  1028.1149
-14    0.4   929.4171
-15    0.5   867.3976
-16    0.6   837.0243
-17    0.7   834.5807
-18    0.8   857.4295
-19    0.9   903.8348
-20    1.0   972.8293</code></pre>
+1    -1.0 34205.7788
+2    -0.9 25370.6439
+3    -0.8 18887.9640
+4    -0.7 14114.0032
+5    -0.6 10585.7109
+6    -0.5  7969.0305
+7    -0.4  6022.2482
+8    -0.3  4569.9452
+9    -0.2  3484.4430
+10   -0.1  2672.5532
+21    0.0  2066.0935
+11    0.1  1615.0828
+12    0.2  1282.8478
+13    0.3  1042.4965
+14    0.4   874.3737
+15    0.5   764.2221
+16    0.6   701.8566
+17    0.7   680.2084
+18    0.8   694.6431
+19    0.9   742.4796
+20    1.0   822.6603</code></pre>
 </div>
 </div>
 </div>
@@ -3420,7 +3426,7 @@ W_i = \left\{
 </div>
 <div class="sourceCode" id="cb131"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lambdas</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">sse</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.66</code></pre>
+<pre><code>[1] 0.71</code></pre>
 </div>
 </div>
 </div>
@@ -4287,8 +4293,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./part2-mlr.html" class="pagination-link" aria-label="Multiple linear regression">
-        <span class="nav-page-text">Multiple linear regression</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./notes-matrix-slr.html" class="pagination-link" aria-label="<span class='chapter-number'>4</span>&nbsp; <span class='chapter-title'>Matrix approach to SLR</span>">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix approach to SLR</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
