@@ -1,0 +1,399 @@
+# Multiple regression 1
+
+<!-- % define LaTeX macros (/shortcuts) -->
+
+<!-- % define vector (without parentheses, so when writing out in like a definition) of the form X_1, ..., X_n, where X and n are variable. NOTE: to call use $\vecn{X}{n}$ -->
+
+\newcommand{\vecn}[2]{#1_1, \ldots, #1_{#2}}
+
+<!-- % shortcut for ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\follow}[1]{\sim \text{#1}\,}
+
+<!-- % (followsp is short for 'follow special') shortcut that can be used for iid or ind ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\followsp}[2]{\overset{#1}\sim \text{#2}\,}
+
+<!-- % define independence symbol (it basically makes two orthogonal symbols very close to each other. The number of \! controls the space between each of the orthogonal symbols) -->
+
+\newcommand{\ind}{\perp \!\!\! \perp}
+
+<!-- % shortcut for Cov(X,Y) with formatting for Cov -->
+
+\newcommand{\cov}[1]{\mathrm{Cov}(#1)}
+
+<!-- % shortcut for Corr(X,Y) with formatting for Corr -->
+
+\newcommand{\corr}[1]{\mathrm{Corr}(#1)}
+
+<!-- % shortcut for non-italic e in math mode -->
+
+\newcommand{\e}{\mathrm{e}}
+
+<!-- % shortcut for matrix notation -->
+
+\newcommand{\mat}[3]{\underset{#2 \times #3}{\boldsymbol{#1}}}
+
+## Overview
+
+Multiple regression analysis is one of the most widely used of all statistical methods. In this section, we first discuss a variety of multiple regression models.
+
+Since the matrix expressions for multiple regression are the same as for simple linear regression, can just refer to @sec-matrix-slr.
+
+The need for multiple predictors
+
+- Often times, a single predictor variable in the model provides an inadequate description since a number of key variables affect the response variable in important and distinctive ways.
+
+- Furthermore, in situations like this, we frequently find that predictions of the response variable based on a model containing only a single predictor variable are too imprecise to be useful.
+
+- Multiple predictors is useful in observational studies when there is no control over the variables as well as in experimental situations where the experimenter can control the $X$ levels and investigate different combination simultaneously.
+
+## Multiple regression models
+
+### First order model with two predictors
+
+When there are two predictor variables $X_l$ and $X_2$, the regression model:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \epsilon_i$$
+
+This model is still linear in its predictors. It follows that if $E(\epsilon_i) = 0$
+
+$$E(Y_i) = \beta_0 + \beta_1 X_1 + \beta_1 X_2$$
+
+Note that now predictions are a plane and any point on the response plane corresponds to the mean response $E(Y)$ at the given combination of levels of $X_1$ and $X_2$.
+
+![](files/images/response-plane.png){width="50%"}
+
+Here the vertical distance from $Y_i$ to the response plane represents the error term $\epsilon_i = Y_i - E(Y)$.
+
+Frequently the regression function in multiple regression is called a *regression surface* or a *response surface*.
+
+Meaning of regression coefficients
+
+- The parameter $\beta_0$ is the intercept of the regression plane.
+
+    - If the scope of the model includes $X_1 = 0$ and $X_2 = 0$, then $\beta_0 = 10$ for example represents the mean response $E(Y)$ at $X_1 = 0$ and $X_2 = 0$.
+
+- The parameter $\beta_1$ indicates the change in the mean response $E(Y)$ per unit increase in $X_1$ when $X_2$ is held constant. Same but reverse for $\beta_2$.
+
+    - For example: If $E(Y) = 10 + 2X_1 + 5X_2$ and the level of $X_2$ is held at 2, then $E(Y) = 10 + 2X_1 + 5(2) = 20 + 2X_1$.
+    
+    - This response function is a straight line with slope $\beta_1 = 2$. This is true for all other values of $X_2$, only the value of the intercept changes.
+    
+Additive models vs interaction models
+
+- When the effect of $X_1$ on the mean response does not depend on the level of $X_2$, and correspondingly the effect of $X_2$ does not depend on the level of $X_1$, the two predictor variables are said to have *additive effects* or not to *interact*.
+
+- Thus, the first-order regression model is designed for predictor variables whose effects on the mean response are additive or do not interact.
+
+- The parameters $\beta_1$ and $\beta_2$ are sometimes called *partial regression coefficients* because they reflect the partial effect of one predictor variable when the other predictor variable is included in the model and is held constant.
+
+### First order model with more than two predictor variables
+
+We consider now the case where there are $p - 1$ predictor variables $X_1, \ldots , X_{p-1}$. The regression model:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \cdots + \beta_{p-1} X_{i,p-1} + \epsilon_i$$ {#eq-first-order-all-preds}
+
+is called a first-order model with $p - 1$ predictor variables. It can also be written as:
+
+$$Y_i = \beta_0 + \sum_{k = 1}^{p - 1} \beta_k X_{ik} + \epsilon_i$$
+
+It follows that if $E(\epsilon_i) = 0$
+
+$$E(Y_i) =  \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \cdots + \beta_{p-1} X_{i,p-1}$$
+
+Notes about model:
+
+- This response function is a *hyperplane*, which is a plane in more than two dimensions. It is no longer possible to picture this plane.
+
+- The meaning of the parameters is the same as when there were two predictors, just extended to all other $X$ levels held constant.
+
+- This first- order regression model is still designed for predictor variables whose effects on the mean response are additive and therefore do interact.
+
+- When $p - 1 = 1$, this model reduces to the SLR model we are used to.
+
+### General linear regression model
+
+In general, the variables $X_1, \ldots, X_{p-1}$ in a regression model do not need to represent different predictor variables, as we see soon. Therefore, we define the general linear regression model, with normal error terms, simply in terms of $X$ variables (same as before, just now more general of what the $X$s can represent):
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \cdots + \beta_{p-1} X_{i,p-1} + \epsilon_i$$ {#eq-gen-reg-mod}
+
+where
+
+- $\beta_0, \beta_1, \ldots, \beta_{p-1}$ are parameters
+
+- $X_{i1}, \ldots, X_{i,p-1}$ are known constants
+
+- $\epsilon_i \followsp{iid}{Normal}(0, \sigma^2)$
+
+- $i = 1, \ldots, n$
+
+Again since $E(\epsilon_i) = 0$,
+
+$$E(Y_i) = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \cdots + \beta_{p-1} X_{i,p-1}$$
+
+Thus, the general linear regression model with normal error terms implies that the observations $Y_i$ are independent normal variables, with mean $E(Y)$ as given by above and with constant variance $\sigma^2$.
+
+This general linear model encompasses a vast variety of situations. We consider a few of these now.
+
+$p - 1$ predictor variables
+
+- When $X_1, \ldots, X_{p-1}$ represent $p - 1$ different predictor variables, the general linear regression model above is simply @eq-first-order-all-preds seen earlier (first-order model in which there are no interaction effects between the predictor variables).
+    
+Qualitative predictors
+
+- Model in @eq-gen-reg-mod encompasses not only quantitative predictor variables but also qualitative ones.
+    
+- We use indicator variables that take on the values 0 and 1 to identify the classes of a qualitative variable. For example if length of hospital stay $Y$ with $X_1 = $ age and $X_2 = $ gender of patient where:
+    
+$$
+ X_2 =
+   \left\{
+   \begin{array}{ll}
+     0 & \text{female}\\
+     1 & \text{male}
+  \end{array}
+  \right.
+$$
+
+- The first-order regression model is (with variables defined above):
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \epsilon_i$$
+- The response function is
+
+$$E(Y_i) = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2}$$
+
+- For female patients, $X_2 = 0$ and the response function becomes
+
+$$E(Y_i) = \beta_0 + \beta_1 X_{i1}$$
+- For male patients, $X_2 = 1$ and the response function becomes
+
+$$E(Y_i) = (\beta_0 + \beta_2) + \beta_1 X_{i1}$$
+
+- These two response functions represent parallel straight lines with different intercepts.
+
+- In general, we represent a qualitative variable with $c$ classes by means of $c - 1$ indicator variables.
+
+Polynomial regression
+
+- Polynomial regression models are special cases of the general linear regression model. They contain squared and higher-order terms of the predictor variable(s), making the response function curvilinear.
+
+- The following is a polynomial regres'sion model with one predictor variable:
+
+$$Y_i = \beta_0 + \beta_1 X_i1 + \beta_2 X_i^2+ \epsilon_i$$
+
+- Despite the curvilinear nature of the response function for regression model above, it is a special casee of general linear regression model @eq-gen-reg-mod. If we let $X_{i1} = X_i$ and $X_{i2} = X_i^2$, we can write the above model in the same format as usual:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \epsilon_i$$
+
+Transformed variables
+
+- Models with transformed variables involve complex, curvilinear response functions, yet still are special cases of the general linear regression model. Consider the following model with transformed $Y$ variable
+
+$$\ln(Y_i) = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_3 X_{i3} + \epsilon_i$$
+- Here, the response surface is complex, yet this model can still be treated as a general linear regression model if we let $Y_i' = \ln(Y_i)$. Then just write the regression model as:
+
+$$Y_i' = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_3 X_{i3} + \epsilon_i$$
+
+- This has the same form as @eq-gen-reg-mod, the response variable just happens to be the natural logarithm of $Y$.
+
+- Many models can be transformed into the g'enerallinear regression model. For example, take this model:
+
+$$Y_i = \frac{1}{\beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \epsilon_i}$$
+
+- It can be transformed to the general linear regression model by letting $Y_i' = 1/Y_i$. Then we have
+
+$$Y_i' = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \epsilon_i$$
+
+Interaction effects
+
+- When the effects of the predictor variables on the response variable are not additive, the effect of one predictor variable depends on the levels of the other predictor variables.
+
+- Our general linear regression model encompasses regression models with nonadditive or interacting effects. An example of a nonadditive regression model with two predictor variables $X_1$ and $X_2$ is the following:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_3 X_{i1} X_{i2} + \epsilon_i$$
+- Here the response function is complex because of the interaction term $\beta_3 X_{i1} X_{i2}$. Yet this regression model is still a special case of the general linear regression model. Let $X_3i = X_{i1} X_{i2}$ and then write the model as:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_3 X_{i3} + \epsilon_i$$
+
+Combination of cases
+
+- A regression model may combine several of the elements we have just noted and still be treated as a general linear regression model.
+
+![](files/images/complex-model.png){width="50%"}
+
+- Examples of complex regression surfaces for two predictors:
+
+![](files/images/regression-surfaces.png){width="50%"}
+Meaning of linear in general linear regression model
+
+- It should be clear from the various examples that general linear regression model @gen-reg-mod is not restricted to linea rresponse surfaces.
+
+- The term *linear model* refers to the fact that the model is linear in the parameters; it does-not refer to the shape of the response surface.
+
+- We say that a regression model is linear in the parameters when it can be written in the form:
+
+$$Y_i = c_{i0} \beta_0 + c_{i1} \beta_1 + c_{i2} \beta_2 + \cdots + c_{i,p-1} \beta_{p-1} + \epsilon_i$$ {#eq-lin-mod}
+
+- Here the terms $c_{i0}, c_{i1}, \ldots$ are coefficients involving the predictor variables. For example, take the first-order model with two variables:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \epsilon_i$$
+
+- This is linear in  parameters with $c_{i0} = 1$, $c_{i1} = X_{i1}$ and $c_{i2} = X_{i2}$.
+
+- An example of a nonlinear regression model is the following:
+
+$$Y_i = \beta_0 \e^{\beta_1 X_i} + \epsilon_i$$
+
+- This is a nonlinear regression model because it cannot be expressed in the form of @eq-lin-mod.
+
+## General linear regression model in matrix terms
+
+It is a remarkable property of matrix algebra that the results for the general linear regression model @gen-reg-mod in matrix notation appear exactly as those for the simple linear regression model @eq-slr-matrix-mod. Only the degrees of freedom and other constants related to the number of $X$ variables and the dimensions of some matrices are different. Hence, We are able to present the results very concisely.
+
+We need the following matrices:
+
+![](files/images/mlr-matrices.png){width="50%"}
+
+Everything is just extended to $p$ parameters and $p - 1$ predictor variables.
+
+In matrix terms, the general linear regression model @eq-gen-reg-mod is:
+
+$\mat{Y}{n}{1} = \mat{X}{n}{p} \, \mat{\beta}{p}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$ {#eq-mlr-matrix-mod}
+
+### Estimation of regression coefficients, fitted values and residuals
+
+This is also the exact same, just extended (see @sec-slr-matrix).
+
+$\mat{\hat{\beta}}{p}{1} = (\mat{X'X}{p}{p})^{-1}\mat{X'Y}{p}{1}$
+
+![](files/images/mlr-mle.png){width="80%"}
+
+![](files/images/mlr-matrix-form.png){width="80%"}
+
+### ANOVA
+
+Sum of squares are the exact same as in @sec-slr-anova-matrix, just the degrees of freedom are adjusted for the mean squares.
+
+- $SSTO$ has the usual $n - 1$ df.
+
+- $SSE$ had $n - p$ df due to $p$ parameters needed to be estimated in the regression model @eq-mlr-matrix-mod.
+
+- $SSR$ has $p - 1$ df, representing the number of $X$ variables $X_1, \ldots, X_{p-1}$
+
+$$MSR = \frac{SSR}{p - 1} \hspace{20pt} MSE = \frac{SSE}{n - p}$$
+
+![](files/images/expected-ms-mlr.png){width="80%"}
+
+![](files/images/mlr-anova-table.png){width="80%"}
+
+### F-test for regression relation
+
+![](files/images/mlr-f-test.png){width="80%"}
+
+### Coefficient of multiple determination
+
+The coefficient of multiple determination $R^2$ is the same as in SLR:
+
+$$R^2 = \frac{SSR}{SSTO} = 1 - \frac{SSE}{SSTO}$$
+
+It measures the proportionate reduction of total variation in $Y$ associated with the use of the set of X variables $X_1, \ldots , X_{p_1}$.
+
+Adding more $X$ variables to the regression model can only increase $R^2$ and never reduce it, because $SSE$ can never become larger with more $X$ variables and $SSTO$ is always the same for a given set of responses.
+
+Therefore, we often use the *adjusted coefficient of multiple determination* $R^2_{adj}$. It adjusts $R^2$ by dividing each sum of squares by its respective df.
+
+$$R^2_{adj} = 1 - \Big(\frac{SSE}{n - p}\Big) \Big/ \Big(\frac{SSTO}{n - 1}\Big) = 1 - \big(\frac{n - 1}{n - p}\big) \frac{SSE}{SSTO}$$
+
+This adjusted coefficient of multiple determination may actually become smaller when another $X$ variable is introduced into the model, because any decrease in $SSE$ may be more than offset by the loss of a degree of freedom in the denominator $n - p$.
+
+Notes
+
+- It can be shown that the coefficient of multiple determination $R^2$can be viewed as a coefficient of simple determination between the responses $Y_i$ and the fitted values $\hat{Y}_i$.
+
+- A large value of $R^2$ does not necessarily imply that the fitted model is a useful one.
+
+    - For instance, observations may have been taken at only a few levels of the predictor variables. Despite a high $R^2$ in this case, the fitted model may not be useful if most predictions require extrapolations outside the region of observations.
+    
+    - Again, even though $R^2$ is large, $MSE$ may still be too large for inferences to be useful when high precision is required.
+    
+### Coefficient of multiple correlation
+
+The coefficient of multiple correlation $R$ is the positive square root of $R^2$:
+
+$$R = \sqrt{R^2}$$
+
+When there is only one variable in the model, thec oefficient of multiple correlation $R$ equals in absolute value the correlation coefficient $r$ in SLR.
+
+### Inferences about regression parameters
+
+![](files/images/mlr-beta-inferences.png){width="80%"}
+
+![](files/images/mlr-beta-intervals-and-tests.png){width="80%"}
+
+![](files/images/mlr-joint-beta-inferences.png){width="80%"}
+
+### Estimation of mean response and prediction of new observation
+
+![](files/images/mlr-interval-estimation-EY.png){width="80%"}
+
+![](files/images/mlr-confidence-regression-surface.png){width="80%"}
+
+![](files/images/mlr-simulataneous-cis-mean-responses.png){width="80%"}
+
+![](files/images/mlr-prediction.png){width="80%"}
+
+![](files/images/mlr-hidden-extrapolation.png){width="80%"}
+
+## Diagnostics and remedial measures
+
+Diagnostics play an impol1ant role in the development and evaluation of multiple regression models. Most of the diagnostic procedures and remedial meausures for simple linear regression that we described in @sec-diag-remedial-measures carry over directly to multiple regression.
+
+Scatterplot matrix
+
+- Box plots, sequence plots, and dot plots for each of the predictor variables and for the response variable can provide helpful, preliminary univariate information about these variables.
+
+- Scatter plots of the $Y$ against each $X$ can aid in determining the nature and strength of the bivariate relationships and in identifying gaps in the data points as well as outlying data points. Scatter plots of $X$ against each of the other $X$s provide similar information.
+
+- A complement to the scatter plot matrix that may be useful at times is the correlation matrix (matrix format as $[Y, X]$). Note this is a symmetric matrix with 1 on the main diagonal, so often can just print the upper or lower traingle matrix.
+
+![](files/images/correlation-matrix.png){width="80%"}
+
+Residual plots
+
+- Same as for SLR, a plot of the residuals against the fitted values is useful for assessing the appropriateness of the multiple regression function and the constancy of the variance of the error terms, as well as for providing information about outliers.
+
+- Box plots and normal probability plots of the residuals are useful for examining whether the error terms are reasonably normally distributed.
+
+- In addition, residuals should be plotted against each of the predictor variables. Each of these plots can provide further information about the adequacy of the regression function with respect to that predictor variable (e.g., whether a curvature effect is required for that variable) and about possible variation in the magnitude of the error variance in relation to that predictor variable.
+
+- Residuals should also be plotted against important predictor variables that were omitted from the model, to see if the omitted variables have substantial additional effects on the response variable that have not yet been recognized in the regression model.
+
+- Also, residuals should be plotted against interaction terms for potential interaction effects not included in the regression model, such as against $X_1 X_2$, $X_1 X_3$, and $X_2 X_3$, to see whether some or all of these interaction terms are required in the model.
+
+- A plot of the absolute residuals or the squared residuals against the fitted values is useful for examining the constancy of the variance of the error terms.
+
+    - If nonconstancy is detected, a plot of the absolute residuals or the squared residuals against each of the predictor vaIiables may identify one or several of the predictor variables to which the magnitude of the error variability is related.
+    
+<!-- All the tests for MLR about error terms and lack of fit -->
+
+Remedial measures
+
+- The remedial measures described previously are also applicable to multiple regression.
+
+- When a more complex model is required to recognize curvature or interaction effects, the multiple regression model can be expanded to include these effects.
+
+    - For example, $X_2^2$ might be added as a variable to take into account a curvature effect of $X_2$, or $X_1 X_3$ might be added as a variable to recognize an interaction effect between $X_1$ and $X_3$ on the response variable.
+    
+- Alternatively, transformations on the response and/or the predictor variables can be made as discussed before.
+
+    - Transformations on the response variable may be helpful when the distributions of the error terms are quite skewed and the variance of the error terms is not constant.
+    
+    - Transformations of some of the predictor variables may be helpful when the effects of these variables are curvilinear.
+    
+    - In addition, transformations on $Y$ and or the predictor variables may be helpful in eliminating or substantially reducing interaction effects.
+    
+- As with simple linear regression, the usefulness of potential transformations needs to be examined by means of residual plots and other diagnostic tools to determine whether the multiple regression model for the transformed data is appropriate.
+
+- Can still do the Box Cox transformation (@sec-box-cox) like usual.
+

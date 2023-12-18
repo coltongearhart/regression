@@ -1,5 +1,4 @@
-# Matrix approach to SLR
-
+# Matrix approach to SLR {#sec-matrix-slr}
 
 <!-- % define LaTeX macros (/shortcuts) -->
 
@@ -43,7 +42,7 @@
 
 <embed src="files/docs/regression-matrices.pdf" type="application/pdf" width="100%" height="1000px"></embed>
 
-## SLR in matrix form
+## SLR in matrix form  {#sec-slr-matrix}
 
 (Assuming matrix knowledge (or at least can be found elsewhere))
 
@@ -53,7 +52,7 @@
 
 $Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{10pt} \text{where} \hspace{10pt} \epsilon_i \overset{iid}\sim \text{Normal}\,(0,\sigma^2)$
 
-$\Longrightarrow \hspace{20pt} \mat{Y}{n}{1} = \mat{X}{n}{2} \, \mat{\beta}{2}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$
+$\Longrightarrow \hspace{20pt} \mat{Y}{n}{1} = \mat{X}{n}{2} \, \mat{\beta}{2}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$ {#eq-slr-matrix-mod}
 
 because / where $\hspace{10pt} \mat{E(\epsilon)}{n}{1} = \mat{0}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{\sigma^2(\epsilon)}{n}{n} = \mat{\sigma^2 I}{n}{n}$
 
@@ -144,7 +143,7 @@ and is estimated by
 
 $\mat{s^2\{e\}}{n}{n} = MSE (\mat{I}{n}{n} - \mat{H}{n}{n})$
 
-## ANOVA results
+## ANOVA results {#sec-slr-anova-matrix}
 
 Total sum of squares: $SSTO = \sum (Y_i - \bar{Y})^2 = \sum Y_i^2 - \frac{(\sum Y_i)^2}{n}$.
 
@@ -182,7 +181,7 @@ $$
 \end{align*}
 $$
 
-This result enables us to express the ANOVA sums of squares as follows:
+This result enables us to express the ANOVA sums of squares as follows (just pre and post multiply and simplify to get to the original forms):
 
 $$
 \begin{align*}

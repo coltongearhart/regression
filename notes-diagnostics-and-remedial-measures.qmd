@@ -2373,7 +2373,7 @@ plot(lm(1/y ~ I(1/x)), which = 1:2)
 
 <!-- effects departure simulation -->
 
-### Box-Cox transformations
+### Box-Cox transformations {#sec-box-cox}
 
 Motivation:
 

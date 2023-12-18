@@ -21,7 +21,7 @@ book:
 
     - part: part2-mlr.qmd
       chapters:
-        - placeholder.qmd
+        - notes-multiple-regression-1.qmd
         
 format:
   html:
