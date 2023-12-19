@@ -719,6 +719,7 @@ nms_x <- colnames(data_sample[, -1])
 map2(data_sample[,-1], nms_x, function(x, nm) {
   plot(x = x, y = e, main = nm)
   lines(lowess(x = x, y = e), col = "red")
+  abline(h = 0, col = "grey")
 })
 
 ```
@@ -749,6 +750,7 @@ nms_x <- colnames(data_sample[, -1])
 map2(data_sample[,-1], nms_x, function(x, nm) {
   plot(x = x, y = e, main = nm)
   lines(lowess(x = x, y = e), col = "red")
+  abline(h = 0, col = "grey")
 })
 
 ```
@@ -780,6 +782,7 @@ nms_x <- colnames(data_sample[, -1])
 map2(data_sample[,-1], nms_x, function(x, nm) {
   plot(x = x, y = e, main = nm)
   lines(lowess(x = x, y = e), col = "red")
+  abline(h = 0, col = "grey")
 })
 
 ```

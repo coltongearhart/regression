@@ -460,12 +460,12 @@ X_2 =
 <pre><code># A tibble: 6 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)    0.158    1.31       0.120 9.05e- 1
-2 X1             2.02     0.274      7.36  3.35e- 9
-3 X2             2.34     0.316      7.42  2.76e- 9
-4 X4            -0.110    0.312     -0.352 7.26e- 1
-5 I(X1^2)        1.94     0.0556    34.8   1.15e-33
-6 I(X1 * X2)     2.07     0.0818    25.3   8.06e-28</code></pre>
+1 (Intercept)   1.71       1.56     1.10   2.79e- 1
+2 X1            1.60       0.457    3.50   1.09e- 3
+3 X2            1.83       0.375    4.89   1.38e- 5
+4 X4            0.0183     0.340    0.0538 9.57e- 1
+5 I(X1^2)       1.98       0.115   17.3    3.27e-21
+6 I(X1 * X2)    2.09       0.112   18.7    1.50e-22</code></pre>
 </div>
 </div>
 </div>
@@ -496,16 +496,16 @@ $comparison$`element-wise`
 
 $`coef(mod_mlr)`
 (Intercept)          X1          X2          X4     I(X1^2)  I(X1 * X2) 
-  0.1583825   2.0177491   2.3448929  -0.1099742   1.9357941   2.0670581 
+ 1.71366582  1.59820274  1.83372721  0.01830998  1.97847909  2.08745168 
 
 $betas_hat
                   [,1]
-(Intercept)  0.1583825
-X1           2.0177491
-X2           2.3448929
-X4          -0.1099742
-I(X1^2)      1.9357941
-I(X1 * X2)   2.0670581</code></pre>
+(Intercept) 1.71366582
+X1          1.59820274
+X2          1.83372721
+X4          0.01830998
+I(X1^2)     1.97847909
+I(X1 * X2)  2.08745168</code></pre>
 </div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># fitted values</span></span>
 <span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">betas_hat</span></span>
@@ -544,14 +544,14 @@ I(X1 * X2)   2.0670581</code></pre>
 <span><span class="op">(</span><span class="va">at</span> <span class="op">&lt;-</span> <span class="va">mod_mlr</span> <span class="op">%&gt;%</span> <span class="va">anova</span> <span class="op">%&gt;%</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 6
-  term          df   sumsq  meansq statistic   p.value
-  &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 X1             1   577.    577.      12.0   1.21e- 3
-2 X2             1    53.8    53.8      1.12  2.96e- 1
-3 X4             1  1295.   1295.      26.9   5.26e- 6
-4 I(X1^2)        1 40131.  40131.     833.    3.17e-30
-5 I(X1 * X2)     1 30740.  30740.     638.    8.06e-28
-6 Residuals     44  2121.     48.2     NA    NA       </code></pre>
+  term          df    sumsq   meansq statistic   p.value
+  &lt;chr&gt;      &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 X1             1  1019.    1019.     14.7     4.03e- 4
+2 X2             1     1.83     1.83    0.0264  8.72e- 1
+3 X4             1     2.89     2.89    0.0416  8.39e- 1
+4 I(X1^2)        1 21569.   21569.    310.      1.49e-21
+5 I(X1 * X2)     1 24273.   24273.    349.      1.50e-22
+6 Residuals     44  3058.      69.5    NA      NA       </code></pre>
 </div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate sum of squares</span></span>
 <span><span class="va">ssto</span> <span class="op">&lt;-</span> <span class="va">at</span> <span class="op">%&gt;%</span> <span class="fu">summarize</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">sumsq</span><span class="op">)</span><span class="op">)</span></span>
@@ -576,10 +576,10 @@ I(X1 * X2)   2.0670581</code></pre>
 [1] TRUE
 
 $`as.numeric(sse)`
-[1] 2120.505
+[1] 3058.017
 
 $`as.numeric(SSE)`
-[1] 2120.505</code></pre>
+[1] 3058.017</code></pre>
 </div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; SSR = Y'[H-(1/n)J]Y </span></span>
 <span><span class="va">SSR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="op">(</span><span class="va">hat_matrix</span> <span class="op">-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">Y</span></span>
@@ -590,10 +590,10 @@ $`as.numeric(SSE)`
 [1] TRUE
 
 $`as.numeric(ssr)`
-[1] 72796.32
+[1] 46866.42
 
 $`as.numeric(SSR)`
-[1] 72796.32</code></pre>
+[1] 46866.42</code></pre>
 </div>
 </div>
 </div>
@@ -618,7 +618,7 @@ $`as.numeric(SSR)`
 <pre><code># A tibble: 1 × 12
   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1     0.972         0.968  6.94      302. 7.06e-33     5  -165.  343.  357.
+1     0.939         0.932  8.34      135. 1.60e-25     5  -174.  362.  375.
 # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 </div>
@@ -641,10 +641,10 @@ $`as.numeric(SSR)`
 [1] TRUE
 
 $`as.numeric(mse)`
-[1] 48.1933
+[1] 69.50039
 
 $`as.numeric(MSE)`
-[1] 48.1933</code></pre>
+[1] 69.50039</code></pre>
 </div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">compare</span><span class="op">(</span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">mod_mlr</span><span class="op">)</span><span class="op">$</span><span class="va">statistic</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">F_stat</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -653,10 +653,10 @@ $`as.numeric(MSE)`
 
 $`broom::glance(mod_mlr)$statistic`
    value 
-302.1014 
+134.8666 
 
 $`as.numeric(F_stat)`
-[1] 302.1014</code></pre>
+[1] 134.8666</code></pre>
 </div>
 </div>
 </div>
@@ -698,7 +698,7 @@ $`as.numeric(F_stat)`
 <pre><code># A tibble: 1 × 12
   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1     0.972         0.968  6.94      302. 7.06e-33     5  -165.  343.  357.
+1     0.939         0.932  8.34      135. 1.60e-25     5  -174.  362.  375.
 # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 </div>
@@ -717,10 +717,10 @@ $`as.numeric(F_stat)`
 [1] TRUE
 
 $`as.numeric(broom::glance(mod_mlr)$r.squared)`
-[1] 0.9716952
+[1] 0.9387471
 
 $`as.numeric(R2)`
-[1] 0.9716952</code></pre>
+[1] 0.9387471</code></pre>
 </div>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate adjusted coefficient of determination</span></span>
 <span><span class="co"># -&gt; R^2 = 1 - (n - 1) / (n - p) SSE / SSTO</span></span>
@@ -732,10 +732,10 @@ $`as.numeric(R2)`
 [1] TRUE
 
 $`as.numeric(broom::glance(mod_mlr)$adj.r.squared)`
-[1] 0.9684788
+[1] 0.9317865
 
 $`as.numeric(R2_adj)`
-[1] 0.9684788</code></pre>
+[1] 0.9317865</code></pre>
 </div>
 </div>
 </div>
@@ -770,12 +770,12 @@ $`as.numeric(R2_adj)`
 <pre><code># A tibble: 6 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)    0.158    1.31       0.120 9.05e- 1
-2 X1             2.02     0.274      7.36  3.35e- 9
-3 X2             2.34     0.316      7.42  2.76e- 9
-4 X4            -0.110    0.312     -0.352 7.26e- 1
-5 I(X1^2)        1.94     0.0556    34.8   1.15e-33
-6 I(X1 * X2)     2.07     0.0818    25.3   8.06e-28</code></pre>
+1 (Intercept)   1.71       1.56     1.10   2.79e- 1
+2 X1            1.60       0.457    3.50   1.09e- 3
+3 X2            1.83       0.375    4.89   1.38e- 5
+4 X4            0.0183     0.340    0.0538 9.57e- 1
+5 I(X1^2)       1.98       0.115   17.3    3.27e-21
+6 I(X1 * X2)    2.09       0.112   18.7    1.50e-22</code></pre>
 </div>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># just going to recreate the p-value from given info</span></span>
 <span><span class="op">(</span><span class="va">summ2</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">mod_mlr</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -783,7 +783,7 @@ $`as.numeric(R2_adj)`
 <pre><code># A tibble: 1 × 12
   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1     0.972         0.968  6.94      302. 7.06e-33     5  -165.  343.  357.
+1     0.939         0.932  8.34      135. 1.60e-25     5  -174.  362.  375.
 # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># verify t-stat = estimate / std.error</span></span>
@@ -793,10 +793,10 @@ $`as.numeric(R2_adj)`
 [1] TRUE
 
 $`as.numeric(summ1[2, 4])`
-[1] 7.364701
+[1] 3.4964
 
 $`as.numeric(summ1[2, 2]/summ1[2, 3])`
-[1] 7.364701</code></pre>
+[1] 3.4964</code></pre>
 </div>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate p-value from theoretical (beta_k-hat - beta_k)/ SE(\beta_k-hat) ~ t_(n-p) </span></span>
 <span><span class="va">p_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">pt</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">summ1</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">]</span><span class="op">)</span>, df <span class="op">=</span> <span class="va">summ2</span><span class="op">$</span><span class="va">df.residual</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span></span>
@@ -807,10 +807,10 @@ $`as.numeric(summ1[2, 2]/summ1[2, 3])`
 [1] TRUE
 
 $`as.numeric(summ1[2, 5])`
-[1] 0.000000003350432
+[1] 0.001090026
 
 $p_value
-[1] 0.000000003350432</code></pre>
+[1] 0.001090026</code></pre>
 </div>
 </div>
 </div>
@@ -820,8 +820,8 @@ $p_value
 <span><span class="co"># -&gt; remember these are all individual inferences, not simultaneous confidence intervals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">mod_mlr</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   2.5 %   97.5 % 
-1.465587 2.569911 </code></pre>
+<pre><code>    2.5 %    97.5 % 
+0.6769793 2.5194262 </code></pre>
 </div>
 </div>
 </div>
@@ -838,10 +838,10 @@ $p_value
 [1] TRUE
 
 $`as.numeric(confint(mod_mlr)[2, ])`
-[1] 1.465587 2.569911
+[1] 0.6769793 2.5194262
 
 $`c(bound_lower, bound_upper)`
-[1] 1.465587 2.569911</code></pre>
+[1] 0.6769793 2.5194262</code></pre>
 </div>
 </div>
 </div>
@@ -882,11 +882,11 @@ $`c(bound_lower, bound_upper)`
 <span><span class="op">(</span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">data_sample</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        Y     X1     X2     X3     X4
-Y   1.000 -0.088 -0.024  0.049  0.128
-X1 -0.088  1.000 -0.037  0.029 -0.029
-X2 -0.024 -0.037  1.000  0.045  0.159
-X3  0.049  0.029  0.045  1.000 -0.002
-X4  0.128 -0.029  0.159 -0.002  1.000</code></pre>
+Y   1.000 -0.143  0.024  0.088  0.025
+X1 -0.143  1.000 -0.128 -0.048 -0.121
+X2  0.024 -0.128  1.000 -0.259  0.040
+X3  0.088 -0.048 -0.259  1.000 -0.061
+X4  0.025 -0.121  0.040 -0.061  1.000</code></pre>
 </div>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correlation plot</span></span>
 <span><span class="fu">corrplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -900,12 +900,12 @@ X4  0.128 -0.029  0.159 -0.002  1.000</code></pre>
 <span><span class="va">r</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html">lower.tri</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="va">r</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    Y     X1     X2    X3     X4
-Y   1 -0.088 -0.024 0.049  0.128
-X1 NA  1.000 -0.037 0.029 -0.029
-X2 NA     NA  1.000 0.045  0.159
-X3 NA     NA     NA 1.000 -0.002
-X4 NA     NA     NA    NA  1.000</code></pre>
+<pre><code>    Y     X1     X2     X3     X4
+Y   1 -0.143  0.024  0.088  0.025
+X1 NA  1.000 -0.128 -0.048 -0.121
+X2 NA     NA  1.000 -0.259  0.040
+X3 NA     NA     NA  1.000 -0.061
+X4 NA     NA     NA     NA  1.000</code></pre>
 </div>
 </div>
 <p>Residual plots</p>
@@ -1007,6 +1007,7 @@ X4 NA     NA     NA    NA  1.000</code></pre>
 <span><span class="fu">map2</span><span class="op">(</span><span class="va">data_sample</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">nms_x</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">nm</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">e</span>, main <span class="op">=</span> <span class="va">nm</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lowess.html">lowess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">e</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -1062,13 +1063,13 @@ NULL</code></pre>
 <span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">mod_no_poly</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 5
-  term        estimate std.error statistic    p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-1 (Intercept)   29.2       5.37     5.43   0.00000221
-2 X1            -1.23      1.36    -0.903  0.371     
-3 X2             0.162     1.64     0.0989 0.922     
-4 X4             1.05      1.64     0.638  0.527     
-5 I(X1 * X2)     1.26      0.415    3.04   0.00391   </code></pre>
+  term        estimate std.error statistic      p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+1 (Intercept)   17.8       3.46      5.13  0.00000601  
+2 X1            -2.08      1.11     -1.87  0.0679      
+3 X2             2.30      1.03      2.23  0.0309      
+4 X4            -0.559     0.933    -0.598 0.553       
+5 I(X1 * X2)     2.12      0.308     6.90  0.0000000144</code></pre>
 </div>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># see residuals vs fitted</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mod_no_poly</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1104,6 +1105,7 @@ NULL</code></pre>
 <span><span class="fu">map2</span><span class="op">(</span><span class="va">data_sample</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">nms_x</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">nm</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">e</span>, main <span class="op">=</span> <span class="va">nm</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lowess.html">lowess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">e</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -1155,13 +1157,13 @@ NULL</code></pre>
 <span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">mod_no_interaction</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 5
-  term        estimate std.error statistic       p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
-1 (Intercept)    5.72      5.05      1.13  0.263        
-2 X1             1.90      1.07      1.78  0.0815       
-3 X2             0.793     1.21      0.657 0.515        
-4 X4             0.961     1.20      0.798 0.429        
-5 I(X1^2)        1.54      0.208     7.41  0.00000000250</code></pre>
+  term        estimate std.error statistic     p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+1 (Intercept)   -0.968     4.60     -0.210 0.834      
+2 X1             2.25      1.35      1.67  0.103      
+3 X2            -0.377     1.05     -0.359 0.721      
+4 X4             0.646     1.00      0.646 0.522      
+5 I(X1^2)        2.02      0.339     5.96  0.000000359</code></pre>
 </div>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># see residuals vs fitted</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mod_no_interaction</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1197,6 +1199,7 @@ NULL</code></pre>
 <span><span class="fu">map2</span><span class="op">(</span><span class="va">data_sample</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="va">nms_x</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">nm</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">e</span>, main <span class="op">=</span> <span class="va">nm</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lowess.html">lowess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">e</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -2406,75 +2409,78 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb62-737"><a href="#cb62-737" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(data_sample[,<span class="sc">-</span><span class="dv">1</span>], nms_x, <span class="cf">function</span>(x, nm) {</span>
 <span id="cb62-738"><a href="#cb62-738" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> e, <span class="at">main =</span> nm)</span>
 <span id="cb62-739"><a href="#cb62-739" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="at">x =</span> x, <span class="at">y =</span> e), <span class="at">col =</span> <span class="st">"red"</span>)</span>
-<span id="cb62-740"><a href="#cb62-740" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb62-741"><a href="#cb62-741" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-742"><a href="#cb62-742" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-743"><a href="#cb62-743" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-744"><a href="#cb62-744" aria-hidden="true" tabindex="-1"></a>Note that there is no pattern for important predictors included in the model or for the unnecessary predictor. BUT for the important predictor $X_3$ omitted from the model, there is clear systematic deviation!</span>
-<span id="cb62-745"><a href="#cb62-745" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-746"><a href="#cb62-746" aria-hidden="true" tabindex="-1"></a>This indicates that it should be in the model.</span>
-<span id="cb62-747"><a href="#cb62-747" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-748"><a href="#cb62-748" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb62-749"><a href="#cb62-749" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Missing polynomial predictor</span></span>
-<span id="cb62-750"><a href="#cb62-750" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-751"><a href="#cb62-751" aria-hidden="true" tabindex="-1"></a>Create residual plots.</span>
-<span id="cb62-752"><a href="#cb62-752" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-755"><a href="#cb62-755" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-756"><a href="#cb62-756" aria-hidden="true" tabindex="-1"></a><span class="co"># fit new model without polyomial predictor</span></span>
-<span id="cb62-757"><a href="#cb62-757" aria-hidden="true" tabindex="-1"></a>mod_no_poly <span class="ot">&lt;-</span> <span class="fu">update</span>(mod_mlr, . <span class="sc">~</span> . <span class="sc">-</span> <span class="fu">I</span>(X1<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb62-758"><a href="#cb62-758" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod_no_poly)</span>
-<span id="cb62-759"><a href="#cb62-759" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-760"><a href="#cb62-760" aria-hidden="true" tabindex="-1"></a><span class="co"># see residuals vs fitted</span></span>
-<span id="cb62-761"><a href="#cb62-761" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_no_poly)</span>
-<span id="cb62-762"><a href="#cb62-762" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-763"><a href="#cb62-763" aria-hidden="true" tabindex="-1"></a><span class="co"># get residuals</span></span>
-<span id="cb62-764"><a href="#cb62-764" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(mod_no_poly)</span>
-<span id="cb62-765"><a href="#cb62-765" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-766"><a href="#cb62-766" aria-hidden="true" tabindex="-1"></a><span class="co"># plot against each X</span></span>
-<span id="cb62-767"><a href="#cb62-767" aria-hidden="true" tabindex="-1"></a>nms_x <span class="ot">&lt;-</span> <span class="fu">colnames</span>(data_sample[, <span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb62-768"><a href="#cb62-768" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(data_sample[,<span class="sc">-</span><span class="dv">1</span>], nms_x, <span class="cf">function</span>(x, nm) {</span>
-<span id="cb62-769"><a href="#cb62-769" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> e, <span class="at">main =</span> nm)</span>
-<span id="cb62-770"><a href="#cb62-770" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="at">x =</span> x, <span class="at">y =</span> e), <span class="at">col =</span> <span class="st">"red"</span>)</span>
-<span id="cb62-771"><a href="#cb62-771" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb62-772"><a href="#cb62-772" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-773"><a href="#cb62-773" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-740"><a href="#cb62-740" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>)</span>
+<span id="cb62-741"><a href="#cb62-741" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb62-742"><a href="#cb62-742" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-743"><a href="#cb62-743" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-744"><a href="#cb62-744" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-745"><a href="#cb62-745" aria-hidden="true" tabindex="-1"></a>Note that there is no pattern for important predictors included in the model or for the unnecessary predictor. BUT for the important predictor $X_3$ omitted from the model, there is clear systematic deviation!</span>
+<span id="cb62-746"><a href="#cb62-746" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-747"><a href="#cb62-747" aria-hidden="true" tabindex="-1"></a>This indicates that it should be in the model.</span>
+<span id="cb62-748"><a href="#cb62-748" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-749"><a href="#cb62-749" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb62-750"><a href="#cb62-750" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Missing polynomial predictor</span></span>
+<span id="cb62-751"><a href="#cb62-751" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-752"><a href="#cb62-752" aria-hidden="true" tabindex="-1"></a>Create residual plots.</span>
+<span id="cb62-753"><a href="#cb62-753" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-756"><a href="#cb62-756" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-757"><a href="#cb62-757" aria-hidden="true" tabindex="-1"></a><span class="co"># fit new model without polyomial predictor</span></span>
+<span id="cb62-758"><a href="#cb62-758" aria-hidden="true" tabindex="-1"></a>mod_no_poly <span class="ot">&lt;-</span> <span class="fu">update</span>(mod_mlr, . <span class="sc">~</span> . <span class="sc">-</span> <span class="fu">I</span>(X1<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb62-759"><a href="#cb62-759" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod_no_poly)</span>
+<span id="cb62-760"><a href="#cb62-760" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-761"><a href="#cb62-761" aria-hidden="true" tabindex="-1"></a><span class="co"># see residuals vs fitted</span></span>
+<span id="cb62-762"><a href="#cb62-762" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_no_poly)</span>
+<span id="cb62-763"><a href="#cb62-763" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-764"><a href="#cb62-764" aria-hidden="true" tabindex="-1"></a><span class="co"># get residuals</span></span>
+<span id="cb62-765"><a href="#cb62-765" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(mod_no_poly)</span>
+<span id="cb62-766"><a href="#cb62-766" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-767"><a href="#cb62-767" aria-hidden="true" tabindex="-1"></a><span class="co"># plot against each X</span></span>
+<span id="cb62-768"><a href="#cb62-768" aria-hidden="true" tabindex="-1"></a>nms_x <span class="ot">&lt;-</span> <span class="fu">colnames</span>(data_sample[, <span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb62-769"><a href="#cb62-769" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(data_sample[,<span class="sc">-</span><span class="dv">1</span>], nms_x, <span class="cf">function</span>(x, nm) {</span>
+<span id="cb62-770"><a href="#cb62-770" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> e, <span class="at">main =</span> nm)</span>
+<span id="cb62-771"><a href="#cb62-771" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="at">x =</span> x, <span class="at">y =</span> e), <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb62-772"><a href="#cb62-772" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>)</span>
+<span id="cb62-773"><a href="#cb62-773" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb62-774"><a href="#cb62-774" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-775"><a href="#cb62-775" aria-hidden="true" tabindex="-1"></a>Note that there is curvature in the residuals vs fitted. Then when viewing vs each predictor, it is clear that it comes from $X_1$!</span>
+<span id="cb62-775"><a href="#cb62-775" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-776"><a href="#cb62-776" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-777"><a href="#cb62-777" aria-hidden="true" tabindex="-1"></a>This indicates that a polynomial term for $X_1$ should be in the model.</span>
+<span id="cb62-777"><a href="#cb62-777" aria-hidden="true" tabindex="-1"></a>Note that there is curvature in the residuals vs fitted. Then when viewing vs each predictor, it is clear that it comes from $X_1$!</span>
 <span id="cb62-778"><a href="#cb62-778" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-779"><a href="#cb62-779" aria-hidden="true" tabindex="-1"></a>Also note that missing the polynomial term hides the effect of missing $X_3$ $\Longrightarrow$ Need to model the terms in there correctly first before looking at more variables.</span>
+<span id="cb62-779"><a href="#cb62-779" aria-hidden="true" tabindex="-1"></a>This indicates that a polynomial term for $X_1$ should be in the model.</span>
 <span id="cb62-780"><a href="#cb62-780" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-781"><a href="#cb62-781" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Missing interaction predictor</span></span>
+<span id="cb62-781"><a href="#cb62-781" aria-hidden="true" tabindex="-1"></a>Also note that missing the polynomial term hides the effect of missing $X_3$ $\Longrightarrow$ Need to model the terms in there correctly first before looking at more variables.</span>
 <span id="cb62-782"><a href="#cb62-782" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-783"><a href="#cb62-783" aria-hidden="true" tabindex="-1"></a>Create residual plots.</span>
+<span id="cb62-783"><a href="#cb62-783" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Missing interaction predictor</span></span>
 <span id="cb62-784"><a href="#cb62-784" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-787"><a href="#cb62-787" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-788"><a href="#cb62-788" aria-hidden="true" tabindex="-1"></a><span class="co"># fit new model without polyomial predictor</span></span>
-<span id="cb62-789"><a href="#cb62-789" aria-hidden="true" tabindex="-1"></a>mod_no_interaction <span class="ot">&lt;-</span> <span class="fu">update</span>(mod_mlr, . <span class="sc">~</span> . <span class="sc">-</span> <span class="fu">I</span>(X1<span class="sc">*</span>X2))</span>
-<span id="cb62-790"><a href="#cb62-790" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod_no_interaction)</span>
-<span id="cb62-791"><a href="#cb62-791" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-792"><a href="#cb62-792" aria-hidden="true" tabindex="-1"></a><span class="co"># see residuals vs fitted</span></span>
-<span id="cb62-793"><a href="#cb62-793" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_no_interaction)</span>
-<span id="cb62-794"><a href="#cb62-794" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-795"><a href="#cb62-795" aria-hidden="true" tabindex="-1"></a><span class="co"># get residuals</span></span>
-<span id="cb62-796"><a href="#cb62-796" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(mod_no_interaction)</span>
-<span id="cb62-797"><a href="#cb62-797" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-798"><a href="#cb62-798" aria-hidden="true" tabindex="-1"></a><span class="co"># plot against each X</span></span>
-<span id="cb62-799"><a href="#cb62-799" aria-hidden="true" tabindex="-1"></a>nms_x <span class="ot">&lt;-</span> <span class="fu">colnames</span>(data_sample[, <span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb62-800"><a href="#cb62-800" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(data_sample[,<span class="sc">-</span><span class="dv">1</span>], nms_x, <span class="cf">function</span>(x, nm) {</span>
-<span id="cb62-801"><a href="#cb62-801" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> e, <span class="at">main =</span> nm)</span>
-<span id="cb62-802"><a href="#cb62-802" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="at">x =</span> x, <span class="at">y =</span> e), <span class="at">col =</span> <span class="st">"red"</span>)</span>
-<span id="cb62-803"><a href="#cb62-803" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb62-804"><a href="#cb62-804" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-805"><a href="#cb62-805" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-806"><a href="#cb62-806" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-807"><a href="#cb62-807" aria-hidden="true" tabindex="-1"></a>Note that there is maybe a slight pattern with respect to $X_1$ and $X_2$, but definitely harder to detect.</span>
-<span id="cb62-808"><a href="#cb62-808" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-809"><a href="#cb62-809" aria-hidden="true" tabindex="-1"></a>hardt o tell if should include an interaction or not, obviosuly it should be based on the known true model.</span>
-<span id="cb62-810"><a href="#cb62-810" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-811"><a href="#cb62-811" aria-hidden="true" tabindex="-1"></a>Also note that again this hides the effect of missing $X_3$, just like the previous one.</span>
-<span id="cb62-812"><a href="#cb62-812" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb62-785"><a href="#cb62-785" aria-hidden="true" tabindex="-1"></a>Create residual plots.</span>
+<span id="cb62-786"><a href="#cb62-786" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-789"><a href="#cb62-789" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-790"><a href="#cb62-790" aria-hidden="true" tabindex="-1"></a><span class="co"># fit new model without polyomial predictor</span></span>
+<span id="cb62-791"><a href="#cb62-791" aria-hidden="true" tabindex="-1"></a>mod_no_interaction <span class="ot">&lt;-</span> <span class="fu">update</span>(mod_mlr, . <span class="sc">~</span> . <span class="sc">-</span> <span class="fu">I</span>(X1<span class="sc">*</span>X2))</span>
+<span id="cb62-792"><a href="#cb62-792" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod_no_interaction)</span>
+<span id="cb62-793"><a href="#cb62-793" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-794"><a href="#cb62-794" aria-hidden="true" tabindex="-1"></a><span class="co"># see residuals vs fitted</span></span>
+<span id="cb62-795"><a href="#cb62-795" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_no_interaction)</span>
+<span id="cb62-796"><a href="#cb62-796" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-797"><a href="#cb62-797" aria-hidden="true" tabindex="-1"></a><span class="co"># get residuals</span></span>
+<span id="cb62-798"><a href="#cb62-798" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(mod_no_interaction)</span>
+<span id="cb62-799"><a href="#cb62-799" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-800"><a href="#cb62-800" aria-hidden="true" tabindex="-1"></a><span class="co"># plot against each X</span></span>
+<span id="cb62-801"><a href="#cb62-801" aria-hidden="true" tabindex="-1"></a>nms_x <span class="ot">&lt;-</span> <span class="fu">colnames</span>(data_sample[, <span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb62-802"><a href="#cb62-802" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(data_sample[,<span class="sc">-</span><span class="dv">1</span>], nms_x, <span class="cf">function</span>(x, nm) {</span>
+<span id="cb62-803"><a href="#cb62-803" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> e, <span class="at">main =</span> nm)</span>
+<span id="cb62-804"><a href="#cb62-804" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="fu">lowess</span>(<span class="at">x =</span> x, <span class="at">y =</span> e), <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb62-805"><a href="#cb62-805" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>)</span>
+<span id="cb62-806"><a href="#cb62-806" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb62-807"><a href="#cb62-807" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-808"><a href="#cb62-808" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-809"><a href="#cb62-809" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-810"><a href="#cb62-810" aria-hidden="true" tabindex="-1"></a>Note that there is maybe a slight pattern with respect to $X_1$ and $X_2$, but definitely harder to detect.</span>
+<span id="cb62-811"><a href="#cb62-811" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-812"><a href="#cb62-812" aria-hidden="true" tabindex="-1"></a>hardt o tell if should include an interaction or not, obviosuly it should be based on the known true model.</span>
+<span id="cb62-813"><a href="#cb62-813" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-814"><a href="#cb62-814" aria-hidden="true" tabindex="-1"></a>Also note that again this hides the effect of missing $X_3$, just like the previous one.</span>
+<span id="cb62-815"><a href="#cb62-815" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
