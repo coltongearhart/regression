@@ -280,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="model-statement" class="level3" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="model-statement"><span class="header-section-number">4.3.1</span> Model statement</h3>
 <p><span class="math inline">\(Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{10pt} \text{where} \hspace{10pt} \epsilon_i \overset{iid}\sim \text{Normal}\,(0,\sigma^2)\)</span></p>
-<p><span class="math inline">\(\Longrightarrow \hspace{20pt} \underset{n \times 1}{\boldsymbol{Y}} = \underset{n \times 2}{\boldsymbol{X}} \, \underset{2 \times 1}{\boldsymbol{\beta}} + \underset{n \times 1}{\boldsymbol{\epsilon}} \hspace{10pt} \text{and} \hspace{10pt} \underset{n \times 1}{\boldsymbol{E(Y)}} = \underset{n \times 1}{\boldsymbol{X\beta}}\)</span> {#eq-slr-matrix-mod}</p>
+<p><span id="eq-slr-matrix-mod"><span class="math display">\[\Longrightarrow \hspace{20pt} \underset{n \times 1}{\boldsymbol{Y}} = \underset{n \times 2}{\boldsymbol{X}} \, \underset{2 \times 1}{\boldsymbol{\beta}} + \underset{n \times 1}{\boldsymbol{\epsilon}} \hspace{10pt} \text{and} \hspace{10pt} \underset{n \times 1}{\boldsymbol{E(Y)}} = \underset{n \times 1}{\boldsymbol{X\beta}} \tag{4.1}\]</span></span></p>
 <p>because / where <span class="math inline">\(\hspace{10pt} \underset{n \times 1}{\boldsymbol{E(\epsilon)}} = \underset{n \times 1}{\boldsymbol{0}} \hspace{10pt} \text{and} \hspace{10pt} \underset{n \times n}{\boldsymbol{\sigma^2(\epsilon)}} = \underset{n \times n}{\boldsymbol{\sigma^2 I}}\)</span></p>
 </section>
 <section id="least-squares-estimation-of-regression-parameters" class="level3" data-number="4.3.2">
@@ -383,9 +383,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This result enables us to express the ANOVA sums of squares as follows (just pre and post multiply and simplify to get to the original forms):</p>
 <p><span class="math display">\[
 \begin{align*}
-SSTO &amp;= \boldsymbol{Y} \big[\boldsymbol{I} - \big(\frac{1}{n}\big) \boldsymbol{J}\big] \boldsymbol{Y} \\
+SSTO &amp;= \boldsymbol{Y'} \big[\boldsymbol{I} - \big(\frac{1}{n}\big) \boldsymbol{J}\big] \boldsymbol{Y} \\
 SSE &amp;= \boldsymbol{Y'}(\boldsymbol{I - H})\boldsymbol{Y} \\
-SSR &amp;= \boldsymbol{Y} \big[\boldsymbol{H} - \big(\frac{1}{n}\big) \boldsymbol{J}\big] \boldsymbol{Y}  \\
+SSR &amp;= \boldsymbol{Y'} \big[\boldsymbol{H} - \big(\frac{1}{n}\big) \boldsymbol{J}\big] \boldsymbol{Y}  \\
 \end{align*}
 \]</span></p>
 </section>
@@ -926,7 +926,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{10pt} \text{where} \hspace{10pt} \epsilon_i \overset{iid}\sim \text{Normal}\,(0,\sigma^2)$</span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>$\Longrightarrow \hspace{20pt} \mat{Y}{n}{1} = \mat{X}{n}{2} \, \mat{\beta}{2}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$ {#eq-slr-matrix-mod}</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>$$\Longrightarrow \hspace{20pt} \mat{Y}{n}{1} = \mat{X}{n}{2} \, \mat{\beta}{2}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$$ {#eq-slr-matrix-mod}</span>
 <span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>because / where $\hspace{10pt} \mat{E(\epsilon)}{n}{1} = \mat{0}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{\sigma^2(\epsilon)}{n}{n} = \mat{\sigma^2 I}{n}{n}$</span>
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
@@ -1059,9 +1059,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>\begin{align*}</span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>SSTO &amp;= \boldsymbol{Y} \big<span class="co">[</span><span class="ot">\boldsymbol{I} - \big(\frac{1}{n}\big) \boldsymbol{J}\big</span><span class="co">]</span> \boldsymbol{Y} <span class="sc">\\</span></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>SSTO &amp;= \boldsymbol{Y'} \big<span class="co">[</span><span class="ot">\boldsymbol{I} - \big(\frac{1}{n}\big) \boldsymbol{J}\big</span><span class="co">]</span> \boldsymbol{Y} <span class="sc">\\</span></span>
 <span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>SSE &amp;= \boldsymbol{Y'}(\boldsymbol{I - H})\boldsymbol{Y} <span class="sc">\\</span></span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>SSR &amp;= \boldsymbol{Y} \big<span class="co">[</span><span class="ot">\boldsymbol{H} - \big(\frac{1}{n}\big) \boldsymbol{J}\big</span><span class="co">]</span> \boldsymbol{Y}  <span class="sc">\\</span> </span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>SSR &amp;= \boldsymbol{Y'} \big<span class="co">[</span><span class="ot">\boldsymbol{H} - \big(\frac{1}{n}\big) \boldsymbol{J}\big</span><span class="co">]</span> \boldsymbol{Y}  <span class="sc">\\</span> </span>
 <span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>\end{align*}</span>
 <span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a></span>

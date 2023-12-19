@@ -2104,7 +2104,7 @@ summary(mod_exp_neg_x)$r.squared
 
 -   Compare these the models $R^2$ to the original untransformed: `r round(summary(lm(y ~ x))$r.squared, 3)`
 
-#### Effect of scalars and constants
+#### Effect of constants and scalars
 
 Quick demo of introducing constants to one or both sides of regression equation (so to the sample essentially) to see how impact results
 

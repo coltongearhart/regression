@@ -1,5 +1,15 @@
 # Multiple regression 1
 
+```{r}
+#| label: load-prereqs
+#| echo: false
+#| message: false
+
+# knitr options
+source("_common.R")
+
+```
+
 <!-- % define LaTeX macros (/shortcuts) -->
 
 <!-- % define vector (without parentheses, so when writing out in like a definition) of the form X_1, ..., X_n, where X and n are variable. NOTE: to call use $\vecn{X}{n}$ -->
@@ -108,13 +118,13 @@ Notes about model:
 
 - The meaning of the parameters is the same as when there were two predictors, just extended to all other $X$ levels held constant.
 
-- This first- order regression model is still designed for predictor variables whose effects on the mean response are additive and therefore do interact.
+- This first-order regression model is still designed for predictor variables whose effects on the mean response are additive and therefore do interact.
 
 - When $p - 1 = 1$, this model reduces to the SLR model we are used to.
 
 ### General linear regression model
 
-In general, the variables $X_1, \ldots, X_{p-1}$ in a regression model do not need to represent different predictor variables, as we see soon. Therefore, we define the general linear regression model, with normal error terms, simply in terms of $X$ variables (same as before, just now more general of what the $X$s can represent):
+In general, the variables $X_1, \ldots, X_{p-1}$ in a regression model do not need to represent different predictor variables, as we will see soon. Therefore, we define the general linear regression model, with normal error terms, simply in terms of $X$ variables (same as before, just now more general of what the $X$s can represent):
 
 $$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \cdots + \beta_{p-1} X_{i,p-1} + \epsilon_i$$ {#eq-gen-reg-mod}
 
@@ -144,7 +154,7 @@ Qualitative predictors
 
 - Model in @eq-gen-reg-mod encompasses not only quantitative predictor variables but also qualitative ones.
     
-- We use indicator variables that take on the values 0 and 1 to identify the classes of a qualitative variable. For example if length of hospital stay $Y$ with $X_1 = $ age and $X_2 = $ gender of patient where:
+- We use indicator variables that take on the values 0 and 1 to identify the classes of a qualitative variable. For example if length of hospital stay $Y$ with $X_1$ = age and $X_2$ = gender of patient where:
     
 $$
  X_2 =
@@ -227,7 +237,7 @@ Combination of cases
 ![](files/images/regression-surfaces.png){width="50%"}
 Meaning of linear in general linear regression model
 
-- It should be clear from the various examples that general linear regression model @gen-reg-mod is not restricted to linea rresponse surfaces.
+- It should be clear from the various examples that general linear regression model @eq-gen-reg-mod is not restricted to linear response surfaces.
 
 - The term *linear model* refers to the fact that the model is linear in the parameters; it does-not refer to the shape of the response surface.
 
@@ -247,9 +257,9 @@ $$Y_i = \beta_0 \e^{\beta_1 X_i} + \epsilon_i$$
 
 - This is a nonlinear regression model because it cannot be expressed in the form of @eq-lin-mod.
 
-## General linear regression model in matrix terms
+## General linear regression model in matrix terms {#sec-main-mlr-demo}
 
-It is a remarkable property of matrix algebra that the results for the general linear regression model @gen-reg-mod in matrix notation appear exactly as those for the simple linear regression model @eq-slr-matrix-mod. Only the degrees of freedom and other constants related to the number of $X$ variables and the dimensions of some matrices are different. Hence, We are able to present the results very concisely.
+It is a remarkable property of matrix algebra that the results for the general linear regression model @eq-gen-reg-mod in matrix notation appear exactly as those for the simple linear regression model @eq-slr-matrix-mod. Only the degrees of freedom and other constants related to the number of $X$ variables and the dimensions of some matrices are different. Hence, We are able to present the results very concisely.
 
 We need the following matrices:
 
@@ -259,7 +269,7 @@ Everything is just extended to $p$ parameters and $p - 1$ predictor variables.
 
 In matrix terms, the general linear regression model @eq-gen-reg-mod is:
 
-$\mat{Y}{n}{1} = \mat{X}{n}{p} \, \mat{\beta}{p}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$ {#eq-mlr-matrix-mod}
+$$\mat{Y}{n}{1} = \mat{X}{n}{p} \, \mat{\beta}{p}{1} + \mat{\epsilon}{n}{1} \hspace{10pt} \text{and} \hspace{10pt} \mat{E(Y)}{n}{1} = \mat{X\beta}{n}{1}$$ {#eq-mlr-matrix-mod}
 
 ### Estimation of regression coefficients, fitted values and residuals
 
@@ -271,7 +281,82 @@ $\mat{\hat{\beta}}{p}{1} = (\mat{X'X}{p}{p})^{-1}\mat{X'Y}{p}{1}$
 
 ![](files/images/mlr-matrix-form.png){width="80%"}
 
-### ANOVA
+Demo 
+
+::: panel-tabset
+#### R functions
+
+(True) Population model: $Y = \beta_0 + \beta_1 Z_1 + \beta_2 Z_2 + \beta_3 Z_3 + \beta_4 Z_4 + \beta_5 Z_5 + \epsilon_i$
+
+where $\hspace{10pt} Z_1 = X_1, Z_2 = X_2, Z_3 = X_3, Z_4 = X_1^2, Z_5 = X_1 X_2 \hspace{10pt} \text{and} \hspace{10pt} \epsilon_i \followsp{iid}{Normal}(0, \sigma^2)$
+
+```{r}
+
+# NOTE: generating a single dataset (and fitting single model) to use for all of the following examples
+# -> so incorporating lots of aspects into this model (polynomial, interaction, omitted predictor, unnecessary predictor)
+
+# generate predictor data
+# -> num_x number of base predictors (assumed known; generated from same dist)
+# -> num_noise unimportant predictors (placed at end)
+# -> hardcoded 2 higher order / interaction terms (X1^2 and X1*X2)
+n <- 50
+num_x <- 3
+num_noise <- 1
+X <- sapply(1:(num_x+num_noise), function(i) {rnorm(n = n, mean = 0, sd = 3)})
+Z <- cbind(rep(1, n), X[, c(1:num_x)], X[, 1]^2, X[, 1] * X[ , 2], X[, -c(1:num_x)])
+
+# set betas according to which ones are noise (and intercept)
+betas <- c(1, rep(2, num_x+2), rep(0, num_noise))
+
+# generate mean response and add random error
+Y <- Z %*% betas + rnorm(n, mean = 0, sd = 5)
+
+```
+
+(Fitted) Population model: $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_4 + \beta_5 X_1^2 + \beta_6 X_2 X_3$
+
+```{r}
+
+# create dataframe of sample data using above
+data_sample <- cbind(Y, X) %>% data.frame
+colnames(data_sample) <- c("Y", paste0("X",1:(length(data_sample)-1)))
+
+# fit mlr regression model
+# -> omitting X3, adding in unnecessary predictor X4, and adding in correct higher order terms
+mod_mlr <- lm(Y ~ X1 + X2 + X4 + I(X1^2) + I(X1*X2), data = data_sample, x = TRUE)
+
+# view model summary
+# now using broom functions
+# -> see expected results
+broom::tidy(mod_mlr)
+
+```
+
+#### Manual (matrices)
+
+Now comparing lots of things
+
+```{r}
+
+# extract design matrix from model for simplicity
+design <- mod_mlr$x
+
+# estimate coefficients
+# -> betas_hat = (X'X)^(-1) X'Y
+betas_hat <- solve(t(design) %*% design) %*% t(design) %*% Y
+
+compare(coef(mod_mlr), betas_hat)
+
+# fitted values
+y_hat <- design %*% betas_hat
+
+compare(fitted(mod_mlr), as.numeric(y_hat), return_items = FALSE)
+
+```
+
+:::
+
+### ANOVA {#sec-anova-matrices}
 
 Sum of squares are the exact same as in @sec-slr-anova-matrix, just the degrees of freedom are adjusted for the mean squares.
 
@@ -287,9 +372,88 @@ $$MSR = \frac{SSR}{p - 1} \hspace{20pt} MSE = \frac{SSE}{n - p}$$
 
 ![](files/images/mlr-anova-table.png){width="80%"}
 
+Demo
+
+::: panel-tabset
+#### R functions
+
+Returning to the demo in @sec-main-mlr-demo.
+
+```{r}
+
+# calculate anova table
+(at <- mod_mlr %>% anova %>% broom::tidy())
+
+# calculate sum of squares
+ssto <- at %>% summarize(sum(sumsq))
+sse <- at %>% filter(term == "Residuals") %>% pull(sumsq)
+ssr <- ssto - sse
+ssr <- at %>% filter(term != "Residuals") %>% summarize(sum(sumsq))
+
+```
+
+#### Manual (matrices)
+
+```{r}
+
+# calculate sum of squares using quadratic forms
+# -> SSTO = Y'[I-(1/n)J]Y 
+SSTO <- t(Y) %*% (diag(x = 1, nrow = length(Y)) - (1 / length(Y)) * matrix(data = rep(1, length(Y)^2), nrow = length(Y), ncol = length(Y))) %*% Y
+
+# -> SSE = Y'(I-H)Y
+hat_matrix <- design %*% solve(t(design) %*% design) %*% t(design)
+SSE <- t(Y) %*% (Matrix::diag(x = 1, nrow = length(Y)) - hat_matrix) %*% Y
+
+compare(as.numeric(sse), as.numeric(SSE))
+
+# -> SSR = Y'[H-(1/n)J]Y 
+SSR <- t(Y) %*% (hat_matrix - (1 / length(Y)) * matrix(data = rep(1, length(Y)^2), nrow = length(Y), ncol = length(Y))) %*% Y
+
+compare(as.numeric(ssr), as.numeric(SSR))
+
+```
+
+:::
+
 ### F-test for regression relation
 
 ![](files/images/mlr-f-test.png){width="80%"}
+
+::: panel-tabset
+#### R functions
+
+Returning to the demo in @sec-main-mlr-demo.
+
+```{r}
+
+# get f-stat model summary
+# -> looking for statistic
+broom::glance(mod_mlr)
+
+```
+
+#### Manual (matrices)
+
+Continuing with sum of squares calculated from previous demo in @sec-anova-matrices.
+
+```{r}
+
+# calculate sum of squares using quadratic forms
+# -> F = MSR / MSE = (SSR / df_R) / (SSE / df_E)
+MSR <- SSR / (length(betas_hat) - 1)
+MSE <- SSE / (length(Y) - length(betas_hat))
+F_stat <- MSR / MSE
+
+# extract mse from model summary
+# -> df = dr_R and df.residual = df_E -> used to get p-value of F-stat
+mse <- broom::glance(mod_mlr)$sigma^2
+compare(as.numeric(mse), as.numeric(MSE))
+
+compare(broom::glance(mod_mlr)$statistic, as.numeric(F_stat))
+
+```
+
+:::
 
 ### Coefficient of multiple determination
 
@@ -317,6 +481,42 @@ Notes
     
     - Again, even though $R^2$ is large, $MSE$ may still be too large for inferences to be useful when high precision is required.
     
+::: panel-tabset
+#### R functions
+
+Returning to the demo in @sec-main-mlr-demo.
+
+```{r}
+
+# view model statistics
+# -> looking at r.squared and adj.r.squared
+broom::glance(mod_mlr)
+
+```
+
+#### Manual (matrices)
+
+Continuing with sum of squares calculated from a previous demo in @sec-anova-matrices.
+
+```{r}
+
+# calculate coefficient of determination
+# -> R^2 = SSR / SSTO = 1 - SSE / SSTO
+R2 <- SSR / SSTO
+R2 <- 1 - SSE / SSTO
+
+compare(as.numeric(broom::glance(mod_mlr)$r.squared), as.numeric(R2))
+
+# calculate adjusted coefficient of determination
+# -> R^2 = 1 - (n - 1) / (n - p) SSE / SSTO
+R2_adj <- 1 - (length(Y) - 1) / (length(Y) - length(betas_hat)) * SSE / SSTO
+
+compare(as.numeric(broom::glance(mod_mlr)$adj.r.squared), as.numeric(R2_adj))
+
+```
+
+:::
+    
 ### Coefficient of multiple correlation
 
 The coefficient of multiple correlation $R$ is the positive square root of $R^2$:
@@ -331,7 +531,63 @@ When there is only one variable in the model, thec oefficient of multiple correl
 
 ![](files/images/mlr-beta-intervals-and-tests.png){width="80%"}
 
+Demo
+
+::: panel-tabset
+
+#### Individual test on $\beta_k$
+
+- Returning to the demo in @sec-main-mlr-demo.
+
+```{r}
+
+# view coefficient summaries
+# -> looking at std.error, statistic and p.value columns
+(summ1 <- broom::tidy(mod_mlr))
+
+# just going to recreate the p-value from given info
+(summ2 <- broom::glance(mod_mlr))
+
+# verify t-stat = estimate / std.error
+compare(as.numeric(summ1[2,4]), as.numeric(summ1[2,2] / summ1[2,3]))
+
+# calculate p-value from theoretical (beta_k-hat - beta_k)/ SE(\beta_k-hat) ~ t_(n-p) 
+p_value <- pt(q = as.numeric(summ1[2,4]), df = summ2$df.residual, lower.tail = FALSE)*2
+
+compare(as.numeric(summ1[2,5]), p_value)
+
+```
+
+#### Individual CI on $\beta_k$ -- R functions
+
+```{r}
+
+# calculate confidence interval for single coefficient
+# -> remember these are all individual inferences, not simultaneous confidence intervals
+confint(mod_mlr)[2, ]
+
+```
+
+#### Individual CI on $\beta_k$ -- Manual
+
+```{r}
+
+# calculate lower and upper bounds
+alpha <- 0.05 
+bound_lower <- as.numeric(summ1[2, 2]) + qt(alpha / 2, df = summ2$df.residual) * as.numeric(summ1[2,3])
+bound_upper <- as.numeric(summ1[2, 2]) + qt(1 - alpha / 2, df = summ2$df.residual) * as.numeric(summ1[2,3])
+
+compare(as.numeric(confint(mod_mlr)[2, ]), c(bound_lower, bound_upper))
+
+```
+
+:::
+    
 ![](files/images/mlr-joint-beta-inferences.png){width="80%"}
+
+<!-- Demo -->
+
+<!-- come back to joint estimation of beta -->
 
 ### Estimation of mean response and prediction of new observation
 
@@ -357,7 +613,28 @@ Scatterplot matrix
 
 - A complement to the scatter plot matrix that may be useful at times is the correlation matrix (matrix format as $[Y, X]$). Note this is a symmetric matrix with 1 on the main diagonal, so often can just print the upper or lower traingle matrix.
 
-![](files/images/correlation-matrix.png){width="80%"}
+![](files/images/correlation-matrix.png){width="50%"}
+
+Demo
+
+Returning to the demo in @sec-main-mlr-demo.
+
+```{r}
+
+# scatterplot matrix (of just the Xs, not the transformed variables as well)
+pairs(data_sample)
+
+# correlation matrix
+(r <- cor(data_sample) %>% round(3))
+
+# correlation plot
+corrplot::corrplot(r)
+
+# upper triangle correlation matrix
+r[lower.tri(r)] <- NA
+r
+
+```
 
 Residual plots
 
@@ -374,7 +651,16 @@ Residual plots
 - A plot of the absolute residuals or the squared residuals against the fitted values is useful for examining the constancy of the variance of the error terms.
 
     - If nonconstancy is detected, a plot of the absolute residuals or the squared residuals against each of the predictor vaIiables may identify one or several of the predictor variables to which the magnitude of the error variability is related.
-    
+
+Demo
+
+```{r}
+
+# residual plots
+plot(mod_mlr)
+
+```
+
 <!-- All the tests for MLR about error terms and lack of fit -->
 
 Remedial measures
@@ -397,3 +683,110 @@ Remedial measures
 
 - Can still do the Box Cox transformation (@sec-box-cox) like usual.
 
+Demo
+
+```{r}
+
+# run boxcox procedure
+# -> plot MLE of lambda
+MASS::boxcox(mod_mlr)
+
+# add constant to response variable so can run box-cox
+# -> from simulation for 'effects of constants and scalars', adding constant to Y only changes the intercept -> still valid model
+mod_mlr_prime <- lm(Y+50 ~ X1 + X2 + X4 + I(X1^2) + I(X1*X2), data = data_sample)
+
+# try again
+MASS::boxcox(mod_mlr_prime)
+
+# lambda = 1 -> no transformation is needed, as expected
+
+```
+
+### Residual plots demo for various misfitting models
+
+::: panel-tabset
+#### Missing important predictor
+
+Create residual plots against each $X$ in data.
+
+```{r}
+
+# get residuals
+e <- residuals(mod_mlr)
+
+# plot against each X
+nms_x <- colnames(data_sample[, -1])
+map2(data_sample[,-1], nms_x, function(x, nm) {
+  plot(x = x, y = e, main = nm)
+  lines(lowess(x = x, y = e), col = "red")
+})
+
+```
+
+Note that there is no pattern for important predictors included in the model or for the unnecessary predictor. BUT for the important predictor $X_3$ omitted from the model, there is clear systematic deviation!
+
+This indicates that it should be in the model.
+
+::: panel-tabset
+#### Missing polynomial predictor
+
+Create residual plots.
+
+```{r}
+
+# fit new model without polyomial predictor
+mod_no_poly <- update(mod_mlr, . ~ . - I(X1^2))
+broom::tidy(mod_no_poly)
+
+# see residuals vs fitted
+plot(mod_no_poly)
+
+# get residuals
+e <- residuals(mod_no_poly)
+
+# plot against each X
+nms_x <- colnames(data_sample[, -1])
+map2(data_sample[,-1], nms_x, function(x, nm) {
+  plot(x = x, y = e, main = nm)
+  lines(lowess(x = x, y = e), col = "red")
+})
+
+```
+
+Note that there is curvature in the residuals vs fitted. Then when viewing vs each predictor, it is clear that it comes from $X_1$!
+
+This indicates that a polynomial term for $X_1$ should be in the model.
+
+Also note that missing the polynomial term hides the effect of missing $X_3$ $\Longrightarrow$ Need to model the terms in there correctly first before looking at more variables.
+
+#### Missing interaction predictor
+
+Create residual plots.
+
+```{r}
+
+# fit new model without polyomial predictor
+mod_no_interaction <- update(mod_mlr, . ~ . - I(X1*X2))
+broom::tidy(mod_no_interaction)
+
+# see residuals vs fitted
+plot(mod_no_interaction)
+
+# get residuals
+e <- residuals(mod_no_interaction)
+
+# plot against each X
+nms_x <- colnames(data_sample[, -1])
+map2(data_sample[,-1], nms_x, function(x, nm) {
+  plot(x = x, y = e, main = nm)
+  lines(lowess(x = x, y = e), col = "red")
+})
+
+```
+
+Note that there is maybe a slight pattern with respect to $X_1$ and $X_2$, but definitely harder to detect.
+
+hardt o tell if should include an interaction or not, obviosuly it should be based on the known true model.
+
+Also note that again this hides the effect of missing $X_3$, just like the previous one.
+:::

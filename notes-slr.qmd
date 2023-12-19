@@ -510,24 +510,6 @@ compare(c(b_0, b_1), mod_slr$coefficients)
 
 ```
 
-#### Matrices
-
-```{r}
-
-# calculate estimated betas using matrix regression formulas:
-# -> beta_hat = (X'X)^-1X'Y
-X <- cbind(intercept = rep(1, length(x)), x)
-beta_hat <- solve(t(X) %*% X) %*% t(X) %*% y
-
-```
-
-```{r}
-#| code-fold: true
-
-# compare to results from lm()
-compare(beta_hat, mod_slr$coefficients)
-
-```
 :::
 
 LSE for other models
@@ -846,20 +828,6 @@ compare(summ$sigma^2 * summ$df[2], sse)
 
 <!-- alternate formula for sse = syy - beta1-hat sxy: from notes; not sure if needed -->
 
-### Matrices
-
-```{r}
-
-# calculate MSE using quadratic forms
-# SSE = Y'(I -H)Y
-X <- cbind(intercept = rep(1, length(x)), x)
-hat_matrix <- X %*% solve(t(X) %*% X) %*% t(X)
-sse <- t(y) %*% (Matrix::diag(x = 1, nrow = length(y)) - hat_matrix) %*% y
-
-# -> SSE = MSE * df
-compare(summ$sigma^2 * summ$df[2], sse)
-
-```
 :::
 
 ## Normal error regression model
