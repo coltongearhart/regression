@@ -1,0 +1,55 @@
+# Multiple regression 2
+
+```{r}
+#| label: load-prereqs
+#| echo: false
+#| message: false
+
+# knitr options
+source("_common.R")
+
+```
+
+<!-- % define LaTeX macros (/shortcuts) -->
+
+<!-- % define vector (without parentheses, so when writing out in like a definition) of the form X_1, ..., X_n, where X and n are variable. NOTE: to call use $\vecn{X}{n}$ -->
+
+\newcommand{\vecn}[2]{#1_1, \ldots, #1_{#2}}
+
+<!-- % shortcut for ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\follow}[1]{\sim \text{#1}\,}
+
+<!-- % (followsp is short for 'follow special') shortcut that can be used for iid or ind ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\followsp}[2]{\overset{#1}\sim \text{#2}\,}
+
+<!-- % define independence symbol (it basically makes two orthogonal symbols very close to each other. The number of \! controls the space between each of the orthogonal symbols) -->
+
+\newcommand{\ind}{\perp \!\!\! \perp}
+
+<!-- % shortcut for Cov(X,Y) with formatting for Cov -->
+
+\newcommand{\cov}[1]{\mathrm{Cov}(#1)}
+
+<!-- % shortcut for Corr(X,Y) with formatting for Corr -->
+
+\newcommand{\corr}[1]{\mathrm{Corr}(#1)}
+
+<!-- % shortcut for non-italic e in math mode -->
+
+\newcommand{\e}{\mathrm{e}}
+
+<!-- % shortcut for matrix notation -->
+
+\newcommand{\mat}[3]{\underset{#2 \times #3}{\boldsymbol{#1}}}
+
+## Extra sums of squares
+
+### Overview
+
+Basic idea
+
+- An extra sum of squares measures the marginal reduction in the error sum of squares when one or several predictor variables are added to the regression model, given that other predictor variables are already in the model.
+
+- Equivalently, one can view an extra sum of squares as measuring the marginal increase in the regression sum of squares when one or several predictor variables are added to the regression model.

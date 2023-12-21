@@ -1939,7 +1939,7 @@ Test statistic and decision
 
 $$
 TS = F^* = \frac{SSE(R) - SSE(F)}{df_R - df_F} \Big/ \frac{SSE(F)}{df_F} = \frac{SSE(R) - SSE(F)}{df_R - df_F}  \Big/ MSE(F)
-$$
+$$ {#eq-gen-lin-test}
 
 -   Under $H_0: \beta_1 = 0 \hspace{10pt} \text{Reduced model}$ → $F^* \sim \text{F}\,_{(df_R - df_F, df_F)}$
 

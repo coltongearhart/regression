@@ -130,7 +130,7 @@ $$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_1 X_{i2} + \cdots + \beta_{p-1} X_{i,p-
 
 where
 
-- $\beta_0, \beta_1, \ldots, \beta_{p-1}$ are parameters
+- $\beta_0, \beta_1, \ldots, \beta_{p-1}$ are parameters (note there are $p$ parameters because of the intercept)
 
 - $X_{i1}, \ldots, X_{i,p-1}$ are known constants
 
@@ -364,7 +364,7 @@ Sum of squares are the exact same as in @sec-slr-anova-matrix, just the degrees 
 
 - $SSE$ had $n - p$ df due to $p$ parameters needed to be estimated in the regression model @eq-mlr-matrix-mod.
 
-- $SSR$ has $p - 1$ df, representing the number of $X$ variables $X_1, \ldots, X_{p-1}$
+- $SSR$ has $p - 1$ df, representing the number of $X$ variables $X_1, \ldots, X_{p-1}$ (one minus the number of parameters because the intercept doesn't count)
 
 $$MSR = \frac{SSR}{p - 1} \hspace{20pt} MSE = \frac{SSE}{n - p}$$
 
@@ -728,7 +728,6 @@ Note that there is no pattern for important predictors included in the model or 
 
 This indicates that it should be in the model.
 
-::: panel-tabset
 #### Missing polynomial predictor
 
 Create residual plots.

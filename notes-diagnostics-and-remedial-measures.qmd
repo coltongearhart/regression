@@ -40,6 +40,14 @@ source("_common.R")
 
 \newcommand{\e}{\mathrm{e}}
 
+<!-- % shortcut for null hypothesis formatted nicely -->
+
+\newcommand{\ho}{H_0}
+
+<!-- % shortcut for alternative hypothesis formatted nicely -->
+
+\newcommand{\ha}{H_A}
+
 Two main ideas
 
 -   Diagnostics → Methods to check whether our model is reasonable for our data and representative of the system that we are studying.
@@ -1720,6 +1728,8 @@ lines(lowess(x = x_2, y = resid(mod_missing_important_x)), col = "red")
 
 ```
 
+## Tests
+
 <!-- skipping all of the following sections for now, but NEED TO COME BACK TO -->
 
 <!-- ### Overview of tests involving residuals  -->
@@ -1728,7 +1738,431 @@ lines(lowess(x = x_2, y = resid(mod_missing_important_x)), col = "red")
 
 <!-- ### Tests for constancy of error variance  -->
 
-<!-- ### $F$ test for lack of fit  -->
+### $F$ test for lack of fit
+
+This is a formal test for determining whether a specific type of regression function adequately fits the data.
+
+Assumptions
+
+- The lack of fit test assumes that the observations Y for given X are (1) independent and (2) normally distributed, and that (3) the distributions of the same variance $\sigma^2$.
+
+- The lack of fit test requires repeat observations at one or more $X$ levels (just this is sufficient). In observational studies, these just happen by chance.
+
+    - Repeat trials for the same level of the predictor variable are called *replications*. The resulting observations are called *replicates*.
+    
+Notation
+
+- We need to modify our notation to recognize the existence of replications at some levels of $X$.
+
+    - Let the different $X$ levels in the study, whether or not replicated observations are present, as $X_1, \ldots , X_c$ (so there are $c$ unique values of $X$).
+    
+    - Let the number of replicates for the $j$th level of $X$ as $n_j$. Thus the total number of observations is given by $\displaystyle n = \sum_{j = 1}^c n_j$.
+    
+    - Let the observed value of the response variable for the $i$th replicate for the $j$th level of $X$ by $Y_{ij}$, where $i = 1, \ldots, n_j, \hspace{10pt} j = 1, \ldots, c$.
+    
+    - Let the mean of the $Y$ observations at the level $X = X_j$ by $\bar{Y}_j$. 
+
+Full model
+
+- The general linear test approach begins with the specification of the full model. The full model used for the lack of fit test makes the same assumptions as the simple linear regression model, except for assuming a linear regression relation (which is what we are testing against in this case).
+
+- So the full model is (where $\mu_{ij}$ are parameters $j = 1, \ldots, c$ and $\epsilon_{ij} \followsp{iid}{Normal}(0, \sigma^2)$:
+
+$$Y_{ij} = \mu_j + \epsilon_{ij} \hspace{20pt} \text{full model}$$
+- Thus the parameter $\mu_j$ is the mean response when $X = X_j$:
+
+$$E(Y_{ij}) = \mu_j$$
+
+- This full model is like the SLR model in that it specifies the each response is made of two components: the mean response when $X = X_j$ and a random error term. The difference is that in the full model there is no restrictions on the means $\mu_j$, whereas the SLR model the mean responses are linearly related to $X$ (i.e. $E(Y) = \beta_0 + \beta_1 X$).
+
+- To fit the full model to the data, we require the least squares or maximum likelihood
+estimators for the parameters $\mu_j$. It can be shown the estimators are the sample means:
+
+$$\hat{\mu}_j = \bar{Y}_j$$
+
+- Thus, the estimated expected value for observation $Y_{ij}$ is $\bar{Y}_j$, and the error sum of squares for the full model therefore is:
+
+$$SSE(F) = \sum_j^c \sum_i^{n_j} (Y_{ij} - \hat{Y}_{ij})^2 = \sum_j^c \sum_i^{n_j} (Y_{ij} - \bar{Y}_j)^2 = SSPE$$
+
+- In the context of the test for lack of fit, the full model error sum of squares above is called the *pure error sum of squares (SSPE)*.
+
+- Note that $SSPE$ is made up of the sums of squared deviations at each $X$ level. At level $X = X_j$, this sum of squared deviations is shown below, which then get added over all of the $X$ levels ($j = 1, \ldots , c$):
+
+$$\sum_i (Y_{ij} - \bar{Y}_j)^2$$
+- Also note that if there is no replication at an $X$ level, then $Y_{1j} = \bar{Y}_j$ and the sum of square is simply 0 (this is why we need replication).
+
+- The degrees of freedom associated with $SSPE$ is found like usual. At each $X_j$, there are $n_j - 1$ df. Then sum over $j$:
+
+$$df_F = \sum_j^c (n_j - 1) = \sum_j^c n_j - c = n - c$$
+
+- Note that any $X$ level with no replications makes no contribution to $df_F$ because $n_j - 1 = 1 -  1 = 0$.
+
+Reduced model
+
+- The general linear test approach next requires consideration of the reduced model under $\ho$. For testing the appropriateness of a linear regression relation, the hypotheses are:
+
+$$
+\ho: E(Y) = \beta_0 + \beta_1 X \hspace{20pt} \text{Reduced model}\\
+\ha: E(Y) \ne \beta_0 + \beta_1 X \hspace{20pt} \text{Full model}
+$$
+
+- Thus, $\ho$ postulates that $\mu_j$ in the full model is linearly related to $X_j$:
+
+$$\mu_j = \beta_0 + \beta_1 X_j$$
+
+- The reduced model under $\ho$ therefore is:
+
+$$Y_{ij} = \beta_0 + \beta_1 X_j + \epsilon \hspace{20pt} \text{Reduced model}$$
+
+- Note that the reduced model is the ordinary simple linear regression model as usual, with the subscripts modified to recognize the existence of replications. We know that the estimated expected value for observation $Y_{ij}$ with usual regression model is the fitted value $Y_{ij}$
+
+$$Y_{ij} = \hat{\beta}_0 + \hat{\beta}_1 X_j$$
+
+- Hence, the error sum of squares for the reduced model is the usual error sum of squares $SSE$
+
+$$SSE(R) = \sum_j^c \sum_i^{n_j} (Y_{ij} - \hat{Y}_{ij})^2 = \sum_j^c \sum_i^{n_j} (Y_{ij} - (\hat{\beta}_0 + \hat{\beta}_1 X_j))^2 = SSE$$
+
+- We also that the degrees of freedom associated with $SSE(R)$ are:
+
+$$df_R = n - 2$$
+
+Test statistic
+
+- The general linear test statistic @eq-gen-lin-test (testing significant reduction is $SSE$) becomes:
+
+$$F^* = \frac{SSE - SSPE}{(n - 2) - (n - c)} \big/ \frac{SSPE}{n - c}$$
+
+- The difference between the two error sums of squares is called the lack of fit sum of squares $SSLF$.
+
+$$SSLE = SSE - SSPE$$
+
+- We can then express the test statistic as follows (and reject $\ho$ in favor of $\ha$ for large values of $F^*$):
+
+$$F^* = \frac{SSLF}{c - 2} \big/ \frac{SSPE}{n - c} = \frac{MSLF}{MSPE}$$
+
+ANOVA table
+
+- The definition of the lack of fit sum of squares $SSLF$ above indicates that we have decomposed the error sum of squares SSE into two components:
+
+$$SSE = SSPE + SSLF$$
+
+- The decomposition comes from the identity (which shows that the error deviations in $SSE$ are made up of a pure error component and a lack of fit component):
+
+![](files/images/lof-identity.png){width="50%"}
+
+![](files/images/lof-visualized.png){width="50%"}
+
+![](files/images/lof-formulas.png){width="80%"}
+
+- Last formula above indicates clearly why $SSLF$ measures lack of fit.
+
+    - If the linear regression function is appropriate, then the means $\bar{Y}_j$ will be near the fitted values $\hat{Y}_j$ calculated from the estimated linear regression function and $SSLF$ will be small.
+    
+    - On the other hand, if the linear regression function is not appropriate, the means $\bar{Y}_j$ will not be near the fitted values calculated from the estimated linear regression function and $SSLF$ will be large.
+    
+- This formulas also indicates why $c - 2$ degrees of freedom are associated with $SSLF$.
+
+    - There are $c$ means $\bar{Y}_j$ in the sum of squares ($\approx$ $c$ observations), and two dfs are lost in estimating the parameters $\beta_0$ and $\beta_1$ of the linear regression function to obtain the fitted values $\hat{Y}_j$.
+    
+- An ANOVA table can be constructed for the decomposition of SSE.
+
+![](files/images/lof-anova-table.png){width="80%"}
+
+Notes
+
+- The reason for the term "pure error" is that $MSPE$ is always an unbiased estimator of the error term variance $\sigma^2$, no matter what is the true regression function. But we still always use $MSE$ becuase it has more df.
+
+- The general linear test approach just explained can be used to test the appropriateness of other regression functions.  Only the degrees of freedom for $SSLF$ will need be modified. In general, $c - p$ degrees of freedom are associated with $SSLF$, where $p$ is the number of parameters in the regression function.
+
+- The alternative $\ha$ includes all regression functions other than a linear one. For instance, it includes a quadratic regression function or a logarithmic one. If $\ha$ is concluded, a study of residuals can be helpful in identifying an appropriate function.
+
+Demo
+
+::: panel-tabset
+
+#### R functions - Testing linear model
+
+```{r}
+
+# generate data from ideal model (no lack of fit -> expecting to not reject)
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 50; beta_0 <- 1; beta_1 <- 2; sigma <- 5
+
+# generate X values (asuming there will be some replicates)
+x <- extraDistr::rdunif(n = n, min = 0, max = 10)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + rnorm(n = n, mean = 0, sd = sigma)
+
+# plot and add lines (don't have a straight line anymore, so can't use abline() for unrestricted model)
+# -> have to plot x vs y-hat, but sorted according to x
+plot(x, y)
+lm(y ~ as.factor(x)) %>% 
+  {data.frame(y_hat = fitted(.), x)} %>% 
+  arrange(x) %$% 
+  lines(x, y_hat, col = "blue")
+abline(lm(y ~ x), col = "red")
+
+```
+
+Reduced model trend line follows group means line fairly well.
+
+Testing
+
+$$
+\ho: E(Y) = \beta_0 + \beta_1 X \hspace{20pt} \text{Reduced model}\\
+\ha: E(Y) \ne \beta_0 + \beta_1 X \hspace{20pt} \text{Full model}
+$$
+
+```{r}
+
+# fit full model
+# -> E(Y) = mu_j = anything other than B0 + B1X
+mod_full <- lm(y ~ as.factor(x))
+summary(mod_full)
+
+# fit reduced model
+# -> SLR model E(Y) + B0 + B1X
+mod_reduced <- lm(y ~ x)
+summary(mod_reduced)
+
+```
+
+```{r}
+
+# run lack of fit test
+# -> looking at F and PR(>F)
+(at <- anova(mod_full, mod_reduced))
+
+# other terms
+# -> Sum of Sq = SSLF --> MSLF = SSLF / change in Df
+# -> RSS(1) = SSPE --> MSPE = SSPE / Res. Df(1)
+# -> F = MSLF / MSPE
+
+```
+
+#### Manual
+
+Setup dataset to manually calculate the required mean squares.
+
+```{r}
+
+# order data by X variable
+# -> use this dataset for the remainder of the calculations
+data_sorted <- data.frame(y, x) %>% 
+  arrange(x)
+
+# refit model on sorted data (so fitted values and residuals pull in correctly later)
+mod_reduced <- lm(y ~ x, data_sorted)
+
+# calculate group means by X variable
+data_group_means <- data_sorted %>% 
+  group_by(x) %>% 
+  summarize(group_mean = mean(y))
+
+# complete table to manually perform LOF test
+# -> append predicted values from reduced model
+# -> add group means by merging with group means dataset
+# -> calculate:
+# --> residual = Y - hat(Y) = obs - pred value -> measure total deviation
+# --> pure error = Y - bar(Y)_j = obs - group mean -> measures the pure error, which is the randomness result from the data, not from the choice of model
+# --> lack of fit error = bar(Y)_j - hat(Y) = group mean - pred value -> measures the lack of fit deviation, which is the error result from the choice of model and could be improved with a better mode
+data_lof_process <- data_sorted %>% 
+  mutate(predicted_value = fitted(mod_reduced),
+         residual = residuals(mod_reduced)) %>% 
+  left_join(data_group_means, by = "x") %>% 
+  mutate(pure_error = y - group_mean,
+         lof_error = group_mean - predicted_value)
+head(data_lof_process, n = 10)
+
+```
+
+Find sum of squares.
+
+```{r}
+
+# compute final sums of squares
+# -> lack of fit dataset is setup so that each quantity is calculated for every row
+# --> just need to square each value and sum
+(data_ss <- data_lof_process %>% 
+  summarize(error = sum(residual^2),
+            lf = sum(lof_error^2),
+            pe = sum(pure_error^2)))
+
+compare(abs(at[2, "Sum of Sq"]), data_ss$lf)
+compare(abs(at[1, "RSS"]), data_ss$pe)
+
+# sums of squares are additive and SSPE and SSLF are partitioning SSE
+# -> so check that SSE = SSPE + SSLF
+compare(sum(data_ss[,2:3]), data_ss[,1])
+
+```
+
+Find df.
+
+```{r}
+
+# set vector of df
+# -> df sse = n - 2 (for slr, in general p)
+# -> df sslf = c - 2 = # of x levels - 2 
+# -> df sspe = n - c
+n <- nrow(data_sorted)
+c <- nrow(data_group_means)
+df <- c("error" = n - length(coef(mod_reduced)),
+        "lf" = c - length(coef(mod_reduced)),
+        "pe" = n - c)
+
+# reshape SS data to add df
+(data_anova_table <- data_ss %>% 
+  pivot_longer(cols = 1:3,
+               names_to = "type",
+               values_to = "ss") %>% 
+  bind_cols(data.frame(df)))
+
+```
+
+Calculate mean squares.
+
+```{r}
+
+# add MS to anova table
+# -> MS = SS / df
+(data_anova_table %<>% 
+  mutate(ms = ss / df))
+
+# compute final LOF test statistic
+# -> F* = MSLF / MSPE
+# -> convert to numeric so end result isn't a dataframe
+(F_star <- as.numeric(data_anova_table[data_anova_table$type == "lf", "ms"]) / as.numeric(data_anova_table[data_anova_table$type == "pe", "ms"]))
+
+compare(at[2, "F"], F_star)
+
+# compute critical value
+# -> LOF critical value (and test statistic) ~ F(c-2, n-c)
+# -> right tailed test
+alpha <- 0.05
+(F_crit <- qf(p = alpha, df1 = c - 2, df2 = n - c, lower.tail = FALSE))
+
+```
+
+Conclusion
+
+```{r}
+
+# compare test statistic and critical value
+# -> critical value way: if F* >> F_crit, then reject
+# -> p-value way: if P(F > F*) < alpha = then reject
+F_star > F_crit
+(p_value <- pf(q = F_star, df1 = c - 2, df2 = n - c, lower.tail = FALSE))
+p_value < alpha
+
+compare(at[2, "Pr(>F)"], p_value)
+
+```
+
+FAIL TO REJECT. There is not a lack of fit issue with the data.
+
+#### Testing complex model
+
+```{r}
+
+# generate data from complex model (lack of fit -> expecting to reject)
+
+# initialize items
+# -> sample size, population parameters and error distribution parameters
+n <- 50; beta_0 <- 1; beta_1 <- 2; beta_2 <- 2; beta_3 <- 2; sigma <- 10
+
+# generate X values (asuming there will be some replicates)
+x <- extraDistr::rdunif(n = n, min = 1, max = 10)
+
+# calculate observations Y
+y <- beta_0 + beta_1 * x + beta_2 * x^2 + beta_3 * log(x) + rnorm(n = n, mean = 0, sd = sigma)
+
+# plot and add lines
+plot(x, y)
+lm(y ~ as.factor(x)) %>% 
+  {data.frame(y_hat = fitted(.), x)} %>% 
+  arrange(x) %$% 
+  lines(x, y_hat, col = "blue")
+lm(y ~ x + I(log(x))) %>% 
+  {data.frame(y_hat = fitted(.), x)} %>% 
+  arrange(x) %$% 
+  lines(x, y_hat, col = "red")
+
+```
+
+Lines are close, but the reduced model is relatively far (keep in mind $Y$ scale) the unrestricted model at certain $X$ levels.
+
+Testing:
+
+$$
+\ho: E(Y) = \beta_0 + \beta_1 X + \beta_2 \ln(X) \hspace{20pt} \text{Reduced model}\\
+\ha: E(Y) \ne \beta_0 + \beta_1 X + \beta_2 \ln(X)  \hspace{20pt} \text{Full model}
+$$
+
+```{r}
+
+# fit full model
+# -> E(Y) = mu_j = anything other than B0 + B1 X + B2 ln(X)
+mod_full <- lm(y ~ as.factor(x))
+summary(mod_full)
+
+# fit reduced model
+# -> polynomial model E(Y) + B0 + B1 X + B2 ln(X)
+mod_reduced <- lm(y ~ x + I(log(x)))
+summary(mod_reduced)
+
+# perform lack of fit test
+anova(mod_full, mod_reduced)
+
+# this matched when ran same scenario through manual process!
+
+```
+
+This shows significant lack of fit. So add in missing polynomial and retry.
+
+```{r}
+
+# plot and add line (don't have a straight line anymore, so can't use abline())
+# -> have to plot x vs y-hat, but sorted according to x
+# -> NOTE both TRUE and FALSE for raw lead to SAME predictions, but DRASTISCALLY different estimates, perhaps because multicollinearity gives biased estimates
+plot(x, y)
+lm(y ~ as.factor(x)) %>% 
+  {data.frame(y_hat = fitted(.), x)} %>% 
+  arrange(x) %$% 
+  lines(x, y_hat, col = "blue")
+lm(y ~ poly(x, 2, raw = TRUE)) %>% 
+  {data.frame(y_hat = fitted(.), x)} %>% 
+  arrange(x) %$% 
+  lines(x, y_hat, col = "red")
+
+```
+
+Now the unrestriced and the reduced model are almost equivalent at all points.
+
+
+```{r}
+
+# fit full model
+# -> E(Y) = mu_j = anything other than B0 + B1 X + B2 ln(X)
+mod_full <- lm(y ~ as.factor(x))
+summary(mod_full)
+
+# fit reduced model
+# -> polynomial model E(Y) + B0 + B1 X + B2 ln(X)
+mod_reduced <- lm(y ~ poly(x, 2, raw = TRUE) + I(log(x)))
+summary(mod_reduced)
+
+# perform lack of fit test
+anova(mod_full, mod_reduced)
+
+```
+
+This shows no lack of fit now!
+
+:::
 
 ## Overview of remedial measures
 

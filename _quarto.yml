@@ -22,6 +22,8 @@ book:
     - part: part2-mlr.qmd
       chapters:
         - notes-multiple-regression-1.qmd
+        - notes-multiple-regression-2.qmd
+
         
 format:
   html:
