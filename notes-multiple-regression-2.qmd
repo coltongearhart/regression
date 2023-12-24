@@ -52,4 +52,734 @@ Basic idea
 
 - An extra sum of squares measures the marginal reduction in the error sum of squares when one or several predictor variables are added to the regression model, given that other predictor variables are already in the model.
 
-- Equivalently, one can view an extra sum of squares as measuring the marginal increase in the regression sum of squares when one or several predictor variables are added to the regression model.
+    - So it is the difference in $SSE$ with the original variables in the model compared to when additional ones are added (remember $SSE$ always decreases when more variables are added to the model).
+
+- Equivalently, one can view an extra sum of squares as measuring the marginal increase in the regression sum of squares when one or several predictor variables are added to the regression model (likewise, $SSR$ always increases with additional terms).
+
+### Definitions
+
+Using both perspectives, we can define
+
+$$SSR(X_2 \mid X_1) \hspace{10pt} = \hspace{10pt} SSE(X_1) - SSE(X_1, X_2)  \hspace{10pt} = \hspace{10pt} SSR(X_1, X_2) - SSR(X_1)$$
+
+Extensions for three or more variables are straightforward. 
+
+$$SSR(X_3 \mid X_1, X_2) \hspace{10pt} = \hspace{10pt} SSE(X_1, X_2) - SSE(X_1, X_2, X_3)  \hspace{10pt} = \hspace{10pt} SSR(X_1, X_2, X_3) - SSR(X_1, X_2)$$
+
+Note that we can also switch the order, say if $X_2$ enters the model first, then $X_1$.
+
+### Decomposition of $SSR$ into extra sums of squares
+
+In multiple regression, unlike simple linear regression, we can obtain a variety of decompositions of the regression sum of squares $SSR$ into extra sums of squares.
+
+![](files/images/ssr-decomposition-formulas.png){width="80%"}
+
+![](files/images/ssr-decomposition-visualized.png){width="80%"}
+
+![](files/images/ssr-many-decompositions.png){width="80%"}
+
+It is obvious that the number of possible decompositions becomes vast as the number of $X$ variables in the regression model increases.
+
+### ANOVA table containing decomposition of $SSR$
+
+ANOVA tables can be constructed containing decompositions of the regression sum of squares into extra sums of squares.
+
+![](files/images/ssr-decomposition-anova-table.png){width="80%"}
+
+
+Note that each extra sum of squares involving a single extra $X$ variable has associated with it one degree of freedom. The resulting mean squares are constructed as usual.
+
+$$MSR(X_2 \mid X_1) = \frac{SSR(X_2 \mid X_1)}{1}$$
+
+Extra sums of squares involving two extra $X$ variables, such as $SSR(X_2, X_3 \mid X_1)$, have two degrees of freedom associated with them. This follows because we can express such an extra sum of squares as a sum of two extra sums of squares, each associated with one df. For example, by definition of the extra sums of squares, we have
+
+$$SSR(X_2, X_3 \mid X_1) = SSR(X_2 \mid X_1) + SSR(X_3 \mid X_1, X_2)$$
+
+The mean square is therefore obtained as follows:
+
+$$MSR(X_2, X_3 \mid X_1) = \frac{SSR(X_2, X_3 \mid X_1)}{2}$$
+
+Many computer regression packages provide decompositions of $SSR$ into single-degree-of-freedom extra sums of squares, usually in the order in which the $X$ variables are entered into the model. Thus, if the $X$ variables are entered in the order $X_1$, $X_2$, $X_3$, the extra Sums of squares given in the output are:
+
+$$
+\begin{align*}
+&SSR(X_1)\\
+&SSR(X_2 \mid X_1)\\
+&SSR(X_3 \mid X_1, X_2)\\
+\end{align*}
+$$
+
+If an extra sum of squares involving several extra $X$ variables is desired, it can be obtained by summing appropriate single-degree-of-freedom extra sums of squares.
+
+The reason why extra sums of squares are of interest is that they occur in a variety of tests about regression coefficients where the question of concern is whether certain $X$ variables can be dropped from the regression model.
+
+Demo
+
+```{r}
+
+# NOTE: generating a single dataset to use for many of the following examples
+
+# generate predictor data
+# -> num_x number of base predictors (assumed known; generated from same dist)
+# -> num_noise unimportant predictors (placed at end)
+n <- 50
+num_x <- 2
+num_noise <- 1
+X <- sapply(1:(num_x+num_noise), function(i) {rnorm(n = n, mean = 0, sd = 3)}) %>%
+  cbind(rep(1, n), .)
+
+# set betas according to which ones are noise (and intercept)
+betas <- c(1, rep(2, num_x), rep(0, num_noise))
+
+# generate mean response and add random error
+Y <- X %*% betas + rnorm(n, mean = 0, sd = 3)
+
+```
+
+Verify the $SS$ given in `anova()` are conditional.
+
+```{r}
+
+# combine data
+data_sample <- cbind(Y, X[, -1]) %>% 
+  data.frame
+colnames(data_sample) <- c("Y", paste0("X", 1:sum(num_x, num_noise)))
+
+# fit models
+mod_1 <- lm(Y ~ X1, data_sample)
+mod_12 <- lm(Y ~ X1 + X2, data_sample)
+mod_123 <- lm(Y ~ X1 + X2 + X3, data_sample)
+
+# get anova table
+anova(mod_123) %>% tidy
+
+# verify conditional sum of squares
+
+# -> just X1 in the model
+compare(mod_123 %>% anova %>% tidy %>% filter(term == "X1") %>% pull(sumsq),
+        mod_1 %>% anova %>% tidy %>% filter(term == "X1") %>% pull(sumsq))
+
+# X2 in the model after X1 already in model
+compare(mod_123 %>% anova %>% tidy %>% filter(term == "X2") %>% pull(sumsq),
+        mod_12 %>% anova %>% tidy %>% filter(term == "X2") %>% pull(sumsq))
+
+```
+
+## Use of extra sums of squares in tests for regression coefficients
+
+![](files/images/test-betak-ss.png){width="80%"}
+
+- The $F^*$ test statistic here to test whether or not $\beta_k = 0$ is called a *partial F test statistic *to distinguish it from the *overall* $F^*$ *statistic* that @sec-f-test-overall for testing whether *all* $\beta_k = 0$.
+
+![](files/images/test-several-betak-ss.png){width="80%"}
+
+Note
+
+- For testing whether a single $\beta_k$ equals zero, two equivalent test statistics are available: the $t^*$ test statistic and the $F^*$ general linear test statistic.
+
+- When testing whether several $\beta_k$ equal zero, only the general linear test statistic $F^*$ is available.
+
+Demo
+
+- Verify $(t^*)^2 = F^*$
+
+```{r}
+
+# verify t-stat^2 = F-stat for SAME order of model
+t_stat <- mod_12 %>% tidy %>% filter(term == "X2") %>% pull(statistic) # middle step cause compare() being weird
+compare(t_stat %>% raise_to_power(2),
+        mod_12 %>% anova %>% tidy %>% filter(term == "X2") %>% pull(statistic))
+
+```
+
+## Summary of tests concerning regression coefficients
+
+![](files/images/summary-tests-reg-coefs.png){width="80%"}
+
+Verify order doesn't matter for estimates / t-tests, but order (in the sense of what is already included in the model does matter).
+
+```{r}
+
+# verify order doesn't matter for t-tests
+
+# fit model in different order
+mod_21 <- lm(Y ~ X2 + X1, data_sample)
+
+# same estimate and t-test statistic
+compare(mod_12 %>% tidy %>% arrange(term), mod_21 %>% tidy %>% arrange(term))
+
+# just different decomposition of SS
+compare(mod_12 %>% anova %>% tidy %>% arrange(term),
+        mod_21 %>% anova %>% tidy %>% arrange(term))
+
+# verify what is included previpously in model matters for F tests
+
+# -> same order model is necessary because F-test is different for X2 | X1 (second) vs X2 (first) --> should be different
+compare(mod_12 %>% anova %>% tidy %>% filter(term == "X2") %>% pull(statistic),
+        mod_21 %>% anova %>% tidy %>% filter(term == "X2") %>% pull(statistic))
+
+# but X3 | X1, X2 should be same as X3 | X2, X1
+mod_213 <- lm(Y ~ X2 + X1 + X3, data_sample)
+
+compare(mod_123 %>% anova %>% tidy %>% filter(term == "X3") %>% pull(statistic),
+        mod_213 %>% anova %>% tidy %>% filter(term == "X3") %>% pull(statistic))
+
+```
+
+## Coefficient of partial determination
+
+The coefficient of multiple determination, $R^2$, measures the proportionate reduction in the variation of $Y$ achieved by the introduction of the entire set of $X$ variables considered in the model.
+
+A coefficient of partial determination, in contrast, measures the marginal contribution of one $X$ variable when all others are already included in the model.
+
+![](files/images/coef-partial-det.png){width="80%"}
+
+Demo 
+
+```{r}
+
+# fit model with just X1
+mod_1 <- lm(Y ~ X1, data_sample)
+
+# use model with X1 and X2 (already fit from above)
+
+# calculate R^2_{Y2|1} = SSR(X2|X1) / SSE(X1)
+# -> reduction in SSE when X2 is added to the model relative to when only X1 in the model (just numerator in regression sum of squares perspective)
+SSR_X2_given_X1 <- anova(mod_12) %>% tidy %>% filter(term == "X2") %>% pull(sumsq) 
+SSE_X1 <- anova(mod_1) %>% tidy %>% filter(term == "Residuals") %>% pull(sumsq) 
+
+# another way to calculate (from the comments)
+# -> adjust X2 and Y for the linear relationship to X1 to just get the added affect of X2
+
+# use mod_1
+
+# regress X2 on X1
+mod_X2X1 <- lm(X2 ~ X1, data_sample)
+
+# regress residuals on each other
+mod_resids <- lm(resid(mod_1) ~ resid(mod_X2X1))
+
+# extract R^2
+compare(SSR_X2_given_X1 / SSE_X1, mod_resids %>% glance %>% pull(r.squared))
+
+# show added variable plot -> strong linear relationship is evident after adjusting for X1
+plot(x = resid(mod_1), y = resid(mod_X2X1))
+
+```
+
+## Standardized regression model {#sec-standardized-reg-model}
+
+NOTE: Writing notes here just to be aware of it, but not going to demo it cause doesn't seem to be standard practice in R.
+
+### Overview 
+
+A standardized form of the general multiple regression model @ge-lin-mod is employed to control roundoff errors in normal equations calculations and to permit comparisons ofthe estimated regression coefficients in common units.
+
+Roundoff errors
+
+- Roundoff errors tend to enter normal equations calculations primarily when the inverse of $\boldsymbol{X'X}$is taken. These are magnified when calculating $\boldsymbol{\beta}$ and other statistics.
+
+- The danger of serious roundoff errors in $\boldsymbol{(X'X)}^{-1}$ is particularly great when (1) $\boldsymbol{X'X}$ has a determinant that is close to zero and/or (2) the elements of $\boldsymbol{X'X}$ differ substantially in order of magnitude (say 10 and 10^6.
+
+- The transformation to obtain the standardized regression model, called the *correlation transformation*, makes all entries in the $\boldsymbol{X'X}$ matrix for the transformed variablesf all between -1 and 1 inclusive, so that the calculation of the inverse matrix becomes much less subject to roundoff errors due to dissimilar orders of magnitudes than with the original variables.
+
+- Although, in order to avoid the computational difficulties inherent in inverting the $\boldsymbol{X'X}$ matrix, many statistical packages use an entirely different computational approach that involves decomposing the $\boldsymbol{X}$ matrix into a product of several matrices with special properties.
+
+<mark>**Programming note → Beautiful sites ([(1)](https://genomicsclass.github.io/book/pages/qr_and_regression.html) and [(2)](https://machinelearningmastery.com/solve-linear-regression-using-linear-algebra/#:~:text=The%20QR%20decomposition%20is%20an,down%20into%20its%20constituent%20elements.&text=Where%20A%20is%20the%20matrix,the%20linear%20least%20squares%20equation.)) explaining QR decomposition and how it relates to LSE; must go through and recreate at some point.**</mark>
+
+Lack of comparability of regression coefficients
+
+- A second difficulty with the nonstandardized multiple model is that ordinarily regression coefficients cannot be compared because of differences in the units involved. For example if $X_1$ is in dollars and $X_2$ is in thousands of dollars, simply comparing the relative magnitudes of $\hat{\beta_1}$ and $\hat{\beta}_2$ to get an idea of importance can be misleading.
+
+Correlation transformation
+
+![](files/images/correlation-transformation.png){width="80%"}
+
+- Use of the standardized variables above (the typical standardization process) without the correlation transformation modification above will lead to the same standardized regression coefficients resulting from the correlation-transformed variables. However, the elements of the $\boldsymbol{X'X}$ matrix will not then be bounded between -1 and 1.
+
+Standardized regression model
+
+![](files/images/standardized-reg-mod.png){width="50%"}
+
+- Some more results about what the $\boldsymbol{\beta}$ is and some intermediate calculations.
+
+## Multicollinearity and its effects
+
+### Setup
+
+In multiple regression analysis, the nature and significance of the relations between the predictor or explanatory variables and the response variable are often of particular interest Some questions frequently asked are:
+
+1. What is the relative importance of the effects of the different predictor variables?
+
+2. What is the magnitude of the effect of a given predictor variable on the response variable?
+
+3. Can any predictor variable be dropped from the model because it has little or no effect on the response variable?
+
+4. Should any predictor variables not yet included in the model be considered for possible inclusion?
+
+If the predictor variables included in the model are (l) uncorrelated among themselves and (2) uncorrelated with any other predictor variables that are related to the response variable but are omitted from the model, relatively simple answers can be given to these questions. Unfortunately in non-experimental studies this is often not the case.
+
+When the predictor variables are correlated among themselves, *multicollinearity* among them is said to exist. This creates a variety of problems, but we will first explore the uncorrelated case first.
+
+### Uncorrelated predictor variables
+
+Suppose we have two predictor variables, $X_1$ and $X_2$, which are uncorrelated.
+
+Observation and results
+
+- Observation: Estimated coefficient $\hat{\beta}_1$ will be the same REGARDLESS of whether $X_2$ is included in the model (in any order). Same for $\hat{\beta}_2$ and $X_1$.
+
+    - *Generalized result: When the predictor variables are uncorrelated, the effects ascribed to them by a first-order regression model are the same no matter which other of these predictor variables are included in the model.*
+    
+    - This is a strong argument for controlled experiments whenever possible, since experimental control permits choosing the levels of the predictor variables so as to make these variables uncorrelated.
+    
+- Observation: The extra sum of squares $SSR(X_2 \mid X_1)$ equals the regression sum of squares $SSR(X_2)$ when only $X_2$ is in the regression model. Same for $X_1$.
+
+    - *Generalized result: When two or more predictor variables are uncorrelated, the marginal contribution of one predictor variable in reducing the error sum of squares when the other predictor variables are in the model is exactly the same as when this predictor variable is in the model alone.*
+    
+   - Note that this can be seen in the formulas for the $\hat{\beta}_i$s.
+   
+Demo
+
+::: panel-tabset
+
+#### Perfectly uncorrelated
+
+```{r}
+
+# perfectly uncorrelated
+
+# not sure how to generate or transform to perfectly uncorrelated predictor variables
+
+# so using this found dataset (https://online.stat.psu.edu/stat501/lesson/12/12.2)
+data_sample <- tribble(
+  ~X1,	~X2, ~Y,
+  -1,	1,	91,
+  -1,	2,	107,
+  -1,	3,	101,
+  -1,	4,	121,
+  -1,	5,	95,
+  0,	7,	84,
+  0,	8,	108,
+  0,	9,	102,
+  0,	10,	98,
+  1,	1,	73,
+  1,	2,	75,
+  1,	3,	102,
+  1,	4,	94,
+  1,	5,	113
+)
+data_sample %>% select(starts_with("X")) %>% cor
+
+```
+
+```{r}
+
+# fit models and compare coefficients
+mod_1 <- lm(Y ~ X1, data_sample)
+mod_12 <- lm(Y ~ X1 + X2, data_sample)
+mod_2 <- lm(Y ~ X2, data_sample)
+
+compare(mod_1 %>% tidy %>% filter(term == "X1") %>% pull(estimate),
+        mod_12 %>% tidy %>% filter(term == "X1") %>% pull(estimate))
+
+compare(mod_2 %>% tidy %>% filter(term == "X2") %>% pull(estimate),
+        mod_12 %>% tidy %>% filter(term == "X2") %>% pull(estimate))
+
+# compare extra sum of squares when variable included previously
+compare(mod_2 %>% anova %>% tidy %>% filter(term == "X2") %>% pull(sumsq),
+        mod_12 %>% anova %>% tidy %>% filter(term == "X2") %>% pull(sumsq))
+
+```
+
+#### Practically uncorrelated
+
+```{r}
+
+# practically uncorrelated
+
+# try to generate uncorrelated predictor variables
+n <- 50
+mu <- c(0, 0)
+sigma <- 3 * matrix(data = c(1,0,0,1), ncol = 2)
+X <- MASS::mvrnorm(n = n, mu = mu, Sigma = sigma)
+cor(X)
+X %<>% cbind(rep(1, n), .)
+
+# set betas according to which ones are noise (and intercept)
+betas <- c(2, 2, 2)
+
+# generate mean response and add random error
+Y <- X %*% betas + rnorm(n, mean = 0, sd = 3)
+
+```
+
+```{r}
+
+# combine data
+data_sample <- cbind(Y, X[, -1]) %>% 
+  data.frame
+colnames(data_sample) <- c("Y", paste0("X", 1:(length(betas)-1)))
+
+# fit models and compare coefficients
+mod_1 <- lm(Y ~ X1, data_sample)
+mod_12 <- lm(Y ~ X1 + X2, data_sample)
+
+compare(mod_1 %>% tidy %>% filter(term == "X1") %>% pull(estimate),
+        mod_12 %>% tidy %>% filter(term == "X1") %>% pull(estimate))
+
+```
+
+:::
+
+### Perfectly correlated predictors
+
+Results of trivial example from book: 
+
+- For a model with two predictors, there is an infinite set of response functions (surfaces) that generate the same set of fitted values where they intersect, but totally different ones when not. 
+
+Two implications of above example:
+
+1. The perfect relation between $X_1$ and $X_2$ did not inhibit our ability to obtain a good fit to the data.
+
+2. Since many different response functions provide the same good fit, we cannot interpret anyone set of regression coefficients as reflecting the effects of the different predictor variables 9in terms of magnitude and direction).
+
+Demo
+
+::: panel-tabset
+
+#### Perfectly correlated
+
+```{r}
+
+# generate a single vector and transform
+n <- 50
+X <- rnorm(n, mean = 0, sd = 3) %>% data.frame(X1 = .)
+X %<>% mutate(X2 = 3*X1)
+cor(X)
+X %<>% cbind(rep(1, n), .)
+
+# set betas according to which ones are noise (and intercept)
+betas <- c(2, 2, 2)
+
+# generate mean response and add random error
+Y <- as.matrix(X) %*% betas + rnorm(n, mean = 0, sd = 3)
+
+```
+
+```{r}
+
+# combine data
+data_sample <- cbind(Y, X[, -1]) %>% 
+  data.frame
+colnames(data_sample) <- c("Y", paste0("X", 1:(length(betas)-1)))
+
+# fit model with both variables
+mod_12 <- lm(Y ~ X1 + X2, data_sample)
+
+summary(mod_12)
+
+```
+
+Second coefficient doesn't even get estimated.
+
+#### Practically super correlated
+
+```{r}
+
+# generate a single vector and transform + slight noise
+n <- 50
+X <- rnorm(n, mean = 0, sd = 3) %>% data.frame(X1 = .)
+X %<>% mutate(X2 = 3*X1)
+X$X2 <- X$X2 + rnorm(n = n, mean = 0, sd = 0.01)
+cor(X)
+X %<>% cbind(rep(1, n), .)
+
+# set betas according to which ones are noise (and intercept)
+betas <- c(2, 2, 2)
+
+# generate mean response and add random error
+Y <- as.matrix(X) %*% betas + rnorm(n, mean = 0, sd = 3)
+
+```
+
+```{r}
+
+# combine data
+data_sample <- cbind(Y, X[, -1]) %>% 
+  data.frame
+colnames(data_sample) <- c("Y", paste0("X", 1:(length(betas)-1)))
+
+# fit model with both variables
+mod_12 <- lm(Y ~ X1 + X2, data_sample)
+
+summary(mod_12)
+
+```
+
+Super inflated standard errors and wildly different estimates than the $\beta$s.
+
+:::
+
+### Effects of multicollinearity
+
+Summary of related effects of multicollinearity
+
+1. Multicollinearity doesn't affect prediction.
+
+- The fact that some or all predictor variables are correlated among themselves does not, in general, inhibit our ability to obtain a good fit nor does it tend to affect inferences about mean responses or predictions of new observations, provided these inferences are made within the region of observations.
+
+- $MSE$ still gets steadily reduced as more variables are added.
+
+![](files/images/mse-highly-correlated.png){width="50%"}
+
+- And the precision of fitted values within the range of the observations on the predictor variables does not worsen with the addition of correlated predictor variables into the regression model (even despite the inflated standard errors of the $\beta$s).
+
+    - The essential reason for the stability is that the covariance between $\hat{\beta}_1$ and $\hat{\beta}_2$ is negative, which plays a strong counteracting influence to the increase in $s^2(\hat{\beta}_1)$, in determining the value of $s^2(\hat{Y}_h)$ as given below:
+    
+![](files/images/algebra-variance-estimated-mean.png){width="50%"}
+   
+2. Large standard errors in estimated regression coefficients.
+
+- Estimated regression coefficients tend to have large sampling variability when the predictor variables are highly correlated $\Longrightarrow$ tend to vary widely from one sample to the next $\Longrightarrow$ only imprecise information may be available about the individual true regression coefficients.
+
+![](files/images/st-errors-correlated-preds.png){width="50%"}
+
+- Indeed, many of the estimated regression coefficients *individually* may be statistically not significant even though a definite statistical relation exists between the response variable and *the set of predictor variables*.
+
+3. Cannot interpret estimated regression coefficients.
+
+- The common interpretation of a regression coefficient as measuring the change in the expected value of the response variable when the given predictor variable is increased by one unit while all other predictor variables are held constant (aka the marginal effect) is not fully applicable when multicollinearity exists.
+
+- It may be conceptually feasible to think of varying one predictor variable and the others constant, but it may not be possible in practice to do so for predictor variables that are highly correlated. For example, in a regression model for predicting crop yield from amount of rainfall and hours of sunshine, the relation between the two predictor variables makes it unrealistic to consider varying one while holding the other constant.
+    
+4. Magnitude (and sign) of estimated coefficients are conditional based on what is already in model.
+
+- When predictor variables are correlated, the regression coefficient of anyone variable depends on which other predictor variables are included in the model and which ones are left out.
+
+![](files/images/correlated-predictors-coefs.png){width="50%"}
+
+
+- Thus, a regression coefficient does not reflect any inherent effect of the particular predictor variable on the response variable but only a marginal or partial effect, *given* whatever other correlated predictor variables are included in the model.
+    
+- Even have to be weary of predictors that are highly correlated with each other, even if some are omitted from the model.
+
+4. Effects of variables are conditional based on what is already in model.
+
+- When predictor variables are correlated, the marginal contribution of anyone predictor variable in reducing the error sum of squares varies, depending on which other variables are already in the regression model, just as for regression coefficients.
+
+- For example, supppose $X_1$ and $X_2$ are highly correlated and $SSR(X_1) >> SSR(X_1 \mid X_2)$. The reason why $SSR(X_1 \mid X_2)$ is so small compared with $SSR(X1)$ is that $X_1$ and $X_2$ are highly correlated with each other and with the response variable. Thus, when $X_2$ is already in the regression model, the marginal contribution of $X_1$ in reducing the error sum of squares is comparatively small because $X_2$ contains much of the same information as $X_1$.
+
+    - This can also be seen in the coefficient of partial determinations, which also behave erratically sample-to-sample when multiollinearity is present.
+    
+![](files/images/coefs-partial-det-correlated.png){width="50%"}
+
+- When predictor variables are correlated, there is no unique sum of squares that can be ascribed to anyone predictor variable as reflecting its effect in reducing the total variation in $Y$. 
+
+5. Mismatching results from simulataneuous inferences vs overall inference on coefficients.
+
+![](files/images/effects-on-simulataneous-inference.png){width="80%"}
+
+6. Unstable model fitting.
+
+- As mentioned in {#sec-standardized-reg-model}, a near-zero determinant of $\boldsymbol{X'X}$ is a potential source of serious roundoff errors in normal equations calculations. Severe has the of making this determimant come close to zero. 
+- Thus, under severe multicollineanty, the regression coefficients may be subject to large roundoff errors as well as large sampling variances $\Longrightarrow$ Should use correlation transformation or something akin.
+
+### Need for more powerful diagnostics for multicollinearity
+
+- As we have seen, multicollinearity among the predictor variables can have important consequences for interpreting and using a fitted regression model.
+
+- The diagnostic tool considered here for identifying multicollinearity was the pairwise coefficients of simple correlation between the predictor variables; this is frequently helpful.
+
+- Often, however, serious multicollinearity exists without being disclosed by the pairwise correlation coefficients. Later, we present a more powerful tool for identifying the existence of serious multicollinearity. Some remedial measures for lessening the effects of multicollinearity will be considered as well.
+
+### Simulation
+
+Simualtion to demo the affects of varying levels of multicollinearity.
+
+```{r}
+#| code-fold: true
+
+# initialize simulation settings
+# -> first the parameters of interest (that are variable)
+# -> create all combos
+# -> add in the constant settings
+# -> arrange in a good order
+# -> add simulation id column
+# -> set row names equal to id (helps keep track of results later)
+params <- expand.grid(rho_x = c(0, 0.25, 0.5, 0.75, 0.95)) %>% 
+  mutate(n = 50,
+         sigma_x = 3,
+         beta_0 = 2,
+         beta_1 = 2,
+         beta_2 = 2,
+         sigma = 5) %>%
+  arrange(rho_x) %>% 
+  bind_cols(data.frame(sim_id = 1:nrow(.)))
+rownames(params) <- paste0("sim", params$sim_id)
+
+# define function to run on each unique simulation setting
+run_trial <- function(vec, vec_names, m = 1000) {
+  
+  # redefine arguments for easier reference
+  names(vec) = vec_names
+  rho_x = as.numeric(vec["rho_x"])
+  n = as.numeric(vec["n"])
+  sigma_x = as.numeric(vec["sigma_x"])
+  beta_0 = as.numeric(vec["beta_0"])
+  beta_1 = as.numeric(vec["beta_1"])
+  beta_2 = as.numeric(vec["beta_2"])
+  sigma = as.numeric(vec["sigma"])
+  sim_id = as.numeric(vec["sim_id"])
+  
+  # initialize results vectors
+  beta0_hat = rep(NA, m)
+  beta1_hat = rep(NA, m)
+  beta2_hat = rep(NA, m)
+  se_beta1_hat = rep(NA, m)
+  se_beta2_hat = rep(NA, m)
+  beta1_t = rep(NA, m)
+  beta2_t = rep(NA, m)
+  MSE = rep(NA, m)
+  R2 = rep(NA, m)
+  R2_adj = rep(NA, m)
+
+
+  # loop to simulate m models and extract summaries
+  for (i in 1:m) {
+    
+    # generate X predictors according to specified correlation structure
+    Sigma = sigma_x * matrix(data = c(1,rho_x,rho_x,1), ncol = 2)
+    X = MASS::mvrnorm(n = n, mu = c(0, 0), Sigma = Sigma)
+    X %<>% cbind(rep(1, n), .)
+    
+    # generate mean response and add random error
+    Y = as.matrix(X) %*% c(beta_0, beta_1, beta_2) + rnorm(n, mean = 0, sd = sigma)
+    
+    # combine data
+    data_sample = cbind(Y, X[, -1]) %>% 
+      data.frame
+    colnames(data_sample) = c("Y", paste0("X", 1:2))
+    
+    # fit model with both variables
+    mod = lm(Y ~ X1 + X2, data_sample)
+    
+    # get summaries
+    mod_summ <- broom::tidy(mod)
+    mod_stats = broom::glance(mod)
+    beta0_hat[i] = mod_summ %>% filter(term == "(Intercept)") %>% pull(estimate)
+    beta1_hat[i] = mod_summ %>% filter(term == "X1") %>% pull(estimate)
+    beta2_hat[i] = mod_summ %>% filter(term == "X2") %>% pull(estimate)
+    se_beta1_hat[i] = mod_summ %>% filter(term == "X1") %>% pull(std.error)
+    se_beta2_hat[i] = mod_summ %>% filter(term == "X2") %>% pull(std.error)
+    beta1_t[i] = mod_summ %>% filter(term == "X1") %>% pull(statistic)
+    beta2_t[i] = mod_summ %>% filter(term == "X2") %>% pull(statistic)
+    MSE[i] = mod_stats$sigma^2
+    R2[i] = mod_stats$r.squared
+    R2_adj[i] = mod_stats$adj.r.squared
+
+  }
+  
+  return(cbind(beta0_hat, beta1_hat, beta2_hat, se_beta1_hat, se_beta2_hat, beta1_t, beta2_t, MSE, R2, R2_adj, sim_id = sim_id))
+  
+}
+
+
+# define function to run simulation and format results
+simulation <- function(params, sim_function, iterations = 100, format_results = FALSE) {
+  
+  # run simulation for each parameter settings
+  # -> have to transpose so that now each column is a parameter settings and convert to dataframe so can pass to map(), which needs a list
+  results_raw = params %>% 
+    t %>% 
+    data.frame %>% 
+    map(\(vec) sim_function(vec, vec_names = names(params), m = iterations), .progress = T)
+  
+  if (!format_results){
+    
+    return(results_raw)
+    
+  }else{
+    
+    # reformat results
+    # -> convert each results matrix to a dataframe, then combine
+    # -> attach the simulation settings to the results
+    # -> pivot longer to have one column for the name of the summary measure and one for its value
+    # -> convert parameters to factors for plot
+    results = results_raw %>% 
+      map(\(x) data.frame(x)) %>% 
+      reduce(bind_rows) %>% 
+      left_join(params, by = "sim_id") %>% 
+      pivot_longer(cols = 1:(ncol(results_raw[[1]])-1),
+                   names_to = "statistic",
+                   values_to = "value") %>% 
+      mutate(across(1:ncol(params), as.factor))
+    return(results)
+    
+  }
+  
+}
+
+# define function to plot standard results
+plot_results <- function(res, stats) {
+  
+  res %>% 
+  filter(statistic %in% stats) %>% 
+    ggplot(aes(x = value,
+               group = rho_x,
+               color = rho_x,
+               fill = rho_x),
+           data = .) + 
+    geom_density(alpha = 0.2) + 
+    facet_wrap(statistic ~ .,
+               scales = "free") 
+  
+}
+
+```
+
+```{r}
+
+# run simulation
+results <- simulation(params = params, sim_function = run_trial, iterations = 1000, format_results = TRUE)
+head(results)
+
+```
+
+```{r}
+
+# view results
+plot_results(results, stats = c("beta0_hat", "beta1_hat", "beta2_hat"))
+
+```
+
+- All point estimates are unbiased.
+
+```{r}
+
+# view results
+plot_results(results, stats = c("se_beta1_hat", "se_beta2_hat"))
+
+```
+
+- Lots more variable in standard errors of estimated coefficients for highly correlated predictors.
+
+```{r}
+
+# view results
+plot_results(results, stats = c("beta1_t", "beta2_t"))
+
+```
+
+- Much less likely to reject marginal tests when there is multicollinearity.
+
+```{r}
+
+# view results
+plot_results(results, stats = c("MSE", "R2", "R2_adj"))
+
+```
+
+- Multicollinearity doesn't affect $MSE$.
+
+- Multicollinearity does cause an inflation of $R^2$ and $R^2_{adj}$.

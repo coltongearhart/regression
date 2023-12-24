@@ -381,53 +381,80 @@ params <- expand.grid(beta_1 = c(1,5,10),
 rownames(params) <- paste0("sim", params$sim_id)
 
 # define function to run on each unique simulation setting
-simulation <- function(vec, vec_names, m = 1000) {
+run_trial <- function(vec, vec_names, m = 1000) {
   
-  # set names of parameter vector for clearer reference
+  # redefine arguments for easier reference
+  # -> numeric values get coerced to character because of `model` data type
   names(vec) = vec_names
+  n = as.numeric(vec["n"])
+  beta_0 = as.numeric(vec["beta_0"])
+  beta_1 = as.numeric(vec["beta_1"])
+  beta_2 = as.numeric(vec["beta_2"])
+  sigma = as.numeric(vec["sigma"])
+  sim_id = as.numeric(vec["sim_id"])
   
   # initialize results vector
-  results = rep(NA, m)
+  t = rep(NA, m)
   
   # loop to simulate m models and extract summaries
   for (i in 1:m) {
     
     # generate data
-    x = runif(n = vec["n"], min = 5, max = 10)
-    y = rnorm(n = vec["n"], mean = vec["beta_0"] + vec["beta_1"] * x, sd = vec["sigma"])
+    x = runif(n = n, min = 5, max = 10)
+    y = rnorm(n = n, mean = beta_0 + beta_1 * x, sd = sigma)
     
     # fit model
     mod = lm(y ~ x)
     
     # get summaries
     # -> just want t-stat
-    results[i] = summary(mod)$coefficients["x", "t value"]
+    t[i] = summary(mod)$coefficients["x", "t value"]
     
   }
   
-  return(results)
+  return(cbind(t, sim_id = sim_id))
   
 }
 
-# run simulation for each parameter settings
-# -> have to transpose so that now each column is a parameter settings and convert to dataframe so can pass to map(), which needs a list
-results_raw <- params %>% 
-  t %>% 
-  data.frame %>% 
-  map(\(vec) simulation(vec, vec_names = names(params), m = 1000), .progress = T)
 
-# reformat results
-# -> combine results into a dataframe
-# -> convert to long so have one column for which simulation settings and one for the results
-# -> attach the simulation settings to the results
-# --> for the plot, want all parameters as factors -> so before joining convert all
-results <- results_raw %>% 
-  bind_rows %>% 
-  pivot_longer(cols = 1:nrow(params),
-               names_to = "sim_id",
-               values_to = "t") %>% 
-  mutate(sim_id = as.factor(str_sub(sim_id, start = 4))) %>% 
-  left_join(mutate(params, across(everything(), as_factor)), by = "sim_id") # levels are slightly out of order....
+# define function to run simulation and format results
+simulation <- function(params, sim_function, iterations = 100, format_results = FALSE) {
+  
+  # run simulation for each parameter settings
+  # -> have to transpose so that now each column is a parameter settings and convert to dataframe so can pass to map(), which needs a list
+  results_raw = params %>% 
+    t %>% 
+    data.frame %>% 
+    map(\(vec) sim_function(vec, vec_names = names(params), m = iterations), .progress = T)
+  
+  if (!format_results){
+    
+    return(results_raw)
+    
+  }else{
+    
+    # reformat results
+    # -> convert each results matrix to a dataframe, then combine
+    # -> attach the simulation settings to the results
+    # -> pivot longer to have one column for the name of the summary measure and one for its value
+    # -> convert parameters to factors for plot
+    results = results_raw %>% 
+      map(\(x) data.frame(x)) %>% 
+      reduce(bind_rows) %>% 
+      left_join(params, by = "sim_id") %>% 
+      pivot_longer(cols = 1:(ncol(results_raw[[1]])-1),
+                   names_to = "statistic",
+                   values_to = "value") %>% 
+      mutate(across(1:ncol(params), as.factor))
+    return(results)
+    
+  }
+  
+}
+
+# run simulation
+results <- simulation(params = params, sim_function = run_trial, iterations = 1000, format_results = TRUE)
+head(results)
 
 # create a plot facetted by beta value, with density curves for the sampling distributions of the t-stats for each value of the sigma / beta1 ratio
 # -> add reference line for significance cutoff
@@ -437,7 +464,7 @@ labels_beta <- c("1" = "beta1 = 1",
                  "5" = "beta1 = 5",
                  "10" = "beta1 = 10")
 ggplot() + 
-  geom_density(aes(x = t,
+  geom_density(aes(x = value,
                    group = ratio,
                    color = ratio,
                    fill = ratio),

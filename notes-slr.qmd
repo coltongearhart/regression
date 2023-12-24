@@ -486,8 +486,6 @@ coef(mod_slr) # alias for coefficients()
 
 These are estimates of the population coefficients, so can compare above values to $\beta_0$ = `r beta_0` and $\beta_1$ = `r beta_1`.
 
-<mark>**Programming note → Beautiful sites ([(1)](https://genomicsclass.github.io/book/pages/qr_and_regression.html) and [(2)](https://machinelearningmastery.com/solve-linear-regression-using-linear-algebra/#:~:text=The%20QR%20decomposition%20is%20an,down%20into%20its%20constituent%20elements.&text=Where%20A%20is%20the%20matrix,the%20linear%20least%20squares%20equation.)) explaining QR decomposition and how it relates to LSE; must go through and recreate at some point.**</mark>
-
 #### Manual
 
 ```{r}

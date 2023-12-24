@@ -228,7 +228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
 <li><a href="#estimation-of-regression-coefficients-fitted-values-and-residuals" id="toc-estimation-of-regression-coefficients-fitted-values-and-residuals" class="nav-link" data-scroll-target="#estimation-of-regression-coefficients-fitted-values-and-residuals"><span class="header-section-number">5.3.1</span> Estimation of regression coefficients, fitted values and residuals</a></li>
   <li><a href="#sec-anova-matrices" id="toc-sec-anova-matrices" class="nav-link" data-scroll-target="#sec-anova-matrices"><span class="header-section-number">5.3.2</span> ANOVA</a></li>
-  <li><a href="#f-test-for-regression-relation" id="toc-f-test-for-regression-relation" class="nav-link" data-scroll-target="#f-test-for-regression-relation"><span class="header-section-number">5.3.3</span> F-test for regression relation</a></li>
+  <li><a href="#sec-f-test-overall" id="toc-sec-f-test-overall" class="nav-link" data-scroll-target="#sec-f-test-overall"><span class="header-section-number">5.3.3</span> F-test for regression relation</a></li>
   <li><a href="#coefficient-of-multiple-determination" id="toc-coefficient-of-multiple-determination" class="nav-link" data-scroll-target="#coefficient-of-multiple-determination"><span class="header-section-number">5.3.4</span> Coefficient of multiple determination</a></li>
   <li><a href="#coefficient-of-multiple-correlation" id="toc-coefficient-of-multiple-correlation" class="nav-link" data-scroll-target="#coefficient-of-multiple-correlation"><span class="header-section-number">5.3.5</span> Coefficient of multiple correlation</a></li>
   <li><a href="#inferences-about-regression-parameters" id="toc-inferences-about-regression-parameters" class="nav-link" data-scroll-target="#inferences-about-regression-parameters"><span class="header-section-number">5.3.6</span> Inferences about regression parameters</a></li>
@@ -467,12 +467,12 @@ X_2 =
 <pre><code># A tibble: 6 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)  2.67       1.46     1.83    7.47e- 2
-2 X1           1.81       0.373    4.85    1.56e- 5
-3 X2           2.26       0.387    5.83    5.97e- 7
-4 X4          -0.00112    0.440   -0.00254 9.98e- 1
-5 I(X1^2)      1.90       0.0974  19.5     2.99e-23
-6 I(X1 * X2)   2.17       0.168   12.9     1.43e-16</code></pre>
+1 (Intercept)   -0.909     1.75     -0.521 6.05e- 1
+2 X1             2.54      0.358     7.10  8.21e- 9
+3 X2             1.95      0.400     4.87  1.49e- 5
+4 X4             0.403     0.491     0.820 4.16e- 1
+5 I(X1^2)        2.11      0.102    20.8   2.18e-24
+6 I(X1 * X2)     2.19      0.117    18.6   1.75e-22</code></pre>
 </div>
 </div>
 </div>
@@ -502,17 +502,17 @@ $comparison$`element-wise`
 
 
 $`coef(mod_mlr)`
- (Intercept)           X1           X2           X4      I(X1^2)   I(X1 * X2) 
- 2.669893983  1.808305651  2.258265860 -0.001120448  1.895863029  2.170093720 
+(Intercept)          X1          X2          X4     I(X1^2)  I(X1 * X2) 
+ -0.9089421   2.5439630   1.9460451   0.4028995   2.1137386   2.1865297 
 
 $betas_hat
-                    [,1]
-(Intercept)  2.669893983
-X1           1.808305651
-X2           2.258265860
-X4          -0.001120448
-I(X1^2)      1.895863029
-I(X1 * X2)   2.170093720</code></pre>
+                  [,1]
+(Intercept) -0.9089421
+X1           2.5439630
+X2           1.9460451
+X4           0.4028995
+I(X1^2)      2.1137386
+I(X1 * X2)   2.1865297</code></pre>
 </div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># fitted values</span></span>
 <span><span class="va">y_hat</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">betas_hat</span></span>
@@ -551,14 +551,14 @@ I(X1 * X2)   2.170093720</code></pre>
 <span><span class="op">(</span><span class="va">at</span> <span class="op">&lt;-</span> <span class="va">mod_mlr</span> <span class="op">%&gt;%</span> <span class="va">anova</span> <span class="op">%&gt;%</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 6
-  term          df   sumsq  meansq statistic   p.value
-  &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 X1             1   792.    792.     12.1    1.14e- 3
-2 X2             1  1450.   1450.     22.2    2.49e- 5
-3 X4             1    34.9    34.9     0.535  4.69e- 1
-4 I(X1^2)        1 58343.  58343.    893.     7.38e-31
-5 I(X1 * X2)     1 10902.  10902.    167.     1.43e-16
-6 Residuals     44  2875.     65.4    NA     NA       </code></pre>
+  term          df  sumsq  meansq statistic   p.value
+  &lt;chr&gt;      &lt;int&gt;  &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 X1             1   317.   317.       4.44  4.09e- 2
+2 X2             1  3582.  3582.      50.1   8.79e- 9
+3 X4             1   357.   357.       5.00  3.05e- 2
+4 I(X1^2)        1 15193. 15193.     212.    1.88e-18
+5 I(X1 * X2)     1 24771. 24771.     346.    1.75e-22
+6 Residuals     44  3146.    71.5     NA    NA       </code></pre>
 </div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate sum of squares</span></span>
 <span><span class="va">ssto</span> <span class="op">&lt;-</span> <span class="va">at</span> <span class="op">%&gt;%</span> <span class="fu">summarize</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">sumsq</span><span class="op">)</span><span class="op">)</span></span>
@@ -583,10 +583,10 @@ I(X1 * X2)   2.170093720</code></pre>
 [1] TRUE
 
 $`as.numeric(sse)`
-[1] 2875.452
+[1] 3145.966
 
 $`as.numeric(SSE)`
-[1] 2875.452</code></pre>
+[1] 3145.966</code></pre>
 </div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; SSR = Y'[H-(1/n)J]Y </span></span>
 <span><span class="va">SSR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="op">(</span><span class="va">hat_matrix</span> <span class="op">-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">Y</span></span>
@@ -597,16 +597,16 @@ $`as.numeric(SSE)`
 [1] TRUE
 
 $`as.numeric(ssr)`
-[1] 71522.26
+[1] 44220.33
 
 $`as.numeric(SSR)`
-[1] 71522.26</code></pre>
+[1] 44220.33</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-</section><section id="f-test-for-regression-relation" class="level3" data-number="5.3.3"><h3 data-number="5.3.3" class="anchored" data-anchor-id="f-test-for-regression-relation">
+</section><section id="sec-f-test-overall" class="level3" data-number="5.3.3"><h3 data-number="5.3.3" class="anchored" data-anchor-id="sec-f-test-overall">
 <span class="header-section-number">5.3.3</span> F-test for regression relation</h3>
 <p><img src="files/images/mlr-f-test.png" class="img-fluid" style="width:80.0%"></p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
@@ -625,7 +625,7 @@ $`as.numeric(SSR)`
 <pre><code># A tibble: 1 × 12
   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1     0.961         0.957  8.08      219. 6.59e-30     5  -172.  358.  372.
+1     0.934         0.926  8.46      124. 9.41e-25     5  -174.  363.  376.
 # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 </div>
@@ -648,10 +648,10 @@ $`as.numeric(SSR)`
 [1] TRUE
 
 $`as.numeric(mse)`
-[1] 65.35118
+[1] 71.49923
 
 $`as.numeric(MSE)`
-[1] 65.35118</code></pre>
+[1] 71.49923</code></pre>
 </div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">compare</span><span class="op">(</span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">mod_mlr</span><span class="op">)</span><span class="op">$</span><span class="va">statistic</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">F_stat</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -660,10 +660,10 @@ $`as.numeric(MSE)`
 
 $`broom::glance(mod_mlr)$statistic`
    value 
-218.8859 
+123.6946 
 
 $`as.numeric(F_stat)`
-[1] 218.8859</code></pre>
+[1] 123.6946</code></pre>
 </div>
 </div>
 </div>
@@ -705,7 +705,7 @@ $`as.numeric(F_stat)`
 <pre><code># A tibble: 1 × 12
   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1     0.961         0.957  8.08      219. 6.59e-30     5  -172.  358.  372.
+1     0.934         0.926  8.46      124. 9.41e-25     5  -174.  363.  376.
 # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 </div>
@@ -724,10 +724,10 @@ $`as.numeric(F_stat)`
 [1] TRUE
 
 $`as.numeric(broom::glance(mod_mlr)$r.squared)`
-[1] 0.9613503
+[1] 0.9335822
 
 $`as.numeric(R2)`
-[1] 0.9613503</code></pre>
+[1] 0.9335822</code></pre>
 </div>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate adjusted coefficient of determination</span></span>
 <span><span class="co"># -&gt; R^2 = 1 - (n - 1) / (n - p) SSE / SSTO</span></span>
@@ -739,10 +739,10 @@ $`as.numeric(R2)`
 [1] TRUE
 
 $`as.numeric(broom::glance(mod_mlr)$adj.r.squared)`
-[1] 0.9569582
+[1] 0.9260347
 
 $`as.numeric(R2_adj)`
-[1] 0.9569582</code></pre>
+[1] 0.9260347</code></pre>
 </div>
 </div>
 </div>
@@ -777,12 +777,12 @@ $`as.numeric(R2_adj)`
 <pre><code># A tibble: 6 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)  2.67       1.46     1.83    7.47e- 2
-2 X1           1.81       0.373    4.85    1.56e- 5
-3 X2           2.26       0.387    5.83    5.97e- 7
-4 X4          -0.00112    0.440   -0.00254 9.98e- 1
-5 I(X1^2)      1.90       0.0974  19.5     2.99e-23
-6 I(X1 * X2)   2.17       0.168   12.9     1.43e-16</code></pre>
+1 (Intercept)   -0.909     1.75     -0.521 6.05e- 1
+2 X1             2.54      0.358     7.10  8.21e- 9
+3 X2             1.95      0.400     4.87  1.49e- 5
+4 X4             0.403     0.491     0.820 4.16e- 1
+5 I(X1^2)        2.11      0.102    20.8   2.18e-24
+6 I(X1 * X2)     2.19      0.117    18.6   1.75e-22</code></pre>
 </div>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># just going to recreate the p-value from given info</span></span>
 <span><span class="op">(</span><span class="va">summ2</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">mod_mlr</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -790,7 +790,7 @@ $`as.numeric(R2_adj)`
 <pre><code># A tibble: 1 × 12
   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1     0.961         0.957  8.08      219. 6.59e-30     5  -172.  358.  372.
+1     0.934         0.926  8.46      124. 9.41e-25     5  -174.  363.  376.
 # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># verify t-stat = estimate / std.error</span></span>
@@ -800,10 +800,10 @@ $`as.numeric(R2_adj)`
 [1] TRUE
 
 $`as.numeric(summ1[2, 4])`
-[1] 4.853921
+[1] 7.098208
 
 $`as.numeric(summ1[2, 2]/summ1[2, 3])`
-[1] 4.853921</code></pre>
+[1] 7.098208</code></pre>
 </div>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate p-value from theoretical (beta_k-hat - beta_k)/ SE(\beta_k-hat) ~ t_(n-p) </span></span>
 <span><span class="va">p_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">pt</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">summ1</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">]</span><span class="op">)</span>, df <span class="op">=</span> <span class="va">summ2</span><span class="op">$</span><span class="va">df.residual</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span></span>
@@ -814,10 +814,10 @@ $`as.numeric(summ1[2, 2]/summ1[2, 3])`
 [1] TRUE
 
 $`as.numeric(summ1[2, 5])`
-[1] 0.00001559654
+[1] 0.000000008208906
 
 $p_value
-[1] 0.00001559654</code></pre>
+[1] 0.000000008208906</code></pre>
 </div>
 </div>
 </div>
@@ -828,7 +828,7 @@ $p_value
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">mod_mlr</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   2.5 %   97.5 % 
-1.057490 2.559121 </code></pre>
+1.821665 3.266261 </code></pre>
 </div>
 </div>
 </div>
@@ -845,10 +845,10 @@ $p_value
 [1] TRUE
 
 $`as.numeric(confint(mod_mlr)[2, ])`
-[1] 1.057490 2.559121
+[1] 1.821665 3.266261
 
 $`c(bound_lower, bound_upper)`
-[1] 1.057490 2.559121</code></pre>
+[1] 1.821665 3.266261</code></pre>
 </div>
 </div>
 </div>
@@ -888,12 +888,12 @@ $`c(bound_lower, bound_upper)`
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correlation matrix</span></span>
 <span><span class="op">(</span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">data_sample</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        Y     X1     X2     X3     X4
-Y   1.000 -0.103  0.121  0.269 -0.047
-X1 -0.103  1.000  0.161  0.031  0.065
-X2  0.121  0.161  1.000  0.106 -0.125
-X3  0.269  0.031  0.106  1.000 -0.075
-X4 -0.047  0.065 -0.125 -0.075  1.000</code></pre>
+<pre><code>       Y     X1     X2    X3     X4
+Y  1.000  0.082  0.272 0.429  0.107
+X1 0.082  1.000 -0.032 0.171 -0.053
+X2 0.272 -0.032  1.000 0.045  0.092
+X3 0.429  0.171  0.045 1.000  0.149
+X4 0.107 -0.053  0.092 0.149  1.000</code></pre>
 </div>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># correlation plot</span></span>
 <span><span class="fu">corrplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -907,12 +907,12 @@ X4 -0.047  0.065 -0.125 -0.075  1.000</code></pre>
 <span><span class="va">r</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html">lower.tri</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="va">r</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    Y     X1    X2    X3     X4
-Y   1 -0.103 0.121 0.269 -0.047
-X1 NA  1.000 0.161 0.031  0.065
-X2 NA     NA 1.000 0.106 -0.125
-X3 NA     NA    NA 1.000 -0.075
-X4 NA     NA    NA    NA  1.000</code></pre>
+<pre><code>    Y    X1     X2    X3     X4
+Y   1 0.082  0.272 0.429  0.107
+X1 NA 1.000 -0.032 0.171 -0.053
+X2 NA    NA  1.000 0.045  0.092
+X3 NA    NA     NA 1.000  0.149
+X4 NA    NA     NA    NA  1.000</code></pre>
 </div>
 </div>
 <p>Residual plots</p>
@@ -1072,13 +1072,13 @@ NULL</code></pre>
 <span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">mod_no_poly</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 5
-  term        estimate std.error statistic  p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)   19.4       3.63      5.33  3.03e- 6
-2 X1             0.793     1.13      0.701 4.87e- 1
-3 X2             2.21      1.19      1.86  6.90e- 2
-4 X4             1.71      1.32      1.29  2.02e- 1
-5 I(X1 * X2)     3.80      0.447     8.51  6.35e-11</code></pre>
+  term        estimate std.error statistic      p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+1 (Intercept)   25.3       3.93      6.43  0.0000000726
+2 X1             0.473     1.12      0.422 0.675       
+3 X2             2.10      1.30      1.61  0.114       
+4 X4             1.73      1.58      1.09  0.281       
+5 I(X1 * X2)     1.21      0.350     3.46  0.00121     </code></pre>
 </div>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># see residuals vs fitted</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mod_no_poly</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1166,13 +1166,13 @@ NULL</code></pre>
 <span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">mod_no_interaction</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 5
-  term        estimate std.error statistic  p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)   -0.348     3.12     -0.111 9.12e- 1
-2 X1             1.17      0.799     1.46  1.50e- 1
-3 X2             2.08      0.838     2.49  1.67e- 2
-4 X4            -1.44      0.923    -1.56  1.27e- 1
-5 I(X1^2)        2.52      0.183    13.8   8.74e-18</code></pre>
+  term        estimate std.error statistic   p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)    7.62      4.96     1.54   0.132    
+2 X1             2.35      1.06     2.23   0.0307   
+3 X2             2.93      1.17     2.51   0.0157   
+4 X4            -0.105     1.44    -0.0726 0.942    
+5 I(X1^2)        1.36      0.275    4.95   0.0000109</code></pre>
 </div>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># see residuals vs fitted</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mod_no_interaction</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2128,7 +2128,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb62-422"><a href="#cb62-422" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-423"><a href="#cb62-423" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb62-424"><a href="#cb62-424" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a><span class="fu">### F-test for regression relation</span></span>
+<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a><span class="fu">### F-test for regression relation {#sec-f-test-overall}</span></span>
 <span id="cb62-426"><a href="#cb62-426" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-427"><a href="#cb62-427" aria-hidden="true" tabindex="-1"></a><span class="al">![](files/images/mlr-f-test.png)</span>{width="80%"}</span>
 <span id="cb62-428"><a href="#cb62-428" aria-hidden="true" tabindex="-1"></a></span>

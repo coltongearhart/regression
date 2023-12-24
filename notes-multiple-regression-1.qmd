@@ -415,7 +415,7 @@ compare(as.numeric(ssr), as.numeric(SSR))
 
 :::
 
-### F-test for regression relation
+### F-test for regression relation {#sec-f-test-overall}
 
 ![](files/images/mlr-f-test.png){width="80%"}
 

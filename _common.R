@@ -114,21 +114,26 @@ compare <- function(item_1, item_2, return_items = TRUE, tolerance = 0.00001, ch
       }
       
       # if dataframe, correctly compare columns after checking column data type
-      else if (identical(class(item_1), "data.frame")) {
+      # different comparison to also capture tibbles
+      else if (sum(class(item_1) == "data.frame") > 0) {
+        
+        # convert to dataframes so element-wise comparisons work as desired
+        tmp_item_1 = data.frame(item_1)
+        tmp_item_2 = data.frame(item_2)
         
         decimals = ceiling(abs(log10(tolerance)))
         
-        tmp = sapply(1:ncol(item_1), function(i) {
+        tmp = sapply(1:ncol(tmp_item_1), function(i) {
           
-          if(identical(class(item_1[, i]), "numeric")) {
+          if(identical(class(tmp_item_1[, i]), "numeric")) {
             
             # compare numerics after rounding
-            round(as.numeric(item_1[, i]), decimals) == round(as.numeric(item_2[, i]), decimals)
+            round(as.numeric(tmp_item_1[, i]), decimals) == round(as.numeric(tmp_item_2[, i]), decimals)
             
           } else {
             
             # compare factors or characters
-            as.character(item_1[, i]) == as.character(item_2[, i])
+            as.character(tmp_item_1[, i]) == as.character(tmp_item_2[, i])
             
           }
           

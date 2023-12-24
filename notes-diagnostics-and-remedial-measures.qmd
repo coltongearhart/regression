@@ -669,7 +669,7 @@ e_star <- rstandard(mod_ideal)
 # view final transformation of residuals
 data.frame(e = resid(mod), e_star, f_e_star = sqrt(abs(e_star))) %>% 
   head(n = 5) %>% 
-  display_nice(col.names = c("Residuals $e_i$", "Standardized residuals $e_i^*$", "$f(e_i^*) = \\sqrt{\\lvert e_i^* \\rvert}$"))
+  display_nice(col.names = c("Residuals e", "Standardized residuals e-star", "f(e-star ) = sqrt(abs(e-star))"))
 
 # overlay function of standardized residuals to scale-location plot to confirm they line up 
 points(x = fitted(mod_ideal), y = sqrt(abs(e_star)), col = "blue", pch = 3)
@@ -1720,13 +1720,270 @@ lines(lowess(x = x_2, y = resid(mod_missing_important_x)), col = "red")
 
 ## Effects of departures
 
-```{r}
-#| eval = FALSE,
-#| echo = FALSE
+### Setup and functions
 
-# departure effects simulation placeholder
+Simulation to determine the effect of various model departures on model performance.
+
+```{r}
+#| code-fold: true
+
+# initialize simulation settings
+# -> first the parameter(s) of interest (that are variable), excluding nonlinear cause scales are totally different
+# -> create all combos
+# -> add in the constant settings
+# -> arrange in good order if necessary
+# -> add simulation id column
+# -> set row names equal to id (helps keep track of results later)
+params <- expand.grid(model = c("ideal", "skewed x", "squared x", "increasing error variance", "complex error variance", "outlier", "high leverage point", "influential point", "dependent error", "linear trend error", "cyclical error", "skewed error", "light tailed error", "heavy tailed error", "missing important x")) %>% 
+  mutate(model = as.character(model),
+         n = 50,
+         beta_0 = 2,
+         beta_1 = 2,
+         beta_2 = 0,
+         sigma = 5) %>%
+  bind_cols(data.frame(sim_id = 1:nrow(.)))
+rownames(params) <- paste0("sim", params$sim_id)
+
+# set beta2 for models that need it
+params[which(params$model == "squared x"), "beta_2"] <- 2
+params[which(params$model == "missing important x"), "beta_2"] <- 2
+
+head(params)
 
 ```
+
+```{r}
+#| code-fold: true
+
+# define function to generate the model of interest
+# -> conditionally generates X values, error terms and Y values, then fits model
+generate_mod <- function(model = c("ideal", "skewed x", "squared x", "increasing error variance", "complex error variance", "outlier", "high leverage point", "influential point", "dependent error", "linear trend error", "cyclical error", "skewed error", "light tailed error", "heavy tailed error", "missing important x"), n = 30, beta_0 = 1, beta_1 = 2, beta_2 = 0, sigma = 5) {
+  
+  # set model type by matching argument
+  # -> if no model is specified, defaults to the first one
+  # -> partial string matches work
+  model = match.arg(model)
+  
+  # generate X samples
+  # -> only model with specific x dist is skewed predictor
+  # -> need to sort x for complex error variance
+  x = 
+    if (identical(model, "skewed x")) {truncdist::rtrunc(n = 50, spec = "exp", a = 5, b = 15)}
+  else {runif(n = n, min = 5, max = 15)}
+  if (identical(model, "complex error variance")) {x = sort(x)}
+  x_2 = runif(n = n, min = 0, max = 5)
+  
+  # generate error terms
+  epsilon = 
+    if (identical(model, "increasing error variance")) {rnorm(n = n, mean = 0, sd = 5 * x)}
+  else if (identical(model, "complex error variance")) {rnorm(n = n, mean = 0 , sd = c(seq(from = 20, to = 1, length.out = n / 2), seq(from = 1, to = 20, length.out = n / 2)))}
+  else if (identical(model, "linear trend error")) {rnorm(n = n, mean = seq(from = -20, to = 20, length.out = n), sd = sigma)}
+  else if (identical(model, "cyclical error")) {rnorm(n = n, mean = c(seq(from = -20, to = 20, length.out = n / 3), seq(from = 20, to = -20, length.out = n / 3), seq(from = -20, to = 20, length.out = n / 3)), sd = sigma)}
+  else if (identical(model, "skewed error")) {rexp(n = n, rate = 1/sigma)}
+  else if (identical(model, "light tailed error")) {runif(n = n, min = -2, max = 2)}
+  else if (identical(model, "heavy tailed error")) {rt(n = n, df = 4)}
+  else {rnorm(n = n, mean = 0, sd = sigma)}
+  if (identical(model, "dependent error")) {epsilon = cumsum(epsilon)}
+  
+  # calculate Y observations using with both xs
+  # -> if X2 is not needed beta_2 = 0 cancels it out
+  y = 
+    if (identical(model, "squared x")) {beta_0 + beta_1 * x + beta_2 * x^2 + epsilon}
+  else {beta_0 + beta_1 * x + beta_2 * x_2 + epsilon}
+  
+  # change last observation for unusual observations
+  if (identical(model, "outlier")) {x[n] = runif(1, min = 8, max = 12); y[n] = rnorm(n = 1, mean = (beta_0 + 4) + (beta_1 + 4) * x[n], sd = sigma)}
+  else if (identical(model, "high leverage point")) {x[n] = runif(1, min = 18, max = 22); y[n] = beta_0 + beta_1 * x[n] + epsilon[n]} # same regression function (use same error), extreme x value
+  else if (identical(model, "influential point")) {x[n] = runif(1, min = 18, max = 22); y[n] = rnorm(n = 1, mean = (beta_0 + 4) + (beta_1 + 4) * x[n], sd = sigma)}
+  
+  # fit model
+  mod = lm(y ~ x)
+  
+}
+
+# define function to run on each unique simulation setting
+run_trial <- function(vec, vec_names, m = 1000) {
+  
+  # redefine arguments for easier reference
+  # -> numeric values get coerced to character because of `model` data type
+  names(vec) = vec_names
+  model = vec["model"]
+  n = as.numeric(vec["n"])
+  beta_0 = as.numeric(vec["beta_0"])
+  beta_1 = as.numeric(vec["beta_1"])
+  beta_2 = as.numeric(vec["beta_2"])
+  sigma = as.numeric(vec["sigma"])
+  sim_id = as.numeric(vec["sim_id"])
+  
+  # initialize vectors of quantities of interest
+  beta0_hat = rep(NA, m)
+  beta1_hat = rep(NA, m)
+  se_beta1_hat = rep(NA, m)
+  t_star = rep(NA, m)
+  mse = rep(NA, m)
+  r_squared = rep(NA, m)
+  
+  # loop to simulate m models and extract summaries
+  for (i in 1:m) {
+    
+    # fit model
+    mod <- generate_mod(model = model, n = n, beta_0 = beta_0, beta_1 = beta_1, beta_2 = beta_2, sigma = sigma)
+    
+    # get summaries
+    # -> just want t-stat
+    beta0_hat[i] = summary(mod)$coefficients["(Intercept)", "Estimate"]
+    beta1_hat[i] = summary(mod)$coefficients["x", "Estimate"]
+    se_beta1_hat[i] = summary(mod)$coefficients["x", "Std. Error"]
+    t_star[i] = summary(mod)$coefficients["x", "t value"]
+    mse[i] = summary(mod)$sigma^2
+    r_squared[i] = summary(mod)$r.squared
+    
+  }
+  
+  return(cbind(beta0_hat, beta1_hat, se_beta1_hat, t_star, mse, r_squared, sim_id = sim_id))
+  
+}
+
+# define function to run simulation and format results
+simulation <- function(params, sim_function, iterations = 100, format_results = FALSE) {
+  
+  # run simulation for each parameter settings
+  # -> have to transpose so that now each column is a parameter settings and convert to dataframe so can pass to map(), which needs a list
+  results_raw = params %>% 
+    t %>% 
+    data.frame %>% 
+    map(\(vec) sim_function(vec, vec_names = names(params), m = iterations), .progress = T)
+  
+  if (!format_results){
+    
+    return(results_raw)
+    
+  }else{
+    
+    # reformat results
+    # -> convert each results matrix to a dataframe, then combine
+    # -> attach the simulation settings to the results
+    # -> pivot longer to have one column for the name of the summary measure and one for its value
+    # -> convert parameters to factors for plot
+    results = results_raw %>% 
+      map(\(x) data.frame(x)) %>% 
+      reduce(bind_rows) %>% 
+      left_join(params, by = "sim_id") %>% 
+      pivot_longer(cols = 1:(ncol(results_raw[[1]])-1),
+                   names_to = "statistic",
+                   values_to = "value") %>% 
+      mutate(across(1:ncol(params), as.factor))
+    return(results)
+  }
+  
+}
+
+# define function to plot standard results
+plot_results <- function(res, mods) {
+  
+  res %>% 
+  filter(model %in% mods) %>% 
+    ggplot(aes(x = value,
+               group = model,
+               color = model,
+               fill = model),
+           data = .) + 
+    geom_density(alpha = 0.2) + 
+    facet_wrap(statistic ~ .,
+               scales = "free") 
+}
+
+```
+
+### Results
+
+```{r}
+
+# run simulation
+results <- simulation(params = params, sim_function = run_trial, iterations = 1000, format_results = TRUE)
+
+head(results)
+
+```
+
+```{r}
+
+# unusual observations results
+plot_results(res = results, mods = c("ideal", "outlier", "high leverage point", "influential point"))
+
+```
+
+Takeaways
+
+- Estimated coefficients:
+
+    - High leverage points really have no impact on anything (slightly inflate $R^2$).
+    
+    - Only influential points make estimated coefficients biased.
+    
+    - Both influential points and outliers inflate $MSE$, with influential points having more of an impact.
+    
+    - Outliers have the largest decrease in $R^2$; influential points decrease it as well.
+    
+    - Standard errors of estimated coefficients are much larger for influential points, then followed by outliers.
+    
+    - Least likely to reject test on coefficient when there is an outlier, then followed by influential points (which makes sense cause outliers lead to same estimated coefficients, but larger standard errors).
+
+```{r}
+
+# nonconstant error variance
+plot_results(res = results, mods = c("ideal", "increasing error variance", "complex error variance"))
+
+```
+
+Takeaways
+
+- Non constant error variance messes everything up, this definitely needs to be remedied first.
+
+```{r}
+
+# dependent error variance
+plot_results(res = results, mods = c("ideal", "dependent error", "linear trend error", "cyclical error"))
+
+```
+
+Takeaways
+
+- Not independent errors are just the wrong type of model for SLR.
+
+- All drastically lower $R^2$ and higher standard error of coefficients (less likely to reject), but similar estimates.
+
+```{r}
+
+# non normal error distribution
+plot_results(res = results, mods = c("ideal", "skewed error", "light tailed error", "heavy tailed error"))
+
+```
+
+Takeaways
+
+- Skewed errors seem to have little impact.
+
+- Not sure what to make of the others, they seem extreme.
+
+```{r}
+
+# other
+plot_results(res = results, mods = c("ideal", "skewed x", "missing important x"))
+
+```
+
+Takeaways
+
+(not looking at when missing $x^2$, everything way off)
+
+- Same estimated coefficients, lots more variability when skewed $X$. This makes sense in the formula below.
+
+![](files/images/x-dist.png){width="80%"}
+
+- Skewed $X$ results in a drastically lower $R^2$. Interesting.
+
+- Missing important predictors leads to inflated $MSE$, which makes sense.
 
 ## Tests
 
@@ -2804,8 +3061,6 @@ plot(lm(1/y ~ I(1/x)), which = 1:2)
 - This introduces some other issues, so perhaps another method such as weighted least squares would be more appropriate.
 
 :::
-
-<!-- effects departure simulation -->
 
 ### Box-Cox transformations {#sec-box-cox}
 
