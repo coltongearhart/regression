@@ -60,6 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./notes-reg-models-quan-and-qual.html" rel="next">
 <link href="./notes-multiple-regression-1.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -203,6 +204,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Multiple regression 2</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes-reg-models-quan-and-qual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quanititative and qualitative predictors</span></span></a>
+  </div>
+</li>
       </ul>
 </li>
     </ul>
@@ -328,12 +335,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_123</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">tidy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 6
-  term         df    sumsq   meansq statistic   p.value
-  &lt;chr&gt;     &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 X1            1 1504.    1504.     118.      2.71e-14
-2 X2            1 1460.    1460.     115.      4.45e-14
-3 X3            1    0.566    0.566    0.0445  8.34e- 1
-4 Residuals    46  586.      12.7     NA      NA       </code></pre>
+  term         df   sumsq  meansq statistic   p.value
+  &lt;chr&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 X1            1 2050.   2050.     331.     1.21e-22
+2 X2            1 2305.   2305.     372.     1.11e-23
+3 X3            1    3.77    3.77     0.608  4.40e- 1
+4 Residuals    46  285.      6.19    NA     NA       </code></pre>
 </div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># verify conditional sum of squares</span></span>
 <span></span>
@@ -345,10 +352,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 [1] TRUE
 
 $`mod_123 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(sumsq)`
-[1] 1503.859
+[1] 2049.535
 
 $`mod_1 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(sumsq)`
-[1] 1503.859</code></pre>
+[1] 2049.535</code></pre>
 </div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># X2 in the model after X1 already in model</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">mod_123</span> <span class="op">%&gt;%</span> <span class="va">anova</span> <span class="op">%&gt;%</span> <span class="va">tidy</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">term</span> <span class="op">==</span> <span class="st">"X2"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">pull</span><span class="op">(</span><span class="va">sumsq</span><span class="op">)</span>,</span>
@@ -358,10 +365,10 @@ $`mod_1 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(sumsq)`
 [1] TRUE
 
 $`mod_123 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)`
-[1] 1459.657
+[1] 2304.802
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)`
-[1] 1459.657</code></pre>
+[1] 2304.802</code></pre>
 </div>
 </div>
 </section></section><section id="use-of-extra-sums-of-squares-in-tests-for-regression-coefficients" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="use-of-extra-sums-of-squares-in-tests-for-regression-coefficients">
@@ -391,10 +398,10 @@ $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)
 [1] TRUE
 
 $`t_stat %&gt;% raise_to_power(2)`
-[1] 116.9972
+[1] 375.3236
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statistic)`
-[1] 116.9972</code></pre>
+[1] 375.3236</code></pre>
 </div>
 </div>
 </section><section id="summary-of-tests-concerning-regression-coefficients" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="summary-of-tests-concerning-regression-coefficients">
@@ -417,17 +424,17 @@ $`mod_12 %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)     1.38     0.500      2.77 8.00e- 3
-2 X1              2.04     0.178     11.4  3.51e-15
-3 X2              1.99     0.184     10.8  2.39e-14
+1 (Intercept)     1.25     0.384      3.25 2.14e- 3
+2 X1              2.27     0.133     17.1  7.80e-22
+3 X2              1.98     0.102     19.4  4.78e-24
 
 $`mod_21 %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)     1.38     0.500      2.77 8.00e- 3
-2 X1              2.04     0.178     11.4  3.51e-15
-3 X2              1.99     0.184     10.8  2.39e-14</code></pre>
+1 (Intercept)     1.25     0.384      3.25 2.14e- 3
+2 X1              2.27     0.133     17.1  7.80e-22
+3 X2              1.98     0.102     19.4  4.78e-24</code></pre>
 </div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># just different decomposition of SS</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">mod_12</span> <span class="op">%&gt;%</span> <span class="va">anova</span> <span class="op">%&gt;%</span> <span class="va">tidy</span> <span class="op">%&gt;%</span> <span class="fu">arrange</span><span class="op">(</span><span class="va">term</span><span class="op">)</span>,</span>
@@ -438,9 +445,9 @@ $comparison$result
 [1] FALSE
 
 $comparison$description
-[1] "Component \"sumsq\": Mean relative difference: 0.08681264"    
-[2] "Component \"meansq\": Mean relative difference: 0.08681264"   
-[3] "Component \"statistic\": Mean relative difference: 0.08681264"
+[1] "Component \"sumsq\": Mean relative difference: 0.1071776"    
+[2] "Component \"meansq\": Mean relative difference: 0.1141208"   
+[3] "Component \"statistic\": Mean relative difference: 0.1142817"
 
 $comparison$`element-wise`
      term   df sumsq meansq statistic p.value
@@ -451,19 +458,19 @@ $comparison$`element-wise`
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 6
-  term         df sumsq meansq statistic   p.value
-  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 Residuals    47  586.   12.5       NA  NA       
-2 X1            1 1504. 1504.       121.  1.44e-14
-3 X2            1 1460. 1460.       117.  2.39e-14
+  term         df sumsq  meansq statistic   p.value
+  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 Residuals    47  289.    6.14       NA  NA       
+2 X1            1 2050. 2050.        334.  5.50e-23
+3 X2            1 2305. 2305.        375.  4.78e-24
 
 $`mod_21 %&gt;% anova %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 6
-  term         df sumsq meansq statistic   p.value
-  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 Residuals    47  586.   12.5       NA  NA       
-2 X1            1 1632. 1632.       131.  3.51e-15
-3 X2            1 1331. 1331.       107.  1.12e-13</code></pre>
+  term         df sumsq  meansq statistic   p.value
+  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 Residuals    47  289.    6.14       NA  NA       
+2 X1            1 1801. 1801.        293.  7.80e-22
+3 X2            1 2554. 2554.        416.  5.53e-25</code></pre>
 </div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># verify what is included previpously in model matters for F tests</span></span>
 <span></span>
@@ -476,17 +483,17 @@ $comparison$result
 [1] FALSE
 
 $comparison$description
-[1] "Mean relative difference: 0.08812708"
+[1] "Mean relative difference: 0.1079531"
 
 $comparison$`element-wise`
 [1] FALSE
 
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statistic)`
-[1] 116.9972
+[1] 375.3236
 
 $`mod_21 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statistic)`
-[1] 106.6866</code></pre>
+[1] 415.8409</code></pre>
 </div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># but X3 | X1, X2 should be same as X3 | X2, X1</span></span>
 <span><span class="va">mod_213</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X3</span>, <span class="va">data_sample</span><span class="op">)</span></span>
@@ -498,10 +505,10 @@ $`mod_21 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statis
 [1] TRUE
 
 $`mod_123 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X3") %&gt;% pull(statistic)`
-[1] 0.04448291
+[1] 0.6080767
 
 $`mod_213 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X3") %&gt;% pull(statistic)`
-[1] 0.04448291</code></pre>
+[1] 0.6080767</code></pre>
 </div>
 </div>
 </section><section id="coefficient-of-partial-determination" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="coefficient-of-partial-determination">
@@ -539,10 +546,10 @@ $`mod_213 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X3") %&gt;% pull(stati
 [1] TRUE
 
 $`SSR_X2_given_X1/SSE_X1`
-[1] 0.7134097
+[1] 0.8887109
 
 $`mod_resids %&gt;% glance %&gt;% pull(r.squared)`
-[1] 0.7134097</code></pre>
+[1] 0.8887109</code></pre>
 </div>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># show added variable plot -&gt; strong linear relationship is evident after adjusting for X1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_1</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_X2X1</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -564,9 +571,14 @@ $`mod_resids %&gt;% glance %&gt;% pull(r.squared)`
 <li><p>Roundoff errors tend to enter normal equations calculations primarily when the inverse of <span class="math inline">\(\boldsymbol{X'X}\)</span>is taken. These are magnified when calculating <span class="math inline">\(\boldsymbol{\beta}\)</span> and other statistics.</p></li>
 <li><p>The danger of serious roundoff errors in <span class="math inline">\(\boldsymbol{(X'X)}^{-1}\)</span> is particularly great when (1) <span class="math inline">\(\boldsymbol{X'X}\)</span> has a determinant that is close to zero and/or (2) the elements of <span class="math inline">\(\boldsymbol{X'X}\)</span> differ substantially in order of magnitude (say 10 and 10^6.</p></li>
 <li><p>The transformation to obtain the standardized regression model, called the <em>correlation transformation</em>, makes all entries in the <span class="math inline">\(\boldsymbol{X'X}\)</span> matrix for the transformed variablesf all between -1 and 1 inclusive, so that the calculation of the inverse matrix becomes much less subject to roundoff errors due to dissimilar orders of magnitudes than with the original variables.</p></li>
-<li><p>Although, in order to avoid the computational difficulties inherent in inverting the <span class="math inline">\(\boldsymbol{X'X}\)</span> matrix, many statistical packages use an entirely different computational approach that involves decomposing the <span class="math inline">\(\boldsymbol{X}\)</span> matrix into a product of several matrices with special properties.</p></li>
+<li>
+<p>Although, in order to avoid the computational difficulties inherent in inverting the <span class="math inline">\(\boldsymbol{X'X}\)</span> matrix, many statistical packages use an entirely different computational approach that involves decomposing the <span class="math inline">\(\boldsymbol{X}\)</span> matrix into a product of several matrices with special properties.</p>
+<ul>
+<li>
+<a href="https://genomicsclass.github.io/book/pages/qr_and_regression.html">Site</a> explaining QR decomposition and how it relates to LSE.</li>
 </ul>
-<p><mark><strong>Programming note → Beautiful sites (<a href="https://genomicsclass.github.io/book/pages/qr_and_regression.html">(1)</a> and <a href="https://machinelearningmastery.com/solve-linear-regression-using-linear-algebra/#:~:text=The%20QR%20decomposition%20is%20an,down%20into%20its%20constituent%20elements.&amp;text=Where%20A%20is%20the%20matrix,the%20linear%20least%20squares%20equation.">(2)</a>) explaining QR decomposition and how it relates to LSE; must go through and recreate at some point.</strong></mark></p>
+</li>
+</ul>
 <p>Lack of comparability of regression coefficients</p>
 <ul>
 <li>A second difficulty with the nonstandardized multiple model is that ordinarily regression coefficients cannot be compared because of differences in the units involved. For example if <span class="math inline">\(X_1\)</span> is in dollars and <span class="math inline">\(X_2\)</span> is in thousands of dollars, simply comparing the relative magnitudes of <span class="math inline">\(\hat{\beta_1}\)</span> and <span class="math inline">\(\hat{\beta}_2\)</span> to get an idea of importance can be misleading.</li>
@@ -708,8 +720,8 @@ $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          [,1]      [,2]
-[1,] 1.0000000 0.1989148
-[2,] 0.1989148 1.0000000</code></pre>
+[1,] 1.0000000 0.1559262
+[2,] 0.1559262 1.0000000</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">X</span> <span class="op">%&lt;&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></span>
 <span></span>
@@ -737,17 +749,17 @@ $comparison$result
 [1] FALSE
 
 $comparison$description
-[1] "Mean relative difference: 0.1650338"
+[1] "Mean relative difference: 0.1645288"
 
 $comparison$`element-wise`
 [1] FALSE
 
 
 $`mod_1 %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(estimate)`
-[1] 2.496922
+[1] 2.007993
 
 $`mod_12 %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(estimate)`
-[1] 2.084846</code></pre>
+[1] 1.67762</code></pre>
 </div>
 </div>
 </div>
@@ -808,19 +820,19 @@ lm(formula = Y ~ X1 + X2, data = data_sample)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--5.4700 -1.8303  0.0001  1.7359  4.6915 
+-4.9697 -2.0044 -0.5754  1.7910  7.4390 
 
 Coefficients: (1 not defined because of singularities)
             Estimate Std. Error t value             Pr(&gt;|t|)    
-(Intercept)   2.3225     0.3428   6.776         0.0000000162 ***
-X1            8.2263     0.1077  76.381 &lt; 0.0000000000000002 ***
+(Intercept)   2.4987     0.4365   5.725          0.000000659 ***
+X1            7.7487     0.1393  55.630 &lt; 0.0000000000000002 ***
 X2                NA         NA      NA                   NA    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 2.415 on 48 degrees of freedom
-Multiple R-squared:  0.9918,    Adjusted R-squared:  0.9917 
-F-statistic:  5834 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 3.086 on 48 degrees of freedom
+Multiple R-squared:  0.9847,    Adjusted R-squared:  0.9844 
+F-statistic:  3095 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 </div>
 <p>Second coefficient doesn’t even get estimated.</p>
@@ -835,8 +847,8 @@ F-statistic:  5834 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pr
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          X1        X2
-X1 1.0000000 0.9999993
-X2 0.9999993 1.0000000</code></pre>
+X1 1.0000000 0.9999994
+X2 0.9999994 1.0000000</code></pre>
 </div>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">X</span> <span class="op">%&lt;&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></span>
 <span></span>
@@ -863,19 +875,19 @@ lm(formula = Y ~ X1 + X2, data = data_sample)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--6.1910 -1.7589  0.0796  1.7460  4.5867 
+-9.3647 -1.5930 -0.1594  2.0788  8.3397 
 
 Coefficients:
-             Estimate Std. Error t value    Pr(&gt;|t|)    
-(Intercept)    2.2210     0.3563   6.233 0.000000119 ***
-X1          -199.7742    97.4480  -2.050      0.0460 *  
-X2            69.1590    32.4847   2.129      0.0385 *  
+            Estimate Std. Error t value   Pr(&gt;|t|)    
+(Intercept)   2.4260     0.4684   5.179 0.00000458 ***
+X1          200.7051   149.4779   1.343      0.186    
+X2          -64.2887    49.8255  -1.290      0.203    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 2.443 on 47 degrees of freedom
-Multiple R-squared:  0.9896,    Adjusted R-squared:  0.9892 
-F-statistic:  2235 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 3.273 on 47 degrees of freedom
+Multiple R-squared:  0.9805,    Adjusted R-squared:  0.9796 
+F-statistic:  1180 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 </div>
 <p>Super inflated standard errors and wildly different estimates than the <span class="math inline">\(\beta\)</span>s.</p>
@@ -1111,12 +1123,12 @@ F-statistic:  2235 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pr
 <pre><code># A tibble: 6 × 10
   sim_id rho_x n     sigma_x beta_0 beta_1 beta_2 sigma statistic    value
   &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;   &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt; &lt;chr&gt;        &lt;dbl&gt;
-1 1      0     50    3       2      2      2      5     beta0_hat    3.24 
-2 1      0     50    3       2      2      2      5     beta1_hat    2.63 
-3 1      0     50    3       2      2      2      5     beta2_hat    2.24 
-4 1      0     50    3       2      2      2      5     se_beta1_hat 0.434
-5 1      0     50    3       2      2      2      5     se_beta2_hat 0.423
-6 1      0     50    3       2      2      2      5     beta1_t      6.05 </code></pre>
+1 1      0     50    3       2      2      2      5     beta0_hat    1.06 
+2 1      0     50    3       2      2      2      5     beta1_hat    2.73 
+3 1      0     50    3       2      2      2      5     beta2_hat    2.11 
+4 1      0     50    3       2      2      2      5     se_beta1_hat 0.407
+5 1      0     50    3       2      2      2      5     se_beta2_hat 0.390
+6 1      0     50    3       2      2      2      5     beta1_t      6.71 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1629,6 +1641,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./notes-reg-models-quan-and-qual.html" class="pagination-link" aria-label="<span class='chapter-number'>7</span>&nbsp; <span class='chapter-title'>Regression models for quanititative and qualitative predictors</span>">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quanititative and qualitative predictors</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb51" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Multiple regression 2</span></span>
@@ -1913,7 +1928,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb51-292"><a href="#cb51-292" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-293"><a href="#cb51-293" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Although, in order to avoid the computational difficulties inherent in inverting the $\boldsymbol{X'X}$ matrix, many statistical packages use an entirely different computational approach that involves decomposing the $\boldsymbol{X}$ matrix into a product of several matrices with special properties.</span>
 <span id="cb51-294"><a href="#cb51-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-295"><a href="#cb51-295" aria-hidden="true" tabindex="-1"></a>&lt;mark&gt;**Programming note → Beautiful sites ([(1)](https://genomicsclass.github.io/book/pages/qr_and_regression.html) and [(2)](https://machinelearningmastery.com/solve-linear-regression-using-linear-algebra/#:~:text=The%20QR%20decomposition%20is%20an,down%20into%20its%20constituent%20elements.&amp;text=Where%20A%20is%20the%20matrix,the%20linear%20least%20squares%20equation.)) explaining QR decomposition and how it relates to LSE; must go through and recreate at some point.**&lt;/mark&gt;</span>
+<span id="cb51-295"><a href="#cb51-295" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="co">[</span><span class="ot">Site</span><span class="co">](https://genomicsclass.github.io/book/pages/qr_and_regression.html)</span> explaining QR decomposition and how it relates to LSE.</span>
 <span id="cb51-296"><a href="#cb51-296" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-297"><a href="#cb51-297" aria-hidden="true" tabindex="-1"></a>Lack of comparability of regression coefficients</span>
 <span id="cb51-298"><a href="#cb51-298" aria-hidden="true" tabindex="-1"></a></span>

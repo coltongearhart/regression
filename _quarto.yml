@@ -17,12 +17,13 @@ book:
         - notes-diagnostics-and-remedial-measures.qmd
         # - notes-other-topics-in-regression.qmd
         - notes-matrix-slr.qmd
-        
 
     - part: part2-mlr.qmd
       chapters:
         - notes-multiple-regression-1.qmd
         - notes-multiple-regression-2.qmd
+        - notes-reg-models-quan-and-qual.qmd
+
 
         
 format:

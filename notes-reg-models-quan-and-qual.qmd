@@ -1,0 +1,782 @@
+# Regression models for quantitative and qualitative predictors
+
+```{r}
+#| label: load-prereqs
+#| echo: false
+#| message: false
+
+# knitr options
+source("_common.R")
+
+```
+
+<!-- % define LaTeX macros (/shortcuts) -->
+
+<!-- % define vector (without parentheses, so when writing out in like a definition) of the form X_1, ..., X_n, where X and n are variable. NOTE: to call use $\vecn{X}{n}$ -->
+
+\newcommand{\vecn}[2]{#1_1, \ldots, #1_{#2}}
+
+<!-- % shortcut for ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\follow}[1]{\sim \text{#1}\,}
+
+<!-- % (followsp is short for 'follow special') shortcut that can be used for iid or ind ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\followsp}[2]{\overset{#1}\sim \text{#2}\,}
+
+<!-- % define independence symbol (it basically makes two orthogonal symbols very close to each other. The number of \! controls the space between each of the orthogonal symbols) -->
+
+\newcommand{\ind}{\perp \!\!\! \perp}
+
+<!-- % shortcut for Cov(X,Y) with formatting for Cov -->
+
+\newcommand{\cov}[1]{\mathrm{Cov}(#1)}
+
+<!-- % shortcut for Corr(X,Y) with formatting for Corr -->
+
+\newcommand{\corr}[1]{\mathrm{Corr}(#1)}
+
+<!-- % shortcut for non-italic e in math mode -->
+
+\newcommand{\e}{\mathrm{e}}
+
+<!-- % shortcut for matrix notation -->
+
+\newcommand{\mat}[3]{\underset{#2 \times #3}{\boldsymbol{#1}}}
+
+<!-- % shortcut for null hypothesis formatted nicely -->
+
+\newcommand{\ho}{H_0}
+
+<!-- % shortcut for alternative hypothesis formatted nicely -->
+
+\newcommand{\ha}{H_A}
+
+## Polynomial regression models
+
+We first consider polynomial regression models for quantitative predictor variables. They are among the most frequently used curvilinear response models in practice because they are handled easily as a special case of the general linear regression model (@gen-lin-mod).
+
+Next, we discuss several commonly used polynomial regression models.
+
+Then we discuss some of the major issues encountered with polynomial regression models.
+
+### Uses of polynomial models
+
+Polynomial regression models have two basic types of uses:
+
+1. When the true curvilinear response function is indeed a polynomial function.
+
+2. When the true curvilinear response function is unknown (or complex) but a polynomial function is a good approximation to the true function.
+
+The second type of use, where the polynomial function is employed as an approximation when the shape of the true curvilinear response function is unknown, is very common.  It may be viewed as a nonparametric approach to obtaining information about the shape of the response function.
+
+A main danger in using polynomial regression models is that extrapolations may be hazardous with these models, especially those with higher-order terms. Polynomial regression models may provide good fits for the data at hand, but may turn in unexpected directions when extrapolated beyond the range of the data.
+
+### One predictor variable -- Second order
+
+Polynomial regression models may contain one, two, or more than two predictor variables. Further, each predictor variable may be present in various powers. We begin with the simplest case: one predictor variable with second order.
+
+$$Y_i \hspace{10pt} = \hspace{10pt} \beta_0 + \beta_1 x_i + \beta_2 x_i^2 \hspace{10pt} = \hspace{10pt} \beta_0 + \beta_1 x_i + \beta_{11} x_i^2 + \epsilon_i$$
+where $x_i = X_i - \bar{X}$. This model has a *quadratic response function* (a parabola):
+
+$$E(Y_i) = \beta_0 + \beta_1 x + \beta_{11} x^2 $$
+
+![](files/images/quadratic-response-functions.png){width="50%"}
+
+Notes
+
+- The predictor variable is centered, i.e. expressed as a deviation around its mean $\bar{X}$, and that the $i$th centered observation is denoted by $x_i$.
+
+    - The reason for using a centered predictor variable in the polynomial regression model is that $X$ and $X^2$ often will be highly correlated.  Centering the predictor variable often reduces the multicollinearity substantially and tends to avoid computational difficulties.
+
+    - An alternative to using centered variables in polynomial regression is to use *orthogonal polynomials*. This is what R uses in `poly()`.
+
+- Can use different subscripts on the $\beta$s so they match up with the power of the corresponding $x$ term better.
+
+- The danger of extrapolating a polynomial response function is illustrated by the response functions in the image above. If this function is extrapolated beyond $x = 2$, it actually turns downward, might not be appropriate in a given case.
+
+Orthogonal polynomials demo
+
+```{r}
+
+
+```
+
+### One predictor variable -- Higher orders
+
+The previous model can easily be extended to higher orders. For example, here is a third order model:
+
+$$Y_i = \beta_0 + \beta_1 x_i + \beta_{11} x_i^2 + \beta_{111} x_i^3 + \epsilon_i$$
+
+![](files/images/cubic-response-functions.png){width="50%"}
+
+
+Polynomial models with the predictor variable present in higher powers than the third should be employed with special caution.
+
+- The interpretation of the coefficients becomes difficult for such models, and the models may be highly erratic for interpolations and even small extrapolations.
+
+- Note that a polynomial model of sufficiently high order can always be found to fit data containing no repeat observations perfectly. For instance, the fitted polynomial regression function for one predictor variable of order $n - 1$ will pass through all $n$ observed $Y$ values.
+
+Overfitting demo
+
+```{r}
+
+# generate data
+n <- 10
+num_x <- 1
+X <- sapply(1:(num_x), function(i) {runif(n = n, min = 0, max = 10)})
+X %<>% cbind(rep(1, n), .)
+betas <- c(1, rep(2, num_x))
+Y <- X %*% betas + rnorm(n, mean = 0, sd = 5)
+
+```
+
+```{r}
+
+# combine data
+data_sample <- cbind(Y, X[, -1]) %>% 
+  data.frame
+colnames(data_sample) <- c("Y", paste0("X", 1:num_x))
+
+# fit highest order model
+# -> note perfect fit
+mod_overfit <- lm(Y ~ poly(X1, degree = n - 1), data_sample)
+tidy(mod_overfit)
+glance(mod_overfit)
+
+
+# plot response function
+# -> add fitted values to dataset and extract them to plot (have to sort first)
+data_sample %$% plot(X1, Y)
+augment(x = mod_overfit, data = data_sample) %>%
+  arrange(X1) %$%
+  lines(x = X1, y = .fitted, col = "red")
+
+```
+
+### Two or more predictor variables -- Second order
+
+Again, can extend the previous models to now include a second predictor variable and beyond (now including cross terms (interaction terms), still considered second order). For example, here is a second order model with two predictor variables:
+
+$$Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_{11} x_{i1}^2 + \beta_{22} x_{i2}^2 + \beta_{12} x_{i1} x_{i2} + \epsilon_i$$
+
+where $x_{i1} = X_{i1} - \bar{X}_1$ and $x_{i2} = X_{i2} - \bar{X}_2$. This model has a *conic response function*:
+
+$$E(Y_i) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_{11} x_1^2 + \beta_{22} x_2^2 + \beta_{12} x_1 x_2 $$
+![](files/images/conic-response-function.png){width="50%"}
+
+### Implementation of polynomial regression models
+
+Fitting of polynomial models
+
+- Fitting of polynomial regression models presents no new problems since they are special cases of the usual general linear regression model.
+
+Hiearchical approach to fitting
+
+- When using a polynomial regression model as an approximation to the true regression function, statisticians will often fit a second-order or third-order model and then explore whether a lower-order model is adequate with partial $F$ tests.
+
+- With the hierarchical approach, if a polynomial term of a given order is retained, then all related terms of lower order are also retained in the model.
+
+    - Thus, one would not drop the quadratic term of a predictor variable but retain the cubic term in the model.
+    
+    - Since the quadratic term is of lower order, it is viewed as providing more basic information about the shape of the response function; the cubic term is of higher order and is viewed as providing refinements in the specification of the shape of the response function.
+
+Regression function in terms of $X$
+
+- After a polynomial regression model has been developed, we often wish to express the final model in terms of the original variables rather than keeping it in terms of the centered variables. This can be done readily (not showing because not Rs implementation).
+
+- The fitted values and residuals for the regression function in terms of $X$ are exactly the SAME as for the regression function in terms of the centered values $x$.
+
+- The estimated standard deviation however do not translate. They need to be found using alternate methods.
+
+<!-- HOW to interpret orthogonal polynomial results -->
+
+## Interaction regression models
+
+### Interaction effects
+
+![](files/images/interaction-effects-content.png){width="80%"}
+
+### Interpretation of interaction regression models with linear effects
+
+Interpretation of regression coefficients
+
+- The regression model for two quantitative predictor variables with linear effects on $Y$ and interacting effects of $X_1$ and $X_2$ on $Y$ represented by a cross-product term is as follows:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_3 X_{i1} X_{i2} + \epsilon_i$$
+- The meaning of the regression coefficients $\beta_1$ and $\beta_2$ here is not the same as that given earlier because of the interaction term $\beta_3 X_{i1} X_{i2}$. $\beta_1$ no longer represent mean change in $Y$ for a one unit increase in $X_1$ when all other predictors are held constant at any given level.
+    
+- It can be easily shown that the change in the mean response with a unit increase in $X_1$ when $X_2$ is held constant is
+
+$$\beta_1 + \beta_3 X_2$$
+
+- Similarly the change in the mean response with a unit increase in $X_2$ when $X_1$ is held constant is
+
+$$\beta_2 + \beta_3 X_1$$
+- Thus, in the regression model above, both the effect of $X_1$ for given level of $X_2$ and the effect of $X_2$ for given level of $X_1$ depend on the level of the other predictor variable.
+
+- Below are *conditional effects plots* because they show the effects of $X_1$ on the mean response conditional on different levels of the other predictor variable.
+
+    - For additive models, the effect of $X_1$ is the same for both levels of $X_2$ (same slope) (i.e. $Y$ increases by the same amount when $X_1$ varies regardless of the level of $X_2$. 
+    
+    - For the reinforcement interaction, the effect of $X_1$ becomes stronger at hifher levels of $X_2$. This occurs if both the linear terms and the interaction terms have the same sign.
+    
+    - In the inteference plot, the effect of $X_1$ is lessoned at higher levels of $X_2$ because the linear terms and the interaction terms have opposing signs.
+
+![](files/images/interaction-effects-plots.png){width="80%"}
+
+See [interplot-vignette](https://cran.r-project.org/web/packages/interplot/vignettes/interplot-vignette.html) for explanations on interaction plots in R (they are a bit different than above).
+
+### Implementation of interaction effects
+
+- When interaction terms area dded to a regression model,high multicollinearities may exist between some of the predictor variables and spme of the interaction terms, as well as among some of the interaction terms.
+
+    - A partial remedy to improve computational accuracy is to center the predictor variables; i.e. $x_{ik} = X_{ik} - \bar{X}_k$
+    
+- When the number of predictor variables in the regression model is large, the potential number of interaction terms can become very large.
+
+    - For example, if eight predictor variables are present in the regression model in linear terms, there are potentially 28 pairwise interaction terms that could be added to the regression model. The dataset would need to be quite large before 36 $X$ variables could be used in the regression model.
+    
+- It is therefore desirable to identify in advance, whenever possible, those interactions that are most likely to influence the response variable in important ways.
+
+    - In addition to utilizing *a priori* knowledge, one can plot the residuals for the additive regression model against the different interaction terms to determine which ones appear to be influential in affecting the response variable.
+    
+    - When the number of predictor variables is large, these plots may need to be limited to intemction terms involving those predictor variables that appear to be the most important on the basis of the initial fit of the additive regression model.
+
+### Demo
+
+No interaction effect
+
+```{r}
+
+# generate data from additive model
+n <- 30
+num_x <- 2
+X <- sapply(1:(num_x), function(i) {rnorm(n = n, mean = 0, sd = 3)})
+X %<>% cbind(rep(1, n), .)
+betas <- c(1, rep(2, num_x))
+Y <- X %*% betas + rnorm(n, mean = 0, sd = 5)
+
+```
+
+```{r}
+
+# combine data
+data_sample <- cbind(Y, X[, -1]) %>% 
+  data.frame
+colnames(data_sample) <- c("Y", paste0("X", 1:num_x))
+
+# fit interaction model
+mod_1 <- lm(Y ~ X1 * X2, data_sample)
+tidy(mod_1)
+
+```
+
+```{r}
+
+# interaction plot
+# -> var1 = variable of interest
+# -> var2 = conditioning variable
+interplot::interplot(mod_1, var1 = "X2", var2 = "X1",
+                     point = T,
+                     stats_cp = "ci") + 
+  labs(title = "Non significant interaction",
+       x = "X2",
+       y = "Estimated coefficient for X1")
+
+```
+
+- The algorithm behind the plot is essentially fitting a bunch of models for each unique level of $X_2$ (the conditioning variable) and plotting a CI for the resulting estimated coefficients for $X_1$.
+
+- Reference line could be at $Y = 0$, which obviously means non significant, but so does small values of the coefficient (relative to the standard error, have to make $t$-stats out of them).
+
+- Confidence interval in bottom corner should however be interpreted with respect to 0; it is measuring something different (explained in the vignette). Can also look at the distribution of the conditioning variable with `hist = T`, which can help for effects that are significant over part of the range, but not all.
+
+Interaction effect
+
+```{r}
+
+# generate data from interaction model
+n <- 30
+num_x <- 2
+X <- sapply(1:(num_x), function(i) {rnorm(n = n, mean = 0, sd = 3)}) %>%
+  data.frame %>% 
+  mutate(X1X2 = X1 * X2) %>% 
+  as.matrix
+X %<>% cbind(rep(1, n), .)
+betas <- c(1, rep(2, num_x+1))
+Y <- X %*% betas + rnorm(n, mean = 0, sd = 5)
+
+```
+
+```{r}
+
+# combine data
+data_sample <- cbind(Y, X[, 2:3]) %>% 
+  data.frame
+colnames(data_sample) <- c("Y", paste0("X", 1:num_x))
+
+# fit interaction model
+mod_2 <- lm(Y ~ X1 * X2, data_sample)
+tidy(mod_2)
+
+```
+
+```{r}
+
+# interaction plot
+# -> var1 = variable of interest
+# -> var2 = conditioning variable
+interplot::interplot(mod_2, var1 = "X2", var2 = "X1",
+                     stats_cp = "ci") + 
+  labs(title = "Significant interaction",
+       x = "X2",
+       y = "Estimated coefficient for X1")
+
+```
+
+## Qualitative predictors
+
+### Implementation of qualitative predictors
+
+As mentioned in @sec-first-order-two-preds, qualitative, as well as quantitative, predictor variables can be used in regression models.
+
+A qualitative variable with $c$ classes will be represented by $c - 1$ indicator variables, each taking on the values 0 and 1.
+
+- Need one less predictor variable to avoid linear dependency with the intercept term (see book for explanation).
+
+- Additionally, we use indicator variables (rather than allocated codes (e.g. one variable with levels 1, 2, 3 for the three levels)), make no assumptions about the spacing of the classes and rely on the data to show the differential effects that occur.
+
+Demo
+
+```{r}
+
+# look at anova model (just to get the idea of how indicators are coded)
+
+# investigate data
+# -> R dataset with two categorical variables (wool and tension) and one numeric response (breaks)
+# -> confirm numeric and look at number of levels for each X
+datasets::warpbreaks %>% glimpse
+warpbreaks %>% map(class)
+warpbreaks %>% select(-1) %>% map(levels)
+
+# view replication
+# -> it's a balanced design
+warpbreaks %>% select(-1) %>% table
+
+# design matrix via lm()
+
+# specify model with only categorical predictor
+mod_cat <- lm(breaks ~ wool, warpbreaks, x = TRUE)
+tidy(mod_cat)
+
+# compare dataset to design matrix of indicator variables
+# -> .$model this just gives the dataset where the variables are pulled from
+tmp <- cbind(mod_cat$model, mod_cat$x[ , -1])
+head(arrange(tmp, breaks), n = 10)
+
+# switch the default level
+# -> just needs to be the first level
+mod_cat <- warpbreaks %>% 
+  mutate(wool = factor(wool, levels = c("B","A"))) %>% 
+  {lm(breaks ~ wool, data = .)}
+tidy(mod_cat)
+
+```
+
+### Interpretation of regression coefficients
+
+One predictor -- Two levels
+
+- Suppose we have the regression model:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \epsilon_i$$
+
+- where
+
+$$
+X_{i1} = \text{quantitative predictor};\\
+X_{i2} =
+  \left\{
+    \begin{array}{ll}
+      0 & \text{level 1}\\
+      1 & \text{level 2}
+    \end{array}
+  \right.
+$$
+
+- The response function for the model is
+
+$$E(Y) = \beta_0 + \beta_1 X_1 + \beta_2 X_2$$.
+
+- To understand the meaning of regression coefficients in this model, we have to look at the model for the different levels of the categorical predictor.
+
+- Suppose we are looking at the model for level 1, where $X_2 = 0$. The response function becomes:
+
+$$E(Y) = \beta_0 + \beta_1 X_1 + \beta_2 (0) = \beta_0 + \beta_1 X_1 \hspace{10pt} \text{level 1}$$
+
+- This response function is a straight line with $Y$ intercept $\beta_0$ and slope $\beta_1$.
+
+- For a level 2 observation, $X_2 = 1$. The response function becomes:
+
+$$E(Y) = \beta_0 + \beta_1 X_1 + \beta_2 (1) = (\beta_0 + \beta_2) + \beta_1 X_1 \hspace{10pt} \text{level 2}$$
+
+- This response function is a also straight line, with the same slope  $\beta_1$, but with $Y$ intercept $\beta_0 + \beta_1$.
+
+- Thus $beta_2$ measures the differential effect between level 2 and level 1,
+
+$$
+\begin{align*}
+\beta_0 &= E(Y \mid X_2 = 0)\\
+\beta_2 &= E(Y \mid X_2 = 1) - E(Y \mid X_2 = 0)
+\end{align*}
+$$  
+
+- Here is a visual of the two response functions.
+
+![](files/images/response-functions-quals.png){width="80%"}
+
+- In general, $\beta_1$ shows how much higher (or lower) the mean response line is for the class coded 1 than the line for the class coded 0, for any given level of $X_1$
+
+One predictor -- More than two levels
+
+- The above logic and strategy can easily be extended to categorical predictors with more than 2 levels.
+
+- Suppose we have the model:
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_2 X_{i2} + \epsilon_i$$
+
+$$
+X_{i1} = \text{quantitative predictor};
+\\
+X_{i2} =
+  \left\{
+    \begin{array}{ll}
+      1 & \text{level 2}\\
+      0 & \text{otherwise}
+    \end{array}
+  \right.;
+\\
+X_{i3} =
+  \left\{
+    \begin{array}{ll}
+      1 & \text{level 3}\\
+      0 & \text{otherwise}
+    \end{array}
+  \right.
+$$
+
+- Now $\beta_3 = E(Y \mid X_2 = 0, X_3 = 1) - E(Y \mid X_2 = 0, X_3 = 0)$
+
+- We may wish to estimate differential effects other than against the default zero level. This can be done by estimating differences between regression coefficients, say if there are 3 levels and we want to compare level 3 to level 2:
+
+$$\beta_3 - \beta_2 = E(Y \mid X_2 = 0, X_3 = 1) - E(Y \mid X_2 = 1, X_3 = 0)$$
+
+- This now measures the differential effect (how much higher or lower the response functioni is) of level 3 relative to level 2.
+
+- The point estimator of this quantity is, of course, $\hat{\beta}_3 - \hat{\beta}_2$, and the estimated variance of this estimator is
+
+$$s^2\{\hat{\beta}_3 - \hat{\beta}_2\} = s^2\{\hat{\beta}_3\} + s^2\{\hat{\beta}_2\} - 2 s\{\hat{\beta}_3,\hat{\beta}_2\}$$
+
+- (add variances and two times covariance, but minus). The needed variances and covariance can be readily ob'tained from the estimated variance-covariance matrix of the regression coefficients.
+
+Demo of design matrix intepretation
+
+```{r}
+
+# again, look at design matrix via lm() for more than two categories
+
+# specify model with only categorical predictor
+mod_cat2 <- lm(breaks ~ tension, warpbreaks, x = TRUE)
+tidy(mod_cat2)
+
+# compare dataset to design matrix of indicator variables
+# -> .$model this just gives the dataset where the variables are pulled from
+tmp2 <- cbind(mod_cat2$model, mod_cat2$x[ , -1])
+head(arrange(tmp2, breaks), n = 10)
+
+```
+
+Demo of modeling with first order quantitative and qualitative predictors
+
+```{r}
+
+# now use data with continuous predictor
+mod_both <- lm(Petal.Length ~ Petal.Width + Species, iris, x = TRUE)
+
+# plot three different response functions
+# -> first get all points on there so zoom is correct
+iris %$% plot(x = Petal.Width, y = Petal.Length, main = "Constant slope, different intercepts")
+iris %>% 
+  filter(Species == "setosa") %$% 
+  points(x = Petal.Width, y = Petal.Length, col = "red")
+iris %>% 
+  filter(Species == "versicolor") %$% 
+  points(x = Petal.Width, y = Petal.Length, col = "green")
+iris %>% 
+  filter(Species == "virginica") %$% 
+  points(x = Petal.Width, y = Petal.Length, col = "blue")
+abline(a = coef(mod_both)[1], b = coef(mod_both)[2], col = "red")
+abline(a = sum(coef(mod_both)[c(1,3)]), b = coef(mod_both)[2], col = "green")
+abline(a = sum(coef(mod_both)[c(1,4)]), b = coef(mod_both)[2], col = "blue")
+
+```
+
+Now test on levels coefficients' relative to other than the base level.
+
+```{r}
+
+# tests on coefficients (different intercepts)
+tidy(mod_both)
+
+# both the latter two specied have different heights of there regression functions based on the t-tests of beta2 and beta3 (relative to beta1)
+
+# verify standard errors for t tests using matrix results
+X <- mod_both$x
+varcov_beta <- glance(mod_both)$sigma^2 * solve(t(X) %*% X)
+
+compare(mod_both %>% tidy %>% pull(std.error), varcov_beta %>% diag %>% sqrt)
+
+# test beta3 - beta2
+beta3_beta2_hat <- as.numeric(coef(mod_both)[4] - coef(mod_both)[3])
+beta3_beta2_hat_se <- sqrt(sum(diag(varcov_beta)[3:4]) - 2*varcov_beta[4,3])
+t_star <- beta3_beta2_hat / beta3_beta2_hat_se
+
+# verify by changing the default level and checking t-stat
+# -> need 2 to be the default
+mod_both2 <- iris %>% 
+  mutate(Species = factor(Species, levels = c("versicolor", "setosa", "virginica"))) %>% 
+  {lm(Petal.Length ~ Petal.Width + Species, .)}
+
+compare(tidy(mod_both2) %>% filter(term == "Speciesvirginica") %>% pull(statistic), t_star)
+
+```
+
+Fitting one line instead of two
+
+- Fitting one line, as opposed to separate regression for each category, is the preferred method because of two reasons:
+
+1. Since the model assumes equal slopes and the same constant error term variance for each type of firm, the common slope $\beta_1$ can best be estimated by pooling the two levels.
+
+2. Also, other inferences, such as for $\beta_0$ and $\beta_2$, can be made more precisely by working with one regression model containing an indicator variable since more degrees of freedom will then be associated with $MSE$.
+
+- More is said about this strategy in @sec-misc-topics-quals.
+
+### Modeling interactions between quantitative and qualitative predictors
+
+Setup
+
+- Suppose we have the model below. Even though one of the predictor variables in the regression model is qualitative, interaction effects can still be introduced into the model in the usual manner, by including cross-product terms.
+
+$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \beta_3 X_{i1} X_{i2} +\epsilon_i$$
+
+- where
+
+$$
+X_{i1} = \text{quantitative predictor}\\
+X_{i2} =
+  \left\{
+    \begin{array}{ll}
+      0 & \text{level 1}\\
+      1 & \text{level 2}
+    \end{array}
+  \right.
+$$
+
+- The response function of the model is:
+
+$$E(Y_i) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2$$
+Meaning of regression coefficients
+
+- Again, the meaning of the regression coefficients in response function above can best be understood by examining the nature of this function for each level.
+
+- For level 1, $X_2 = 0$ and thus $X_1 X_2 = 0$, so 
+
+$$E(Y_i) = \beta_0 + \beta_1 X_1 + \beta_2 (0) + \beta_3 (0) = \beta_0 + \beta_1 X_1 \hspace{20pt} \text{level 1}$$
+
+- This has intercept $\beta_0$ and slope $\beta_1$.
+
+- For level 2, $X_2 = 1$ and thus $X_1 X_2 = X_1$, so 
+
+$$E(Y_i) = \beta_0 + \beta_1 X_1 + \beta_2 (1) + \beta_3 X_1 = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X_1 \hspace{20pt} \text{level 2}$$
+
+- This has intercept $\beta_0 + \beta_2$ and slope $\beta_1 + \beta_3$.
+
+- We see that $\beta_2$ here indicates how much greater (or smaller) is the $Y$ intercept of the response function for the class coded 1 than that for the class coded O. Similarly, $\beta_3$ indicates how much greater (or smaller) is the slope of the response function for the class coded 1 than that for the class coded O.
+
+- Because both the intercept and the slope differ for the two classes in regression model, it is no longer true that $\beta_2$ indicates how much higher (or lower) one response function is than the other for any given level of $X_1$.
+
+- Thus, when interaction effects are present, the effect of the qualitative predictor variable can be studied only by comparing the regression functions within the scope of the model for the different classes of the qualitative variable.
+
+![](files/images/qualitative-interaction-effects.png){width="80%"}
+
+- When one of the predictor variables is qualitative and the other quantitative, nonparallel response functions that do not intersect within the scope of the model are sometimes said to represent an *ordinal interaction*. When the response functions intersect within the scope of the model, the interaction is then said to be a *disordinal interaction*.
+
+Testing interaction effects
+
+- Fitting the previous regression model yields the same response functions as would fitting separate regressions for level 1 and level 2. An advantage of using this model with an indicator variable is that one regression run will yield both fitted regressions.
+
+- Another advantage is that tests for comparing the regression functions for the different classes of the qualitative variable can be clearly seen to involve tests of regression coefficients in a general linear model.
+
+    - For example we can do two tests: one on just the slopes and another of if the entire regression lines are identical.
+    
+$$
+\begin{align*}
+  \text{Test on slopes}\\
+  \ho&: \beta_3 = 0\\
+  \ha&: \beta_3 \ne 0\\
+  \text{Test on entire regression line}\\
+  \ho&: \beta_2 = \beta_3 = 0\\
+  \ha&: \text{not both } \beta_2 = 0 \text{ and } \beta_3 = 0
+\end{align*}
+$$
+
+Demo of design matrix interpretation and how constructed with interaction effects
+
+```{r}
+
+# specify each term individual -> A + B + AB
+mod_cat3 <- lm(breaks ~ wool + tension + wool : tension, data = warpbreaks, x = TRUE)
+
+# equivalent shorthand notation to cross factors
+mod_cat3 <- lm(breaks ~ wool * tension, data = warpbreaks, x = TRUE)
+
+# extract design matrix
+X_lm <- mod_cat3$x
+
+# check how to read indicators (ignoring replication)
+warpbreaks %>% select(-1) %>% bind_cols(X_lm) %>% unique
+
+# -> R has levels - 1 indicators for each categorical variable
+# -> the "dropped" base level also isn't explicitly included in any interaction indicator terms
+# --> so interactions are taken into account with zeros for actual interactions terms and 0 or 1 for the second factor
+
+```
+
+- All higher order terms involving the base level are also dropped.
+
+Demo to visualize model with interactions
+
+```{r}
+
+# now use data with continuous predictor
+mod_both_int <- lm(Petal.Length ~ Petal.Width * Species, iris)
+coef(mod_both_int)
+
+# plot three different response functions
+# -> first get all points on there so zoom is correct
+iris %$% plot(x = Petal.Width, y = Petal.Length, main = "Different regression lines (different intercepts and slopes)")
+iris %>% 
+  filter(Species == "setosa") %$% 
+  points(x = Petal.Width, y = Petal.Length, col = "red")
+iris %>% 
+  filter(Species == "versicolor") %$% 
+  points(x = Petal.Width, y = Petal.Length, col = "green")
+iris %>% 
+  filter(Species == "virginica") %$% 
+  points(x = Petal.Width, y = Petal.Length, col = "blue")
+abline(a = coef(mod_both_int)[1], b = coef(mod_both_int)[2], col = "red")
+abline(a = sum(coef(mod_both_int)[c(1,3)]), b = sum(coef(mod_both_int)[c(2,5)]), col = "green")
+abline(a = sum(coef(mod_both_int)[c(1,4)]), b = sum(coef(mod_both_int)[c(2,6)]), col = "blue")
+
+# compare to ggplot
+ggplot(data = iris,
+       aes(x = Petal.Width,
+           y = Petal.Length)) + 
+  geom_point(aes(color = Species)) + 
+  geom_smooth(aes(color = Species),
+              se = FALSE,
+              method = "lm",
+              fullrange = TRUE)
+
+```
+
+```{r}
+
+# test if only slopes are different
+mod_full <- mod_both_int
+mod_reduced <- mod_both
+anova(mod_full, mod_reduced)
+
+# test if entire regression lines are different
+mod_full <- mod_both_int
+mod_reduced <- update(mod_both, . ~ . -Species)
+anova(mod_full, mod_reduced)
+
+```
+
+### Miscellaneous topics with qualitative predictors {#sec-misc-topics-quals}
+
+Qualitative predictors only
+
+- Regression models containing only qualitative predictor variables can also be constructed.
+
+     - Models in which all explanatory variables are qualitative are called *analysis of variance models (ANOVA)*.
+     
+     - Models containing some quantitative and some qualitative explanatory variables, where the chief explanatory variables of interest are qualitative and the quantitative variables are introduced primarily to reduce the variance of the error terms, are called *analysis of covariance models (ANCOVA)*.
+
+Indicator variables vs quantitative variables
+
+- Indicator variables can be used even if the predictor variable is quantitative. 
+
+    - For instance, the quantitative variable age may be transformed by grouping ages into classes such as under 21, 21-34, 35-49, etc. Indicator variables are then used for the classes of this new predictor variable. 
+    
+    - This is called *discretizing* the variable.
+    
+- At first sight, this may seem to be a questionable approach because information about the actual ages is thrown away. Furthermore, additional parameters are placed into the model, which leads to a reduction of the degrees of freedom associated with $MSE$. Nevertheless, there are occasions when replacement of a quantitative variable by indicator variables may be appropriate.
+
+- For large data sets, use of indicator variables can serve as an alternative to lowess and other nonparametric fits of the response function.
+
+    - Cost: For say 1000 observations, the loss of 10 or 20 degrees of freedom is immaterial.
+    
+    - Gain: If you are very much in doubt about the shape of the regression function, which could be highly complex, you could utilize the indicator variable approach in order to obtain information about the shape ofthe response function without making any assumptions about its functional form (not assuming linear or quadratic for example).
+
+Demo
+
+```{r}
+
+# plot data
+diamonds %$% plot(x = carat, y = price)
+
+# fit linear model to see
+mod_linear <- lm(price ~ carat, diamonds)
+abline(mod_linear, col = "red")
+
+# think a more complex function would be better
+
+# discretize x variable and fit model with indicator variables
+mod_discretized <- lm(diamonds$price ~ as.factor(cut_number(diamonds$carat, n = 10)))
+mod_discretized %>% tidy
+
+# fully discretize model
+mod_full_discretized <- lm(price ~ as.factor(diamonds$carat), diamonds)
+mod_full_discretized %>% tidy %>% nrow
+
+# add complex models to plot for comparison
+diamonds %$% plot(x = carat, y = price)
+abline(mod_linear, col = "red")
+diamonds %>% 
+  augment(x = mod_discretized, data = .) %>% 
+  arrange(carat) %$% 
+  lines(x = carat, y = .fitted, col = "blue") # step function because x values in between cutoffs with same predicted y value
+diamonds %$% lines(lowess(x = carat, y = price), col = "green")
+diamonds %>% 
+  augment(x = mod_full_discretized, data = .) %>% 
+  arrange(carat) %$% 
+  lines(x = carat, y = .fitted, col = "yellow") # when no replication, gets predicted exactly -> but this is still a smooth curve because covers each unique value
+
+```
+
+Comparison of two or more regression functions
+
+- To formally test if these two regression lines are different (e.g. if data come from two different populations, such as males vs females), we can use indicator variables and partial $F$-tests.
+
+- We simply consider the different populations as classes of a predictor variable, define indicator variables for the different populations, and develop a regression model containing appropriate interaction terms
+
+    - If just testing the heights, then just need additive indicator variables for the qualitative predictor. 
+
+    - If also want to consider different slopes (i.e. not assume a common slope among the two populations), then include interaction terms for the continuous predictor(s) and the indicator variable(s).
+
+- All of the above scenarios require assume that the populations have equal error term variances.
+
+    - If the error vanances are not equal, transformations of the response variable may equalize them at least approximately.

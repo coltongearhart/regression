@@ -2419,6 +2419,74 @@ anova(mod_full, mod_reduced)
 
 This shows no lack of fit now!
 
+#### Multiple regression higher order
+
+Testing:
+
+$$
+\ho: E(Y) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_{11} x_1^2 + \beta_{22} x_2^2 + \beta_{12} x_1 x_2\hspace{20pt} \text{Reduced model}\\
+\ha: E(Y) \ne \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_{11} x_1^2 + \beta_{22} x_2^2 + \beta_{12} x_1 x_2\  \hspace{20pt} \text{Full model}
+$$
+
+Note that each $X$ variable is centered and scaled (to avoid multicollinearity of higher order terms): $x_{i1} = X_{i1} - \bar{X_1}$ and $x_{i2} = X_{i2} - \bar{X_2}$.
+
+```{r}
+
+# read in data (from table 8.1 on page 300 of textbook)
+x1 <- c(-1,0,1,-1,0,0,0,1,-1,0,1)
+x2 <- c(-1,-1,-1,0,0,0,0,0,1,1,1)
+y <- c(150,86,49,288,157,131,184,109,279,235,224)
+
+# fit full model
+# -> E(Y) = mu_j = anything other than the reduced model
+# -> note that x1*x2 denotes factor crossing = x1 + x2 + x1:x2
+mod_full <- lm(y ~ as.factor(x1) * as.factor(x2))
+summary(mod_full)
+
+# fit reduced model
+# -> second order model
+# -> can use I() because data is already transformed for multicollinearity
+mod_reduced <- lm(y ~ x1 + x2 + I(x1^2) + I(x2^2) + I(x1*x2))
+summary(mod_reduced)
+
+# perform lack of fit test
+anova(mod_full, mod_reduced)
+
+# this matched when ran same scenario through manual process!
+# -> just had to group_by(x1, x2) for data_group_means and join_by("x1", "x2")
+
+```
+
+This shows that there is no lack of fit, so a higher order model isn't needed.
+
+Now we can do a partial $F$ test to determine if the second order terms are needed or if a first order model is sufficient.
+
+Testing:
+
+$$
+\ho: \beta_{11} = \beta_{22} x_2^2 = \beta_{12} = 0\\
+\ha: \text{Not all } \beta \text{s in } \ho \text{ equal } 0
+$$
+
+```{r}
+
+# fit new full model (second order)
+# -> second order model
+mod_full <- lm(y ~ x1 + x2 + I(x1^2) + I(x2^2) + I(x1*x2))
+summary(mod_full)
+
+# fit new reduced model (first order)
+# -> needs to be nested
+mod_reduced <- lm(y ~ x1 + x2)
+summary(mod_reduced)
+
+# perform partial F test
+anova(mod_full, mod_reduced)
+
+```
+
+This says that we can drop the higher order terms and a first order model is sufficient.
+
 :::
 
 ## Overview of remedial measures

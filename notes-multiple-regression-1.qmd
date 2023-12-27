@@ -60,7 +60,7 @@ The need for multiple predictors
 
 ## Multiple regression models
 
-### First order model with two predictors
+### First order model with two predictors {#sec-first-order-two-preds}
 
 When there are two predictor variables $X_l$ and $X_2$, the regression model:
 
