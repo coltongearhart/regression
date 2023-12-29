@@ -1,0 +1,1289 @@
+# Building the regression model 1 -- Model selection and validation
+
+```{r}
+#| label: load-prereqs
+#| echo: false
+#| message: false
+
+# knitr options
+source("_common.R")
+
+```
+
+<!-- % define LaTeX macros (/shortcuts) -->
+
+<!-- % define vector (without parentheses, so when writing out in like a definition) of the form X_1, ..., X_n, where X and n are variable. NOTE: to call use $\vecn{X}{n}$ -->
+
+\newcommand{\vecn}[2]{#1_1, \ldots, #1_{#2}}
+
+<!-- % shortcut for ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\follow}[1]{\sim \text{#1}\,}
+
+<!-- % (followsp is short for 'follow special') shortcut that can be used for iid or ind ~ 'Named dist ' in normal font with space before parameters would go -->
+
+\newcommand{\followsp}[2]{\overset{#1}\sim \text{#2}\,}
+
+<!-- % define independence symbol (it basically makes two orthogonal symbols very close to each other. The number of \! controls the space between each of the orthogonal symbols) -->
+
+\newcommand{\ind}{\perp \!\!\! \perp}
+
+<!-- % shortcut for Cov(X,Y) with formatting for Cov -->
+
+\newcommand{\cov}[1]{\mathrm{Cov}(#1)}
+
+<!-- % shortcut for Corr(X,Y) with formatting for Corr -->
+
+\newcommand{\corr}[1]{\mathrm{Corr}(#1)}
+
+<!-- % shortcut for non-italic e in math mode -->
+
+\newcommand{\e}{\mathrm{e}}
+
+<!-- % shortcut for matrix notation -->
+
+\newcommand{\mat}[3]{\underset{#2 \times #3}{\boldsymbol{#1}}}
+
+<!-- % shortcut for null hypothesis formatted nicely -->
+
+\newcommand{\ho}{H_0}
+
+<!-- % shortcut for alternative hypothesis formatted nicely -->
+
+\newcommand{\ha}{H_A}
+
+## Overview of the model building process
+
+The figure below presents a strategy for the building of a regression model. This strategy involves three or, sometimes, four phases:
+
+1. Data collection and preparation
+
+2. Reduction of explanatory or predictor variables (for exploratory observational studies)
+
+3. Model refinement and selection
+
+4. Model validation
+
+![](files/images/regression-flow-chart-advanced.png){width="80%"}
+
+Here we will overview each phase, then dive deeper later.
+
+### (1) Data collection
+
+- The data collection requirements for building a regression model vary with the nature of the study. It is useful to distinguish four types of studies.
+
+Controlled experiments
+
+- In a controlled experiment, the experimenter controls the levels of the explanatory variables and assigns treatment, consisting of a combination of levels of the explanatory to each experimental unit and observes the response.
+
+    -  In controlled experiments, the explanatory variables are often called *factors* or *control variables*.
+    
+- The data collection requirements for controlled experiments are straightforward, though not necessarily simple. Observations for each experimental unit are needed on the response variable and on the level of each of the control variables used for that experimental unit.
+
+    - There may be difficult measurement and scaling problems for the response variable that are unique to the area of application.
+    
+Controlled experiments with covariates
+
+- Statistical design of experiments uses supplemental information, such as characteristics of the experimental units, in designing the experiment so as to reduce the variance of the experimental error terms in the regression model.
+
+- Sometimes, however, it is not possible to incorporate this supplemental information into the design of the experiment. Instead, it may be possible for the experimenter to incorporate this information into the regression model and thereby reduce the error variance by including *uncontrolled variables* or *covariates* in the model.
+
+    - Use of covariates in the regression model make the analysis of the effects of the explanatory variables on the accuracy response more precise.
+    
+Confirmatory observational studies
+
+- These studies, based on observational, not experimental, data, are intended to test (i.e., to confirm or not to confirm) hypotheses derived from previous studies or from hunches.
+    
+- For these studies, data are collected for explanatory variables that previous studies have shown to affect the response variable, as well as for the new
+variable or variables involved in the hypothesis.
+
+    - In this context, the explanatory variable(s) involved in the hypothesis are sometimes called the *primary variables*, and the explanatory variables that are included to reflect existing knowledge are called the *control variables* (*known risk factors* in epidemiology).
+    
+    -  The control variables here are not controlled as in an experimental study, but they are used to account for known influences on the response variable.
+    
+- Data collection for confirmatory observational studies involves obtaining observations on the response variable, the control variables, and the primary explanatory variable(s).
+
+    - Here, as in controlled experiments, there may be important and complex problems of measurement.
+    
+Explanatory observational studies
+
+- In the social, behavioral, and health sciences, management, and other fields, it is often not possible to conduct controlled experiments. Furthermore, adequate knowledge for conducting confirmatory observational studies may be lacking.
+
+-  As a result, many studies in these fields are exploratory observational studies where investigators search for explanatory variables that might be related to the response variable.
+
+- To complicate matters further, any available theoretical models may involve explanatory variables that are not directly measurable, such as a family's future earnings ov the next 10 years.
+    
+- Under these conditions, investigators are often forced to prospect for explanatory variables that could conceivably be related to the response variable under study. Obviously, such a set of potentially useful explanatory variables can be large.
+
+- After a lengthy list of potentially useful explanatory variables has been compiled, some of these variables can be quickly screened out. An explanatory variable (1) may not be fundamental to the problem, (2) may be subject to large measurement errors, and/or (3) may effectively duplicate another explanatory variable in the list.
+
+    - Explanatory variables that cannot be measured may either be deleted or replaced by proxy variables that are highly correlated with them.
+    
+- The number of cases to be collected for an exploratory observational regression study depends on the size of the pool of potentially useful explanatory variables available at this stage.
+
+    - More cases are required when the pool is large than when it is small.
+    
+    - A general rule of thumb states that there should be at least 6 to 10 cases for every variable in the pool.
+    
+- The actual data collection for the pool of potentially useful explanatory variables and for the response variable again may involve important issues of measurement, just as for the other types of studies.
+
+### (1) Data preparation
+
+- Once the data have been collected, edit checks should be performed and plots prepared to identify gross data errors as well as extreme outliers.
+
+- Difficulties with data errors are especially prevalent in large data sets and should be corrected or resolved before the model building begins.
+
+- Whenever possible, the investigator should carefully monitor and control the data collection process to reduce the likelihood of data errors.
+
+### (2) Preliminary model investigation
+
+- Once the data have been properly edited, the formal modeling process can begin.
+
+- A variety of diagnostics should be employed to identify (1) the functional forms in which the explanatory variables should enter the regression model and (2) important interactions that should be included in the model.
+
+- Scatter plots and residual plots are useful for determining relationships and their strengths.
+
+- Selected explanatory variables can be fitted in regression functions to explore relationships, possible strong interactions and the need for transformations.
+
+- Whenever possible, of course, one should also rely on the investigator's prior knowledge and expertise to suggest appropriate transformations and interactions to investigate. This is particularly important when the number of potentially useful explanatory variables is large.
+
+    -  In this case, it may be very difficult to investigate all possible pairwise interactions, and prior knowledge should be used to identify the important ones.
+    
+### (2) Reduction of explanatory variables
+
+- Again this process looks different for the different types of studies.
+
+Controlled experiments
+
+- The reduction of explanatory variables in the model-building phase is usually not an important issue for controlled experiments.
+
+- The experimenter has chosen the explanatory variables for investigation, and a regression model is to be developed that will enable the investigator to study the effects'of these variables on the response variable.
+    
+- After the model has been developed, including the use of appropriate functional forms for the variables and the inclusion of important interaction terms, the inferential procedures considered in previous chapters will be used to determine whether the explanatory variables have effects on the response variable and, if so, the nature and magnitude of the effects.
+
+- Controlled experiments can usually avoid many of the problems in exploratory observational studies discussed below.
+
+    - For example, the effects of latent predictor variables are minimized by using randomization.
+    
+    In addition, adequate ranges of the explanatory variables can be selected and correlations among the explanatory variables can be eliminated by appropriate choices of their levels.
+
+Controlled experiments with covariates
+
+- In studies of controlled experiments with covariates, some reduction of the covariates may take place investigators often cannot be sure in advance that the selected covariates will be helpful in reducing the error variance.
+
+- The number of covariates considered in controlled experiments is usually small, so no special problems are encountered in determining whether some or all of the covariates should be dropped from the regression model.
+
+Confirmatory observational studies
+
+- Generally, no reduction of explanatory variables should take place in confirmatory observational studies.
+
+- The control variables were chosen on the basis of prior knowledge and should be retained for comparison with earlier studies even if some of the control variables tum out not to lead to any error variance reduction in the study at hand.
+
+- The primary variables are the ones whose influence on the response variable is to be examined and therefore need to be present in the model.
+
+Explanatory observational studies
+
+- In exploratory observational studies, the number of explanatory variables that remain after the initial screening typically is still large.
+
+-  Further, many of these variables frequently will be highly intercorrelated. Hence, the investigator usually will wish to reduce the number of explanatory variables to be used in the final model. There are several reasons for this.
+
+    - A regression model with numerous explanatory variables may be difficult to maintain.
+    
+    - Further, regression models with a limited number of explanatory variables are easier to work with and understand.
+    
+    - Finally, the presence of many highly intercorrelated explanatory variables may substantially increase the sampling variation of the regression coefficients, detract from the model's descriptive abilities (falsely inflated $R^2$), and not improve, or even worsen, the model's predictive ability.
+    
+    - An actual worsening of the model's predictive ability can occur when explanatory variables are kept in the regression model that are not related to the response variable, given the other explanatory variables in the model (overfitting). In that case, the variances of the fitted values $\sigma^2\{\hat{Y}_i\}$ tend to become larger with the inclusion of the useless additional explanatory variables.<!-- ??? -->
+    
+    - (Note that the multicollinearity effects were all confirmed with the simulation in @sec-simulation-multicollinearity)
+
+- Once the investigator has tentatively decided upon the functional form of the regression relations (whether given variables are to appear in linear form, quadratic form, etc.) and whether any interaction terms are to be included, the next step in many exploratory observational studies is to identify a few "good" subsets of $X$ variables for further intensive study.
+
+    - These subsets should include not only the potential explanatory variables first-order form but also any needed quadratic and other curvature terms and any necessary interaction terms.
+    
+- The identification of "good" subsets of potentially useful explanatory variables to be included in the final regression model and the determination of appropriate functional and interaction relations for these variables usually constitute some of the most difficult problems in regression analysis.
+
+    -  Since the uses of regression models vary, no one subset of explanatory vruiables may always be "best".
+    
+    - For instance, a descriptive use of a regression model typically will emphasize precise estimation of the regression coefficients, whereas a predictive use will focus on the prediction errors.
+    
+    - Often, different subsets of the pool of potential explanatory variables will best serve these varying purposes.
+    
+    - Even for a given purpose, it is often found that several subsets are about equally "good" according to a given criterion, and the choice among these "good" subsets needs to be made on the basis of additional considerations.
+    
+- The choice of a few appropriate subsets of explanatory variables for final consideration in exploratory observational studies needs to be done with great care. Elimination of key explanatory variables can seriously damage the explanatory power of the model and lead to biased estimates of regression coefficients, mean responses, and predictions of new observations, as well as biased estimates of the error variance.
+
+    - The bias in these estimates is related to the fact that with observational data, the error terms in an underfitted regression model may reflect nonrandom effects of the explanatory variables not incorporated in the regression model. Important omitted explanatory variables are sometimes called *latent explanatory variables*.
+    
+    - On the other hand, if too many explanatory variables are included in the subset, then this overfitted model will often result in variances of estimated parameters that are larger than those for simpler models.
+
+    - Another danger with observational data is that important explanatory variables may be observed only over narrow ranges. As a result, such important explanatory variables may be omitted just because they occur in the sample within a narrow range of values and therefore turn out to be statistically nonsignificant.
+    
+- A number of algorithms have been developed to help with variable selection.
+
+    - But the process of developing a useful regression model must be pragmatic and needs to utilize large doses of subjective judgment.
+    
+    - Explanatory variables that are considered essential should be included in the regression model before any automation is sought.
+    
+    - Further, algorithms that identify only a single subset of explanatory variables as "best" need to be supplemented so that additional subsets are also considered before the final regression mopel is decided upon.
+    
+WRONG APPROACH
+
+- Fit full model and drop all unsignificant coefficients (according to $t$-test).
+
+    - Reason for bad: This procedure can lead to the dropping of important intercorrelated explanatory variables (easier to fail to reject with high degree of multicollinearity).
+    
+    - So a good procedure needs to be able to take into account multicollinearity (i.e. not drop all of them).
+    
+### (3) Model refinement and selection
+
+- At this stage in the model-building process, the tentative regression model, or the several "good" regression models in the case of exploratory observational studies, need to checked in detail for curvature and interaction effects (this is the second check of higher order terms, one was done preliminarily in (2) Reduction of explanatory variables).
+
+- Residual plots are helpful in deciding whether one model is to be preferred over another. In addition, the diagnostic checks to be described in the next chapter are useful for identifying influential outlying observations, multicollinearity, etc.
+
+- The selection of the ultimate regression model often depends greatly upon these diagnostic results. For example, one fitted model may be very much influenced by a single case, whereas another is not. Again, one fitted model may show correlations among the error terms, whereas another does not.
+
+- When repeat observations are available, formal tests for lack of fit can be made. In any case, a variety of residual plots and analyses can be employed to identify any lack of fit, outliers, and influential observations.
+
+    - For instance, residual plots against cross-product and/or power terms not included in the regression model can be useful in identifying ways in which the model fit can be improved further.
+    
+- When an automatic selection procedure is utilized for an exploratory observational study and only a single model is identified as "best," other models should also be explored.
+
+    -  One procedure is to use the number of explanatory variables in the model identified as "best" as an estimate of the number of explanatory variables needed in the regression model.
+    
+    - Then the investigator explores and identifies other candidate models with approximately the same number of explanatory variables identified by the automatic procedure.
+    
+- Eventually, after thorough checking and various remedial actions, such as transformations, the investigator narrows the number of competing models to one or just a few.
+
+-  At this point, it is good statistical practice to assess the validity of the remaining candidates through model validation studies. These methods can be used to help decide upon a final regression model, and to determine how well the model will perform in practice.
+
+### (4) Model validation
+
+- Model validity refers to the stability and reasonableness of the regression coefficients, the plausibility and usability of the regression function, and the ability to generalize inferences drawn from the regression analysis.
+
+- Validation is a useful and necessary pan of the model-building process. Several methods of assessing model validity will be described at the end of this chapter.
+
+### Overfitting simulation
+
+```{r}
+
+# overfitting simulation
+
+# simulation for this???
+
+```
+
+### Demo
+
+- Modeling process: Start with first order model with all predictors and assess diagnostics for intial problems
+
+```{r}
+
+# load data
+data_surgery <- ALSM::SurgicalUnit %>% 
+  select(-lny)
+
+# start with first order model with all predictors and assess diagnostics
+mod_start <- lm(y ~ ., data_surgery)
+plot(mod_start, which = 1:2)
+
+```
+
+- See curvature and non constant variance and some slight issues with normality.
+
+- Try linearizing transformation and fix the non constant variance with $Y' = \ln(Y)$.
+
+```{r}
+
+# fit model with transformed response
+mod_start_prime <- lm(log(y) ~ ., data_surgery)
+plot(mod_start_prime, which = 1:2)
+
+```
+
+- Transformation fixed most issues, now can continue to investigate the appropriateness of first-order additive terms.
+
+```{r}
+
+# correlation matrix and scatterplot matrix to assess strength of linear relationships (on the lookout for curvature)
+# -> extra steps to get new response variable in there
+corr <- data_surgery %>% 
+  mutate(lny = log(y)) %>% 
+  select(-y) %>% 
+  cor %>%
+  round(3)
+corrplot::corrplot(corr)
+data_surgery %>% 
+  mutate(lny = log(y)) %>% 
+  select(-c(x6, x7, x8, y)) %>% 
+  pairs
+
+```
+
+- No apparent curvature for $X_k$ with the response $\ln(Y)$.
+
+- Strong linear associations with the response ($X_3, X_4$ are the highest).
+
+- May be some multicollinearity ($X_4$ is correlated with $X_1, X_2, X_3$).
+
+```{r}
+
+# check for significant interaction effects by plotting residuals against all possible interactions
+
+# fit fully crossed interaction model to extract design matrix
+mod_start_prime_crossed <- lm(log(y) ~ .^2, data_surgery, x = TRUE)
+
+# get residuals of original model
+e <- residuals(mod_start_prime)
+
+# extract interaction terms
+# -> interaction symbol : gets recoded as .
+X_int <- mod_start_prime_crossed$x %>% 
+  data.frame %>% 
+  select(contains("."), -contains("Intercept"))
+
+```
+
+```{r}
+#| eval: false
+
+# plot residuals against all interaction terms
+nms_x_int <- colnames(X_int)
+map2(X_int, nms_x_int, function(x, nm) {
+  plot(x = x, y = e, main = nm)
+  lines(lowess(x = x, y = e), col = "red")
+  abline(h = 0, col = "grey")
+})
+
+# no obvious visual signs of significant interactions -> maybe x3 and x4
+# -> following textbook and ignoring these
+
+```
+
+## Criteria for model selection
+
+- From any set of $p - 1$ predictors, $2^{p-1}$ alternative models can be constructed (this comes from the fact that each predictor can either be included or exlcuded from the model).
+
+    - For example if $p = 3$, then there are two predictors + intercept.
+    
+    - Can have intercept only model ($Y_i = \beta_0 + \epsilon_i$), a one variable model ($Y_i = \beta_0 + \beta_1 X_1 + \epsilon_i$ or $Y_i = \beta_0 + \beta_1 X_2 + \epsilon_i$) and the only two predictor model ($Y_i = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon_i$) for a total of $2^{3-1} = 4$ models.
+    
+- The number of possible models increases quickly, and will be impossible to examine every model in depth. Model selection procedures, also known as subset selection or variables selection procedures, have been developed to identify a small group of regression models that are "good" according to a specified criterion.
+
+- A detailed examination can then be made of a limited number of the more promising or "candidate" models, leading to the selection of the final regression model to be employed. This limited number might consist of three to six "good" subsets according to the criteria specified, so the investigator can then carefully study these regression models for choosing the final model.
+
+### $R^2_p$ or $SSE_p$ criterion
+
+- Want to identify subset in which the coefficient of multiple determination $R^2$ is high, or equivalently $SSE$ is low (both of which are indexed by how many parameters are in the model = one less than the number of the predictors because of the intercept).
+
+$$R^2_p = 1 - \frac{SSE_p}{SSTO}$$
+
+- Since the denominator is constant for all models (just used $\bar{Y}$), $R^2_p$ and $SSE_p$ vary inversely.
+
+- Note that the $R^2_p$ criterion is not intended to identify the subsets that maximize this criterion.
+
+    - We know that $R^2_p$ can never decrease as additional $X$ variables are included in the model. Hence, $R^2_p$ will be a maximum when all $P - 1$ ($P$ = total number of available predictors) potential $X$ variables are included in the regression model. 
+    
+    - Dimininshing return: The intent in using the $R^2_p$ criterion is to find the point where adding more $X$ variables is not worthwhile because it leads to a very small increase in $R^2_p$.
+    
+```{r}
+
+# pick random model to calculate each of the following statistics for (so can compare to book as well)
+mod_example <- lm(log(y) ~ x1 + x2 + x3, data_surgery)
+
+# p
+# -> including intercept
+mod_example %>% coef %>% length
+
+# extract R^2_p and SSE_p
+mod_example %>% glance %>% pull(r.squared)
+mod_example %>% anova %>% tidy %>% filter(term == "Residuals") %>% pull(sumsq)
+
+# match book!
+
+# more ways
+augment(mod_example, data = data.frame(lny = log(data_surgery$y))) %>% 
+  yardstick::rsq_trad(data = ., truth = "lny", estimate = ".fitted")
+
+yardstick::rsq_trad_vec(truth = log(data_surgery$y),
+                        estimate = predict(mod_example))
+
+
+compare(mod_example %>% glance %>% pull(r.squared),
+        yardstick::rsq_trad_vec(truth = log(data_surgery$y),
+                        estimate = predict(mod_example)))
+
+```
+
+### $R^2_{a,p}$ or $MSE_p$ criterion
+
+- Can use $R^2_{adj} = R^2_{a,p} \text{ (in this context)}$ to take into account the number of parameters in the model through the degrees of freedom. We know that it can decrease as the number of parameters increases if the decrease in $MSE$ isn't enough to offset the loss of degrees of freedom.
+
+$$R^2_{a,p} = 1 - \Big(\frac{n - 1}{n - p}\Big) \frac{SSE_p}{SSTO} = 1 - \frac{MSE_p}{SSTO / (n - 1)}$$
+
+- This only increases if $MSE_p$ decreases since $SSTO / (n - 1)$ is fixed for the given $Y$ observations. Thus, $R^2_{a,p}$ and $MSE_p$ provide equivalent information.
+
+Demo
+
+```{r}
+
+# extract R^2_a.p and MSE_p
+mod_example %>% glance %>% pull(adj.r.squared)
+mod_example %>% glance %>% pull(sigma) %>% raise_to_power(2)
+
+# match book!
+
+```
+
+### Mallow's $C_p$ criterion
+
+Overview
+
+- This criterion is concerned with the *total mean squared error* of the $n$ fitted values for each subset regression model.
+
+$$C_p = \frac{SSE_p}{MSE(X_1, \ldots, X_{P-1})} + (2p - n)$$
+
+Specifics
+
+<embed src="files/docs/mallows-cp.pdf" type="application/pdf" width="100%" height="700px"></embed>
+
+Interpreting Mallow's $C_p$
+
+- Good models: When there is no bias in the regression model with $p - 1$ $X$ variables, then
+
+$$E(C_p) \approx p \hspace{20pt} \text{when }E(\hat{Y}_i) \approx \mu_i$$
+
+- If there are several good models, take the more parsimonious model.
+
+- Acceptable values: $C_p <\approx p$
+
+Interpreting Mallow's $C_p$ plot
+
+- When the $C_p$ values for all possible regression models are plotted against $p$, those models with little bias will tend to fall near the line $C_p = p$.
+
+    - Models with substantial bias will tend to fall considerably above this line.
+    
+    - $C_p$ values below the line $C_p = p$ are interpreted as showing no bias, being below the line due to sampling error.
+
+Notes
+
+- Effective use of the $C_p$ criterion requires careful development of the pool of $P-1$ potential $X$ variables, with the predictor variables expressed in appropriate form (linear, quadratic, transformed), and important interactions included, so that $MSE(X_1,\ldots,X_{p-1})$ provides an unbiased estimate of the error variance $\sigma^2$.
+
+Demo
+
+::: panel-tabset
+
+#### R functions
+
+```{r}
+
+# calculate mallow's Cp
+# -> model is the candidate model and fullmodel has P - 1 predictors
+mod_example_full <- lm(log(y) ~ x1 + x2 + x3 + x4, data_surgery)
+olsrr::ols_mallows_cp(model = mod_example, fullmodel = mod_example_full)
+
+# matches book!
+
+```
+
+#### Manual
+
+```{r}
+
+# Mallows Cp = SSE_candidate / MSE_full + (2p - n)
+# -> calculate needed values
+SSE_p <- mod_example %>% anova %>% tidy %>% filter(term == "Residuals") %>% pull(sumsq)
+MSE_full <- mod_example_full %>% glance %>% pull(sigma) %>% raise_to_power(2)
+p <- mod_example %>% coef %>% length
+n <- nobs(mod_example_full)
+mallows_cp <- SSE_p / MSE_full + 2*p - n
+
+compare(olsrr::ols_mallows_cp(model = mod_example, fullmodel = mod_example_full),
+        mallows_cp)
+
+# very close to book, going with roundoff error
+
+```
+
+:::
+
+### $AIC_p$ and $BIC_p$ criterion
+
+- These two criterion, in addition to $R^2_{a,p}$ and $C_p$, penalize models having large number of predictors.
+
+- $AIC$ = Akaike's information criteria and $BIC$ = Bayesian information criteria.
+
+- Goal: Find models with small values of each:
+
+$$
+\begin{align*}
+  AIC &= n \ln(SSE_p) - n \ln(n) + 2p\\
+  BIC &= n \ln(SSE_p) - n \ln(n) + p\ln(n)
+\end{align*}
+$$
+
+- Notice the first terms $n \ln(SSE_p)$ decrease as $p$ increases, the second term $n \ln(n)$ is fixed (for a given sample size of $n$), and the last term (the penalty term) increases as $p$ increases.
+
+- Models with small $SSE_p$ do well with this criteria as long as the penalties aren' too large. And for $n \ge 8$, the penalty for $BIC_p$ is larger $\Longrightarrow$ $BIC_p$ favors more parsimonious models.
+
+Demo
+
+::: panel-tabset
+
+#### R functions
+
+```{r}
+
+# different ways to calculate these statistics
+# -> (taking into account something vs not taking into account something)
+# -> https://stats.stackexchange.com/questions/43733/what-is-the-difference-between-aic-and-extractaic-in-r
+
+# one way
+
+# calculate AIC_p and BIC_p
+mod_example %>% glance %>% pull(AIC)
+mod_example %>% AIC
+mod_example %>% glance %>% pull(BIC)
+mod_example %>% BIC
+
+# does not match matches book... 
+
+# another way
+extractAIC(mod_example, k = 2) # AIC used default k = 2
+mod_example %>% extractAIC(k = log(nobs(.))) # BIC -> just have a different k value = ln(n)
+
+# match book!
+
+# be careful comparing, need to compare like to like
+# -> from now on always going to use the not book way because it has better compatibility across lm() and glm()
+
+```
+
+#### Manual
+
+```{r}
+
+# calculate needed items
+SSE_p <- mod_example %>% anova %>% tidy %>% filter(term == "Residuals") %>% pull(sumsq)
+p <- mod_example %>% coef %>% length
+n <- nobs(mod_example_full)
+
+# AIC = n ln(SSE_p) - n ln(n) + 2p
+AIC_p <- n * log(SSE_p) - n * log(n) + 2*p
+
+# BIC = n ln(n) SSE_p - n ln(n) + p ln(n)
+BIC_p <- n * log(SSE_p)- n * log(n) + p * log(n)
+
+compare(extractAIC(mod_example)[2], AIC_p)
+compare(extractAIC(mod_example, k = log(nobs(mod_example)))[2], BIC_p)
+
+```
+
+:::
+
+### $PRESS_p$ criterion
+
+- The $PRESS_p$ (prediction sum of squares) criterion is a measure of how well the use of the fitted values for a subset model (in terms of the training data) can predict the observed responses $Y_i$. It is similar to $SSE = \sum (Y_i - \hat{Y}_i)^2$ except each fitted value $\hat{Y}_i$ is obtained by:
+
+1. Deleting the $i$th case from the dataset.
+
+2. Estimating the regression function for the subset model from the remaining $n - 1$ cases.
+
+3. Then using the fitted regression function to obtain the predicted value $\hat{Y}_{i(i)}$ for the $i$th case (note $\hat{Y}_{i(i)}$ = predicted value for the $i$th case when the $(i)$th observation was omitted when the regression function was fit.
+
+- The prediction error for the $i$th case is then
+
+$$Y_i - \hat{Y}_{i(i)}$$
+
+- The $PRESS_p$ criterion is the sum of the squared prediction errors over all $n$ cases:
+
+$$\sum_{i = 1}^n (Y_i - \hat{Y}_{i(i)})^2$$
+
+- Good models: Models with small $PRESS_p$ fit well in the sense of having small prediction errors and are considered candidate models.
+
+- $PRESS_p$ values can be calculated without requiring $n$ separate regression runs, each time deleting one of the $n$ cases using formulas in the next chapter.
+
+- Note that $PRESS_p$ values can also be used for model validation.
+
+## Automatic search procedures for model selection
+
+- Two common approaches for automating variable selection are "best" subsets regression and stepwise regression.
+
+- Will not cover all options and variations of methods that are available. 
+
+- It is essential that the specific features of the package employed be fully understood so that intelligent use of the package can be made.
+
+- For example, some variations allow variables to be considered in groups (such as all indicators for a categorical predictor) or to force variables into the model (if have a prioir beliefs).
+
+- All to say, there is no unique way of searching for "good" subsets of $X$ variables, and subjective elements must play an important role in the search process.
+
+    - Judgment needs to play an important role in model building for exploratory studies. Some explanatory variables may be known to be more fundamental than others and therefore should be retained in the regression model if the primary purpose is to develop a good explanatory model.
+    
+    - For example, keep all indicator variables for a categorical predictor, keep lower order terms if a higher order term is included, etc.
+    
+- An important issue in exploratory model building that we have not will be considered is the bias in estimated regression coefficients and in estimated mean responses.
+
+    - This is where model validation comes into play (don't get lost in finding the best fit)
+
+Demo
+
+```{r}
+
+# calculate PRESS
+olsrr::ols_press(mod_example)
+
+# matches book!
+
+```
+
+### "Best" subsets algorithms
+
+- These algorithms provide the best subsets according to the specified criterion, as well as identifying several "good" subsets for each possible number of $X$ variables in the model.
+
+- When the pool of potential $X$ variables is very large, say greater than 30 or 40, even the "best" subset algorithms may require excessive computer time. Under these conditions, one of the stepwise regression may need to be used.
+
+- Use several different criterion when evaluating the "best" subsets. This is one way to get multiple candidate models.
+
+- Once the investigator has identified a few "good" subsets for intensive examination, a final choice of the model variables must be made with the help of residual analyses, industry knowledge, and finally then confirmed through model validation.
+
+- Strengths
+    
+    - Exhaustive search of subsets.
+    
+    - Results in several good candidate models.
+    
+- Weaknesses
+
+    - Computationally infeasible when there is a large number of predictors.
+    
+Demo
+
+::: panel-tabset
+
+#### `leaps::regsubsets`
+
+```{r}
+
+# define function to format results for plotting
+format_results <- function(best_subs) {
+  
+  # get summary statistics
+  summ = summary(best_subs)
+  
+  # combine to single dataframe and rename columns
+  results = summ[2:6] %>% reduce(bind_cols)
+  colnames(results) = names(summ)[2:6]
+  
+  # append number of predictor variables
+  results = results %>% mutate(p = sort(rep(1:best_subs$np, best_subs$nbest))[1:nrow(summ$outmat)], .before = 1)
+  
+  return(results)
+  
+}
+
+# define function to plot results
+plot_results <- function(res, var = "rsq") {
+  
+  # plot point for each model at each p
+  # -> add line connecting optimal models at each p
+  p = ggplot(data = res,
+         aes(x = p,
+             y = .data[[var]])) + 
+    geom_point(color = "grey70") + 
+    geom_line(data = res %>% group_by(p) %>% slice_head(n = 1))
+  
+  # conditionally add Cp = p line
+  if (identical(var, "cp")) {
+    p = p + 
+      geom_abline(intercept = 0,
+                  slope = 1)
+  }
+  
+  return(p)
+  
+}
+
+# perform best subsets regression and save necessary output
+# -> note there are options to force variables in and out
+# -> nbest = nmax does ALL possible models
+best_subs <- leaps::regsubsets(formula(mod_start_prime), data = data_surgery, 
+                               nbest = 1, nvmax = 8, method = "exhaustive")
+
+# format and results
+results <- format_results(best_subs)
+map(colnames(results)[-1], \(var) plot_results(results, var))
+
+```
+
+#### `olsrr::ols_step_best_subset`
+
+```{r}
+
+# this gives the single best model for number of predictor variables
+# -> can use this to most easily get which variables are in the single best model_p
+best_subs <- olsrr::ols_step_best_subset(mod_example_full)
+
+# plot results also works, just plots only the best
+best_subs %>% rename(p = n) %>% {map(colnames(best_subs)[4:10], \(var) plot_results(., var))}
+
+```
+
+:::
+
+### Stepwise regression methods
+
+Motivation
+
+- In those occasional cases when the pool of potential $X$ variables contains 30 to 40 or even more variables, use of a "best" subsets algorithm may not be feasible. An automatic search procedure that develops the "best" subset of $X$ variables sequentially may then be helpful.
+
+Overview
+
+- This search method develops a sequence of regression models, at each step adding or deleting an $X$ variable (iterative procedure).
+
+- Can use one of several different criterion for adding or deleting an $X$ variable, such as: reduction in error sum of squares, coefficient of partial correlation, $t^*$ statistic, or $F^*$ statistic.
+
+- Strengths
+    
+    - Computational more efficient than evaluating ALL possible subsets.
+    
+- Weaknesses
+
+    -  Experienoe has shown that each of the stepwise search procedures can sometimes err by identifying a suboptimal regression model as "best."
+    
+    - End result is only a SINGLE "best" model. So it hides potentially other "good" models, whose "goodness" need to be evaluated using a variety of diagnostics.
+
+- Strategy then
+
+    - We should use the subset identified by the automatic search procedure as a starting point for searching for other "good" subsets.
+    
+    - One possibility is to treat the number of $X$ variables in the regression model identified by the automatic search procedure as being about the right subset size and then use the "best" subsets procedure for subsets of this and nearby sizes.
+
+Forward stepwise regression
+
+- Step 0: Start with intercept-only model.
+
+- Step 1: Fit all one variable models and evaluate criteria. Find the best. For example, the largest $\lvert t^* \rvert$ or equivalently smallest $p$-value.
+
+    - Since the degrees of freedom associated with $MSE$ vary depending on the number of $X$ variables in the model, and since repeated tests on the same data are undertaken, fixed $t^*$ limits for adding or deleting a variable have no precise probabilistic meaning. For this reason, software programs often favor the use of predetermined $\alpha$-limits.
+    
+$$t^*_{k1} = \sqrt{\frac{\hat{\beta}_{k1}}{s\{\hat{\beta}_{k1}\}}} \Longrightarrow p\text{-value}$$
+
+- Step 2: Start with the variable from the previous step and fit all 2 variable models. Find the best second variable and see if it meets the keep criteria.
+
+$$t^*_{k1} = \sqrt{\frac{MSR(X_{k2} \mid X_{k1})}{MSE(X_{k1}, X_{k2})}} \Longrightarrow p\text{-value}$$
+
+- Step 3: Check to see if a variable should be deleted. Fit model with all predictors currently kept and see if one variable should be dropped (i.e. see if criteria is on wrong side of the keep criteria).
+
+- Step 4: Continue adding and checking to see if previous variable should be dropped until adding a variable doesn't improve the model and dropping a variable doesn't improve the model. Then algorithm is done.
+
+- Note that the stepwise regression algorithm allows an $X$ variable, brought into the model at an earlier stage, to be dropped subsequently if it is no longer helpful in conjunction with variables added at later stages.
+
+    - i.e. The order in which variables enter the regression model does not reflect their importance.
+
+Choice of keep criteria in terms of $\alpha$
+
+- The choice of $\alpha$to-enter and $\alpha$-to-remove values essentially represents a balancing of opposing tendencies.
+
+    - Simulation studies have shown that for scenarios with large pools of 1) uncorrelated predictors 2) that are not related to the response, larger $\alpha$-to-enter values results in models that allow too many variables. Conversely, a small $\alpha$-to-enter values results in models that are often underspecified, resulting in $\sigma^2$ being badly overestimated and the procedure being too conservative.
+    
+    - The max $\alpha$-to-enter < min $\alpha$-to-remove. If not, will get an endless loop.
+    
+Demo
+
+::: panel-tabset
+
+#### `stats::step`
+
+```{r}
+
+# perform stepwise regression (forward)
+
+# specify starting and ending models
+mod_null <- lm(log(y) ~ 1, data_surgery) # starting with intercept model
+mod_full <- mod_start_prime # just need formula
+formula(mod_full)
+
+# run procedure
+# -> criterion is based on AIC from extractAIC()
+mod_step_aic <- step(object = mod_null, scope = formula(mod_full), direction = "both", k = 2)
+
+# confirm from extractAIC()
+extractAIC(mod_step_aic)
+
+# repeat for BIC criteria -> k = log(nobs(mod))
+mod_step_bic <- step(object = mod_null, scope = formula(mod_full), direction = "both", k = log(nobs(mod_null)), trace = 0) # criterion is based on BIC from extractAIC()
+extractAIC(mod_step_bic, k = log(nobs(mod_step_bic)))
+
+# compare models
+# -> BIC is more conservative, which makes sense
+compare(formula(mod_step_aic), formula(mod_step_bic))
+
+```
+
+#### `olsrr`
+
+```{r}
+
+# perform stepwise regression (forward)
+# -> based on AIC
+mod_step_aic2 <- olsrr::ols_step_both_aic(mod_full, progress = TRUE, details = TRUE)
+plot(mod_step_aic2)
+
+# extract formula from ending model
+mod_step_aic2_formula <- mod_step_aic2$predictors %>% {paste0("log(y) ~ ", paste0(., collapse = " + "))} %>% as.formula
+
+compare(formula(mod_step_aic), mod_step_aic2_formula)
+
+# confirm using AIC()
+# -> this result is found in the printed output!
+AIC(lm(mod_step_aic2_formula, data_surgery))
+
+# perform stepwise regression (forward)
+# -> based on p-values, using default alpha-to-enter and alpha-to-remove
+mod_step_p <- olsrr::ols_step_both_p(mod_full, pent = 0.1, prem = 0.3)
+mod_step_p
+
+```
+
+:::
+
+### Other stepwise procedures
+
+Forward selection
+
+- The forward selection search procedure is a simplified version of forward stepwise regression, omitting the test whether a variable once entered into the model should be dropped.
+
+Demo
+
+```{r}
+
+# perform forward selection regression
+# -> based on AIC (could do BIC same way for step())
+mod_forward <- step(object = mod_null, scope = formula(mod_full), direction = "forward", k = 2, trace = 0)
+
+mod_forward2 <- olsrr::ols_step_forward_aic(mod_full)
+mod_forward2_formula <- mod_forward2$predictors %>% {paste0("log(y) ~ ", paste0(., collapse = " + "))} %>% as.formula
+
+compare(formula(mod_forward), mod_forward2_formula)
+
+compare(formula(mod_step_aic), formula(mod_forward))
+
+# olsrr based on p-values
+# -> default enter seems high
+olsrr::ols_step_forward_p(mod_full, pent = 0.3)
+
+```
+
+Backward elimation
+
+- The backward elimination search procedure is the opposite of forward selection. It begins with the model containing all potential $X$ variables and identifies the one with the largest $p$-value and determines if it should be dropped. Then repeat with the remaining $P-2$ $X$ variables.
+
+- This process continues until no further $X$ variables can be dropped.
+
+- A stepwise modification can also be adapted that allows variables eliminated earlier to be added later: this modification is called the backward stepwise regression procedure.
+
+- For small and moderate numbers of variables in the pool of potential $X$ variables, some statisticians argue for backward stepwise search over forward stepwise search.
+
+    - A potential disadvantage of the forward stepwise approach is that the $MSE$ (and hence s\{\hat{\beta}_k\}$) will lend to be inflated during the initial steps, because important predictors have been omitted $\Longrightarrow$ $t^*$ test statistics that are too small.
+    
+    - For the backward stepwise procedure, $MSE$ values tend to be more nearly unbiased because important predictors are retained at each step.
+    
+    - An argument in favor of the backward stepwise procedure can also be made in situations where it is useful as a first step to look at each $X$ variable in the regression function adjusted for all the other $X$ variables in the pool.
+    
+```{r}
+
+# perform backward selection regression
+# -> based on AIC (could do BIC same way for step())
+mod_backward <- step(object = mod_full, scope = formula(mod_full), direction = "backward", k = 2, trace = 0)
+
+mod_backward2 <- olsrr::ols_step_backward_aic(mod_full)
+mod_backward2_formula <- mod_forward2$predictors %>% {paste0("log(y) ~ ", paste0(., collapse = " + "))} %>% as.formula
+
+compare(formula(mod_backward), mod_backward2_formula) # same models, different order
+
+compare(formula(mod_step_aic), formula(mod_backward)) # same models, different order
+
+# olsrr based on p-values
+olsrr::ols_step_backward_p(mod_full, prem = 0.3, progress = TRUE, details = TRUE)
+
+```
+
+## Model validation
+
+### Overview
+
+- The final step in the model-building process is the validation of the selected regression models. Model validation usually involves checking a candidate model against independent data. Three basic ways of validating a regression model are:
+
+1. Collection of new data to check the model and its predictive ability.
+
+2. Comparison of results with theoretical expectations, earlier empirical results, and simulation results.
+
+3. Use of a holdout sample to check the model and its predictive ability.
+
+Other types of studies
+
+- When a regression model is used in a controlled experiment, a repetition of the experiment and its analysis serves to validate the findings in the initial study if similar results for the regression coefficients, predictive ability, and the like are obtained. Same for confirmatory observational studies, just use other data and repeat analyses.
+
+    - This is because there is no issue with variable selection.
+    
+    - Additionally, if the model is to be used for making predictions over the entire range of the $X$ observations, a possibility is to include data points that are uniformly distributed over the $X$ space.
+    
+- On the contrast, definitely need to validate for exploratory observational studies because they often start with large pools of $X$ variables which is narrowed down significantly.
+
+    -  For these studies, validation of the regression model involves also the appropriateness of the variables selected, as well as the magnitudes of the regression coefficients, the predictive ability of the model, and the like.
+    
+### Collection of new data to check model
+
+- The best means of model validation is through the collection of new data. The purpose of collecting new data is to be able to examine whether the regression model developed from the earlier data is still applicable for the new data.
+
+    - If so, one has assurance about the applicability of the model to data beyond those on which the model is based.
+
+Methods of checking validity
+
+- There are a variety of methods of examining the validity of the regression model against the new data.
+
+1. One validation method is to reestimate the model form chosen earlier using the new data.
+
+    - The estimated regression coefficients and various characteristics of the fitted model are then compared for consistency to those of the regression model based on the em'lier data.
+    
+    - If the results are consistent, they provide strong support that the chosen regression model is applicable under broader circumstances than those related to the original data.
+
+2. A second validation method is designed to calibrate the predictive capability of the selected regression model.
+
+    - When a regression model is developed from given data, it is inevitable that the selected model is chosen, at least in large part, because it fits well the data at hand.
+    
+    -  For a different set of random outcomes, one may likely have arrived at a different model in terms of the predictor valiables selected and/or their functional forms and interaction terms present in the model.
+    
+    - A result of this model development process is that the $MSE$ will tend to understate the inherent variability in making future predictions from the selected model.
+    
+    - A means of measuring the actual predictive capability of the selected regression model is to use this model to predict each case in the new data set and then to calculate the mean squared prediction error $MSPR$:
+    
+    - (where $Y_i$ is the value of the response valiable in the $i$th validation case; $\hat{Y}_i$ is the predicted value for the $i$th validation case based on the model-building dataset; and $n^*$ is the number of cases in the validation set)
+    
+$$MSPR = \frac{1}{n^*}\sum_{i = 1}^{n^*} (Y_i - \hat{Y}_i)^2$$
+
+- If the $MSPR$ is fairly close to $MSE$ based on the regression fit to the model-building data set, then the $MSE$ for the selected regression model is not seriously biased and gives an appropriate indication of the predictive ability of the model.
+
+    - If the $MSPE$ is much larger than $MSE$, one should rely on the $MSPE$ as an indicator of how well the selected regression model will predict in the future.
+    
+Difficulties in replicating a study
+
+- Difficulties often arise when new data are collected to validate a regression model, especially with observational studies.
+
+- Essentially, hard to get exactly identical conditions. In observational studies, things like settings and time frequently change.
+
+- Even though perfect replication is impossible, all validation studies are useful because No single study is fully useful until we know how much the results of the study can be generalized.
+
+    - If a replication study for which the conditions of the setting differ only slightly from those of the initial study substantially different regression results, then we learn that the results of the initial study cannot be readily generalized.
+    
+    - On the other hand, if the conditions differ substantially and the regression results are still similar, we find that the regression results can be generalized to apply under substantially varying conditions.
+    
+    - Still another possibility is that the regression results for the replication study differ substantially from those of the initial study, the differences being related to changes in the setting. This information may be useful for enriching the regression model by including new explanatory variables that make the model more widely applicable.
+    
+### Comparison with theory, empirical evidence, or simulation results
+
+- In some cases, theory, simulation rdmlts, or previous empirical results may be helpful in determining whether the selected model is reasonable.
+
+- Comparisons of regression coefficients and predictions with theoretical expectations, previous empirical results, or simulation results should be made. 
+
+- Unfortunately, there is often little theory that can be used to validate
+regression models.
+
+### Data splitting
+
+Overview
+
+- By far the preferred method to validate a regression model is through the collection of new data. Often, however, this is neither practical nor feasible.
+
+- An alternative is to use a training and testing set, which in effect an attempt to simulate replication of the study. The validation data set is used for validation in the same way as when new data are collected.
+
+    - The regression coefficients can be reestimated for the selected model and then compareed for consistency with the coefficients obtained from the model-building data set.
+    
+    - Also, predictions can be made for the testing data from the model built on the training data in order to calibrate the predictive ability of this regression model for the new data.
+    
+    - When the calibration data set is large enough, one can also study how the "good" models considered in the model selection phase fare with the new data.
+
+How to split
+
+- $n_{\text{train}} >> n_{\text{test}}$, can even go 50/50 if large enough dataset.
+
+- Splits of the data can be made at random or stratified to ensure certain spread of cases (roughly equal representation of $X$ levels) in the training and testing datasets.
+
+- Can also do $k$-fold cross validation. The $k$ estimates of prediction error are then combined to produce a $k$-fold cross-validation estimate.
+
+    - Note that when $k = n$, this criteria is equal to $PRESS_p$ $\Longrightarrow$ $k$-fold cross validation estimates are approximations to $PRESS_p$.
+    
+    - Can also use a variation of $PRESS_p$ where $m$ observations are held out rather than 1, and the $n-m$ observations are used to fit the models.
+    
+- If a dataset for an exploratory observational study is very large, it can be divided into three parts.
+
+    - The first part is used for model training, the second part for cross-validation and model selection, and the third part for testing and calibrating the final model.
+    
+    - This approach avoids any bias resulting from estimating the regression parameters from the same data set used for developing the model.
+    
+    - But it still uses less data to fit the model, so less precise standard errors of estimated coefficients.
+
+Drawbacks
+
+- A possible drawback of data splitting is that the variances of the estimated regression coefficients developed from the model-building data set will usually be larger than those that would have been obtained from the fit to the entire data set.
+
+- If the model-building data set is reasonably large, however, these variances generally will not be that much larger than those for the entire data set.
+
+- In any case, once the model has been validated, it is customary practice to use the entire data set for estimating the final regression model.
+
+Results
+
+- When regression models built on observational data do not predict well outside the range of the $X$ observations in the data set (extrapolation), the usual reason is the existence of multicollinearity among the $X$ variables.
+
+    - Ridge regression or other biased estimation techniques are possible solutions to this.
+
+### Demo -- Data splitting
+
+::: panel-tabset
+
+#### `tidymodels`
+
+```{r}
+
+# random split 2-way
+# -> make train / test split
+data_split <- data_surgery %>% rsample::initial_split(prop = .7)
+data_train <- data_split %>% rsample::training()
+data_test <- data_split %>% rsample::testing()
+
+# stratified split
+# -> https://www.tidymodels.org/start/case-study/
+# -> based on response variable (ensures representative training and testing)
+# -> if numeric, does based on binned quantiles
+# -> if categorical, does it based on proportion of levels
+data_split_strat <- data_surgery %>% rsample::initial_split(prop = .7, strata = y)
+data_train2 <- data_split_strat %>% rsample::training()
+data_test2 <- data_split_strat %>% rsample::testing()
+
+# random split 3-way
+# -> make train / validation / test split
+data_split_diamonds <- diamonds %>% rsample::initial_validation_split(prop = c(0.6, 0.2))
+data_train_diamonds <- data_split_diamonds %>% rsample::training()
+data_validation_diamonds  <- data_split_diamonds %>% rsample::validation()
+data_test_diamonds  <- data_split_diamonds %>% rsample::testing()
+
+# k folds
+# -> https://rsample.tidymodels.org/articles/Working_with_rsets.html
+# -> access analysis and holdout data for the first fold
+# -> setup to map() a function to perform on each fold split
+kfolds <- rsample::vfold_cv(data = data_surgery, v = 10, repeats = 1, strata = y)
+kfolds
+data_analysis1 <- rsample::analysis(kfolds$splits[[1]])
+data_holdout1 <- rsample::assessment(kfolds$splits[[1]])
+
+# IMPORTANT NOTE: in practice would do the resampling method on the TRAINING data, then get the final model performance on the testing set
+
+```
+
+#### `caret`
+
+```{r}
+
+# random split
+
+# get indices in training data
+# then subset data to training and testing data
+in_train <- caret::createDataPartition(data_surgery$y, p = 0.7)
+data_train <- data_surgery[in_train$Resample1, ]
+data_test <- data_surgery[-(in_train$Resample1), ]
+
+```
+
+#### `dplyr`
+
+```{r}
+
+# random split
+
+# sample a proportion for training set and get all non matches for testing
+# -> requires ID variable (saving new object to not overwrite original data)
+data_surgery_tmp <- data_surgery %>% mutate(id = row_number())
+data_train <- data_surgery_tmp %>% slice_sample(prop = 0.7)
+data_test <- anti_join(data_surgery_tmp, data_train, by = join_by(id))
+
+```
+
+### Demo -- Get best model from train
+
+```{r}
+
+# random split 2-way
+# -> make train / test split
+set.seed(2)
+data_split <- data_surgery %>% rsample::initial_split(prop = .7)
+data_train <- data_split %>% rsample::training()
+data_test <- data_split %>% rsample::testing()
+
+```
+
+```{r}
+
+# get final best model
+
+# perform best subsets regression and save necessary output
+# -> note there are options to force variables in and out
+# -> nbest = nmax does ALL possible models
+best_subs <- leaps::regsubsets(formula(mod_start_prime), data = data_train, 
+                               nbest = 8, nvmax = 8, method = "exhaustive")
+
+# format and results
+results <- format_results(best_subs)
+map(colnames(results)[-1], \(var) plot_results(results, var))
+
+# criteria -> best model
+# rsq -> 4
+# rss -> 4
+# adjr2 -> 3
+# cp -> 4
+# bic -> 3
+
+# going with best 4 parameter model (3 Xs)
+summary(best_subs)$which %>% data.frame %>% filter(row.names(.) %in% c("X3"))
+
+# for sake of simplicity, not evaluating multiple models and skipping some criteria like PRESSp
+
+# fit final model using best model
+# -> keeping x7 so indicator variables x7 and x8 are together
+mod_train <- lm(log(y) ~ x2 + x3 + x7 + x8, data_train)
+mod_train %>% tidy
+mod_train %>% glance
+
+```
+
+### Demo -- Validate model 
+
+::: panel-tabset
+
+#### R functions
+
+```{r}
+
+# make predictions on testing data
+preds <- predict(mod_train, newdata = data_test)
+
+# calculate rmse
+yardstick::rmse_vec(truth = log(data_test$y), estimate = preds)
+
+# calculate MSPE
+yardstick::rmse_vec(truth = log(data_test$y), estimate = preds)^2
+
+# compare regression coefficients fit on training data to testing data for consistency
+mod_test <- lm(formula(mod_train), data_test)
+tidy(mod_test)
+tidy(mod_train)
+
+# compare MSEp and MSE
+compare(mod_test %>% glance %>% pull(sigma) %>% raise_to_power(2),
+        mod_train %>% glance %>% pull(sigma) %>% raise_to_power(2))
+var(log(data_surgery$y))
+
+```
+
+Conclusions
+
+- Coefficients of the testing model are all within a standard error or two of the training model (only concern in x7 switches signs)
+
+- $MSE$s are close, especially considering scale of $var(ln(y))$ for reference. So it does perform well for predictive accuracy.
+
+#### Manual
+
+```{r}
+
+# calculate MSPE
+sum((log(data_test$y) - preds)^2) / nrow(data_test)
+
+# calculate RMSE = sqrt(MSPE)
+(sum((log(data_test$y) - preds)^2) / nrow(data_test)) %>% sqrt
+
+```
+
+#### $k$-fold cross validation $RMSE$ -- Semi manual
+
+```{r}
+
+# k folds
+kfolds <- rsample::vfold_cv(data = data_surgery, v = 10, repeats = 1, strata = y)
+
+# function to:
+# 1) fit model on analysis data
+# 2) make predictions on holdout data
+# ... will be the model formula
+holdout_results <- function(splits, ...) {
+  
+  # fit the model to the analysis data (90%: 9 of the 10 folds)
+  mod_kfold = lm(..., data = rsample::analysis(splits))
+  
+  # save the holdout data (10%: last fold)
+  data_holdout = rsample::assessment(splits)
+  
+  # `augment` will save the predictions with the holdout data set
+  preds = augment(mod_kfold, newdata = data_holdout)
+  
+  return(preds)
+  
+}
+
+# fit models for k-fold cross validation
+kfolds$results <- kfolds$splits %>% map(holdout_results, formula(mod_train))
+
+# calculate rmse for each fold
+kfolds$rmse <- kfolds$results %>% map_dbl(\(df) yardstick::rmse_vec(truth = log(df$y),estimate = df$`.fitted`))
+
+# calculate final cross validation rmse
+kfolds$rmse %>% mean
+
+```
+
+#### $k$-fold cross validation $RMSE$ -- Full tidymodels
+
+[SLIDES](https://catalina.quarto.pub/introduction-to-tidymodels/)
+
+```{r}
+
+# fit a single linear regression model on entire data for practice
+# -> https://www.tidymodels.org/start/models/
+
+# make the parsnip model 
+mod_linreg <- parsnip::linear_reg()
+
+# train the model
+fit_linreg <- mod_linreg %>% 
+  parsnip::fit(log(y) ~ ., data = data_surgery)
+
+tidy(fit_linreg)
+
+```
+
+```{r}
+
+# fit models for all resamples
+# -> https://www.tidymodels.org/start/resampling/
+
+# use kfolds from above
+
+# define workflow
+wf_linreg <- workflows::workflow() %>% 
+  workflows::add_model(mod_linreg) %>% 
+  workflows::add_formula(formula(mod_train))
+wf_linreg
+
+# fit cross validation models 
+rs_fit_linreg <- wf_linreg %>% 
+  tune::fit_resamples(object = .,
+                      resamples = kfolds,
+                      metrics = yardstick::metric_set(yardstick::rmse))
+
+# get final cross validation measures
+workflowsets::collect_metrics(rs_fit_linreg)
+
+compare(kfolds$rmse %>% mean,
+        workflowsets::collect_metrics(rs_fit_linreg) %>% pull(mean))
+
+```
+
+:::

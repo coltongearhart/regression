@@ -593,7 +593,7 @@ Summary of related effects of multicollinearity
 
 - Often, however, serious multicollinearity exists without being disclosed by the pairwise correlation coefficients. Later, we present a more powerful tool for identifying the existence of serious multicollinearity. Some remedial measures for lessening the effects of multicollinearity will be considered as well.
 
-### Simulation
+### Simulation {#sec-simulation-multicollinearity}
 
 Simualtion to demo the affects of varying levels of multicollinearity.
 

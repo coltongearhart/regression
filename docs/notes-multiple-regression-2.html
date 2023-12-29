@@ -207,7 +207,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./notes-reg-models-quan-and-qual.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quanititative and qualitative predictors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quantitative and qualitative predictors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes-building-reg-model-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Building the regression model 1 – Model selection and validation</span></span></a>
   </div>
 </li>
       </ul>
@@ -246,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#perfectly-correlated-predictors" id="toc-perfectly-correlated-predictors" class="nav-link" data-scroll-target="#perfectly-correlated-predictors"><span class="header-section-number">6.6.3</span> Perfectly correlated predictors</a></li>
   <li><a href="#effects-of-multicollinearity" id="toc-effects-of-multicollinearity" class="nav-link" data-scroll-target="#effects-of-multicollinearity"><span class="header-section-number">6.6.4</span> Effects of multicollinearity</a></li>
   <li><a href="#need-for-more-powerful-diagnostics-for-multicollinearity" id="toc-need-for-more-powerful-diagnostics-for-multicollinearity" class="nav-link" data-scroll-target="#need-for-more-powerful-diagnostics-for-multicollinearity"><span class="header-section-number">6.6.5</span> Need for more powerful diagnostics for multicollinearity</a></li>
-  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation"><span class="header-section-number">6.6.6</span> Simulation</a></li>
+  <li><a href="#sec-simulation-multicollinearity" id="toc-sec-simulation-multicollinearity" class="nav-link" data-scroll-target="#sec-simulation-multicollinearity"><span class="header-section-number">6.6.6</span> Simulation</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -335,12 +341,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_123</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">tidy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 6
-  term         df   sumsq  meansq statistic   p.value
-  &lt;chr&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 X1            1 2050.   2050.     331.     1.21e-22
-2 X2            1 2305.   2305.     372.     1.11e-23
-3 X3            1    3.77    3.77     0.608  4.40e- 1
-4 Residuals    46  285.      6.19    NA     NA       </code></pre>
+  term         df    sumsq   meansq statistic   p.value
+  &lt;chr&gt;     &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 X1            1 2373.    2373.     230.      1.60e-19
+2 X2            1 1705.    1705.     165.      7.69e-17
+3 X3            1    0.139    0.139    0.0135  9.08e- 1
+4 Residuals    46  474.      10.3     NA      NA       </code></pre>
 </div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># verify conditional sum of squares</span></span>
 <span></span>
@@ -352,10 +358,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 [1] TRUE
 
 $`mod_123 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(sumsq)`
-[1] 2049.535
+[1] 2372.823
 
 $`mod_1 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(sumsq)`
-[1] 2049.535</code></pre>
+[1] 2372.823</code></pre>
 </div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># X2 in the model after X1 already in model</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">mod_123</span> <span class="op">%&gt;%</span> <span class="va">anova</span> <span class="op">%&gt;%</span> <span class="va">tidy</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">term</span> <span class="op">==</span> <span class="st">"X2"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">pull</span><span class="op">(</span><span class="va">sumsq</span><span class="op">)</span>,</span>
@@ -365,10 +371,10 @@ $`mod_1 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(sumsq)`
 [1] TRUE
 
 $`mod_123 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)`
-[1] 2304.802
+[1] 1705.173
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)`
-[1] 2304.802</code></pre>
+[1] 1705.173</code></pre>
 </div>
 </div>
 </section></section><section id="use-of-extra-sums-of-squares-in-tests-for-regression-coefficients" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="use-of-extra-sums-of-squares-in-tests-for-regression-coefficients">
@@ -398,10 +404,10 @@ $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)
 [1] TRUE
 
 $`t_stat %&gt;% raise_to_power(2)`
-[1] 375.3236
+[1] 168.9207
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statistic)`
-[1] 375.3236</code></pre>
+[1] 168.9207</code></pre>
 </div>
 </div>
 </section><section id="summary-of-tests-concerning-regression-coefficients" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="summary-of-tests-concerning-regression-coefficients">
@@ -424,17 +430,17 @@ $`mod_12 %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)     1.25     0.384      3.25 2.14e- 3
-2 X1              2.27     0.133     17.1  7.80e-22
-3 X2              1.98     0.102     19.4  4.78e-24
+1 (Intercept)    0.593     0.450      1.32 1.94e- 1
+2 X1             2.13      0.163     13.1  2.73e-17
+3 X2             1.91      0.147     13.0  3.57e-17
 
 $`mod_21 %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 5
   term        estimate std.error statistic  p.value
   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-1 (Intercept)     1.25     0.384      3.25 2.14e- 3
-2 X1              2.27     0.133     17.1  7.80e-22
-3 X2              1.98     0.102     19.4  4.78e-24</code></pre>
+1 (Intercept)    0.593     0.450      1.32 1.94e- 1
+2 X1             2.13      0.163     13.1  2.73e-17
+3 X2             1.91      0.147     13.0  3.57e-17</code></pre>
 </div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># just different decomposition of SS</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">mod_12</span> <span class="op">%&gt;%</span> <span class="va">anova</span> <span class="op">%&gt;%</span> <span class="va">tidy</span> <span class="op">%&gt;%</span> <span class="fu">arrange</span><span class="op">(</span><span class="va">term</span><span class="op">)</span>,</span>
@@ -445,9 +451,9 @@ $comparison$result
 [1] FALSE
 
 $comparison$description
-[1] "Component \"sumsq\": Mean relative difference: 0.1071776"    
-[2] "Component \"meansq\": Mean relative difference: 0.1141208"   
-[3] "Component \"statistic\": Mean relative difference: 0.1142817"
+[1] "Component \"sumsq\": Mean relative difference: 0.2824361"    
+[2] "Component \"meansq\": Mean relative difference: 0.3145167"   
+[3] "Component \"statistic\": Mean relative difference: 0.3152953"
 
 $comparison$`element-wise`
      term   df sumsq meansq statistic p.value
@@ -458,19 +464,19 @@ $comparison$`element-wise`
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 6
-  term         df sumsq  meansq statistic   p.value
-  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 Residuals    47  289.    6.14       NA  NA       
-2 X1            1 2050. 2050.        334.  5.50e-23
-3 X2            1 2305. 2305.        375.  4.78e-24
+  term         df sumsq meansq statistic   p.value
+  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 Residuals    47  474.   10.1       NA  NA       
+2 X1            1 2373. 2373.       235.  6.50e-20
+3 X2            1 1705. 1705.       169.  3.57e-17
 
 $`mod_21 %&gt;% anova %&gt;% tidy %&gt;% arrange(term)`
 # A tibble: 3 × 6
-  term         df sumsq  meansq statistic   p.value
-  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 Residuals    47  289.    6.14       NA  NA       
-2 X1            1 1801. 1801.        293.  7.80e-22
-3 X2            1 2554. 2554.        416.  5.53e-25</code></pre>
+  term         df sumsq meansq statistic   p.value
+  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 Residuals    47  474.   10.1       NA  NA       
+2 X1            1 1730. 1730.       171.  2.73e-17
+3 X2            1 2348. 2348.       233.  7.98e-20</code></pre>
 </div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># verify what is included previpously in model matters for F tests</span></span>
 <span></span>
@@ -483,17 +489,17 @@ $comparison$result
 [1] FALSE
 
 $comparison$description
-[1] "Mean relative difference: 0.1079531"
+[1] "Mean relative difference: 0.3770213"
 
 $comparison$`element-wise`
 [1] FALSE
 
 
 $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statistic)`
-[1] 375.3236
+[1] 168.9207
 
 $`mod_21 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statistic)`
-[1] 415.8409</code></pre>
+[1] 232.6073</code></pre>
 </div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># but X3 | X1, X2 should be same as X3 | X2, X1</span></span>
 <span><span class="va">mod_213</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X3</span>, <span class="va">data_sample</span><span class="op">)</span></span>
@@ -505,10 +511,10 @@ $`mod_21 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(statis
 [1] TRUE
 
 $`mod_123 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X3") %&gt;% pull(statistic)`
-[1] 0.6080767
+[1] 0.01347171
 
 $`mod_213 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X3") %&gt;% pull(statistic)`
-[1] 0.6080767</code></pre>
+[1] 0.01347171</code></pre>
 </div>
 </div>
 </section><section id="coefficient-of-partial-determination" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="coefficient-of-partial-determination">
@@ -546,10 +552,10 @@ $`mod_213 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X3") %&gt;% pull(stati
 [1] TRUE
 
 $`SSR_X2_given_X1/SSE_X1`
-[1] 0.8887109
+[1] 0.7823275
 
 $`mod_resids %&gt;% glance %&gt;% pull(r.squared)`
-[1] 0.8887109</code></pre>
+[1] 0.7823275</code></pre>
 </div>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># show added variable plot -&gt; strong linear relationship is evident after adjusting for X1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_1</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_X2X1</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -719,9 +725,9 @@ $`mod_12 %&gt;% anova %&gt;% tidy %&gt;% filter(term == "X2") %&gt;% pull(sumsq)
 <span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, mu <span class="op">=</span> <span class="va">mu</span>, Sigma <span class="op">=</span> <span class="va">sigma</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          [,1]      [,2]
-[1,] 1.0000000 0.1559262
-[2,] 0.1559262 1.0000000</code></pre>
+<pre><code>             [,1]         [,2]
+[1,]  1.000000000 -0.001836028
+[2,] -0.001836028  1.000000000</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">X</span> <span class="op">%&lt;&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></span>
 <span></span>
@@ -749,17 +755,17 @@ $comparison$result
 [1] FALSE
 
 $comparison$description
-[1] "Mean relative difference: 0.1645288"
+[1] "Mean relative difference: 0.00270964"
 
 $comparison$`element-wise`
 [1] FALSE
 
 
 $`mod_1 %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(estimate)`
-[1] 2.007993
+[1] 1.602815
 
 $`mod_12 %&gt;% tidy %&gt;% filter(term == "X1") %&gt;% pull(estimate)`
-[1] 1.67762</code></pre>
+[1] 1.607158</code></pre>
 </div>
 </div>
 </div>
@@ -820,19 +826,19 @@ lm(formula = Y ~ X1 + X2, data = data_sample)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--4.9697 -2.0044 -0.5754  1.7910  7.4390 
+-5.4289 -1.7612 -0.3936  2.0788  7.7564 
 
 Coefficients: (1 not defined because of singularities)
             Estimate Std. Error t value             Pr(&gt;|t|)    
-(Intercept)   2.4987     0.4365   5.725          0.000000659 ***
-X1            7.7487     0.1393  55.630 &lt; 0.0000000000000002 ***
+(Intercept)   2.2962     0.3998   5.744          0.000000616 ***
+X1            7.9718     0.1341  59.425 &lt; 0.0000000000000002 ***
 X2                NA         NA      NA                   NA    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 3.086 on 48 degrees of freedom
-Multiple R-squared:  0.9847,    Adjusted R-squared:  0.9844 
-F-statistic:  3095 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 2.81 on 48 degrees of freedom
+Multiple R-squared:  0.9866,    Adjusted R-squared:  0.9863 
+F-statistic:  3531 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 </div>
 <p>Second coefficient doesn’t even get estimated.</p>
@@ -875,19 +881,19 @@ lm(formula = Y ~ X1 + X2, data = data_sample)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--9.3647 -1.5930 -0.1594  2.0788  8.3397 
+-5.1601 -1.7987  0.1695  1.4131  5.6758 
 
 Coefficients:
             Estimate Std. Error t value   Pr(&gt;|t|)    
-(Intercept)   2.4260     0.4684   5.179 0.00000458 ***
-X1          200.7051   149.4779   1.343      0.186    
-X2          -64.2887    49.8255  -1.290      0.203    
+(Intercept)   2.0498     0.3699   5.541 0.00000132 ***
+X1           16.9964   126.0404   0.135      0.893    
+X2           -3.0002    42.0126  -0.071      0.943    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 3.273 on 47 degrees of freedom
-Multiple R-squared:  0.9805,    Adjusted R-squared:  0.9796 
-F-statistic:  1180 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 2.609 on 47 degrees of freedom
+Multiple R-squared:  0.9852,    Adjusted R-squared:  0.9846 
+F-statistic:  1568 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 </div>
 <p>Super inflated standard errors and wildly different estimates than the <span class="math inline">\(\beta\)</span>s.</p>
@@ -974,7 +980,7 @@ F-statistic:  1180 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pr
 <li><p>As we have seen, multicollinearity among the predictor variables can have important consequences for interpreting and using a fitted regression model.</p></li>
 <li><p>The diagnostic tool considered here for identifying multicollinearity was the pairwise coefficients of simple correlation between the predictor variables; this is frequently helpful.</p></li>
 <li><p>Often, however, serious multicollinearity exists without being disclosed by the pairwise correlation coefficients. Later, we present a more powerful tool for identifying the existence of serious multicollinearity. Some remedial measures for lessening the effects of multicollinearity will be considered as well.</p></li>
-</ul></section><section id="simulation" class="level3" data-number="6.6.6"><h3 data-number="6.6.6" class="anchored" data-anchor-id="simulation">
+</ul></section><section id="sec-simulation-multicollinearity" class="level3" data-number="6.6.6"><h3 data-number="6.6.6" class="anchored" data-anchor-id="sec-simulation-multicollinearity">
 <span class="header-section-number">6.6.6</span> Simulation</h3>
 <p>Simualtion to demo the affects of varying levels of multicollinearity.</p>
 <div class="cell">
@@ -1123,12 +1129,12 @@ F-statistic:  1180 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pr
 <pre><code># A tibble: 6 × 10
   sim_id rho_x n     sigma_x beta_0 beta_1 beta_2 sigma statistic    value
   &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;   &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt; &lt;chr&gt;        &lt;dbl&gt;
-1 1      0     50    3       2      2      2      5     beta0_hat    1.06 
-2 1      0     50    3       2      2      2      5     beta1_hat    2.73 
-3 1      0     50    3       2      2      2      5     beta2_hat    2.11 
-4 1      0     50    3       2      2      2      5     se_beta1_hat 0.407
-5 1      0     50    3       2      2      2      5     se_beta2_hat 0.390
-6 1      0     50    3       2      2      2      5     beta1_t      6.71 </code></pre>
+1 1      0     50    3       2      2      2      5     beta0_hat    2.55 
+2 1      0     50    3       2      2      2      5     beta1_hat    1.93 
+3 1      0     50    3       2      2      2      5     beta2_hat    1.98 
+4 1      0     50    3       2      2      2      5     se_beta1_hat 0.349
+5 1      0     50    3       2      2      2      5     se_beta2_hat 0.488
+6 1      0     50    3       2      2      2      5     beta1_t      5.53 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1641,8 +1647,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./notes-reg-models-quan-and-qual.html" class="pagination-link" aria-label="<span class='chapter-number'>7</span>&nbsp; <span class='chapter-title'>Regression models for quanititative and qualitative predictors</span>">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quanititative and qualitative predictors</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./notes-reg-models-quan-and-qual.html" class="pagination-link" aria-label="<span class='chapter-number'>7</span>&nbsp; <span class='chapter-title'>Regression models for quantitative and qualitative predictors</span>">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quantitative and qualitative predictors</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -2228,7 +2234,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb51-608"><a href="#cb51-608" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-609"><a href="#cb51-609" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Often, however, serious multicollinearity exists without being disclosed by the pairwise correlation coefficients. Later, we present a more powerful tool for identifying the existence of serious multicollinearity. Some remedial measures for lessening the effects of multicollinearity will be considered as well.</span>
 <span id="cb51-610"><a href="#cb51-610" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-611"><a href="#cb51-611" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulation</span></span>
+<span id="cb51-611"><a href="#cb51-611" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulation {#sec-simulation-multicollinearity}</span></span>
 <span id="cb51-612"><a href="#cb51-612" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-613"><a href="#cb51-613" aria-hidden="true" tabindex="-1"></a>Simualtion to demo the affects of varying levels of multicollinearity.</span>
 <span id="cb51-614"><a href="#cb51-614" aria-hidden="true" tabindex="-1"></a></span>

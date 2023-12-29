@@ -84,7 +84,7 @@ $\Longrightarrow$ $\mat{\hat{\beta}}{2}{1} = (\mat{X'X}{2}{2})^{-1}\mat{X'Y}{2}{
 
 The vector of the fitted values $\hat{Y}_i$ is $\mat{Y'}{1}{n} = [\hat{Y}_1, \ldots, \hat{Y}_n]$.
 
-In matrix notation, we have the following which can also be expressed using the**hat matrix**:
+In matrix notation, we have the following which can also be expressed using the **hat matrix**:
 
 $$
 \begin{align*}

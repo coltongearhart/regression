@@ -540,7 +540,7 @@ Overview
 
 Sampling distribution of $\hat{Y_h}$
 
--   Again, this refers to the different of $\hat{Y_h}$ from repeated sampling when the levels of the predictor variable $X$ are held constant from sample to sample.
+-   Again, this refers to the different values of $\hat{Y_h}$ from repeated sampling when the levels of the predictor variable $X$ are held constant from sample to sample.
 
 -   Point estimator for $E(Y_h)$ → $\hat{Y_h} = \hat{\beta}_0 + \hat{\beta}_1 X_h$
 
