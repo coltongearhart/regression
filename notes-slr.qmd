@@ -862,7 +862,7 @@ Justification of the normality assumption.
 
 -   Also, the estimation and testing procedures shown later are based on the $t$ distribution and are usually only sensitive to large departures from normality. So, unless the departures from normality are serious, particularly with respect to skewness, the actual confidence coefficients and risks of errors will be close to the levels for exact normality.
 
-### Estimation of paramters by method of maximum likelihood
+### Estimation of parameters by method of maximum likelihood
 
 Overview
 

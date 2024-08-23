@@ -748,7 +748,7 @@ Overview
     
 - Weaknesses
 
-    -  Experienoe has shown that each of the stepwise search procedures can sometimes err by identifying a suboptimal regression model as "best."
+    -  Experience has shown that each of the stepwise search procedures can sometimes err by identifying a suboptimal regression model as "best."
     
     - End result is only a SINGLE "best" model. So it hides potentially other "good" models, whose "goodness" need to be evaluated using a variety of diagnostics.
 
@@ -782,7 +782,7 @@ $$t^*_{k1} = \sqrt{\frac{MSR(X_{k2} \mid X_{k1})}{MSE(X_{k1}, X_{k2})}} \Longrig
 
 Choice of keep criteria in terms of $\alpha$
 
-- The choice of $\alpha$to-enter and $\alpha$-to-remove values essentially represents a balancing of opposing tendencies.
+- The choice of $\alpha$ to-enter and $\alpha$-to-remove values essentially represents a balancing of opposing tendencies.
 
     - Simulation studies have shown that for scenarios with large pools of 1) uncorrelated predictors 2) that are not related to the response, larger $\alpha$-to-enter values results in models that allow too many variables. Conversely, a small $\alpha$-to-enter values results in models that are often underspecified, resulting in $\sigma^2$ being badly overestimated and the procedure being too conservative.
     
@@ -1108,6 +1108,8 @@ data_test <- anti_join(data_surgery_tmp, data_train, by = join_by(id))
 
 ```
 
+:::
+
 ### Demo -- Get best model from train
 
 ```{r}
@@ -1249,7 +1251,7 @@ kfolds$rmse %>% mean
 # -> https://www.tidymodels.org/start/models/
 
 # make the parsnip model 
-mod_linreg <- parsnip::linear_reg()
+spec_linreg <- parsnip::linear_reg()
 
 # train the model
 fit_linreg <- mod_linreg %>% 
@@ -1268,7 +1270,7 @@ tidy(fit_linreg)
 
 # define workflow
 wf_linreg <- workflows::workflow() %>% 
-  workflows::add_model(mod_linreg) %>% 
+  workflows::add_model(spec_linreg) %>% 
   workflows::add_formula(formula(mod_train))
 wf_linreg
 

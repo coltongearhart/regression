@@ -81,17 +81,17 @@ Sampling distribution of $\hat{\beta}_1$
 $$
  \begin{align*}
    E(\hat{\beta}_1) &= \beta_1 \\
-  V (\hat{\beta}_1) &= \frac{\sigma^2}{\sum(X_i - \bar{X})^2}
+   V(\hat{\beta}_1) &= \frac{\sigma^2}{\sum(X_i - \bar{X})^2}
  \end{align*}
  $$
 
 -   Then we can estimate the variance by replacing the parameter $\sigma^2$ with $MSE$, the unbiased estimator of $\sigma^2$. This gives us $S^2_{\hat{\beta}_1}$, which is an unbiased estimator for the variance of the sampling distribution of $\hat{\beta}_1$. And we can take the positive square root to give us $S_{\hat{\beta}_1}$, which is the point estimator of $\sigma_{\hat{\beta}_1}$.
 
-$$
-  S^2_{\hat{\beta}_1} = \frac{MSE}{\sum(X_i - \bar{X})^2} = \frac{MSE}{S_{XX}} \hspace{20pt} \longrightarrow \hspace{20pt} s_{\hat{\beta}_1} = \sqrt{\frac{MSE}{S_{XX}}} = \frac{S}{\sqrt{S_{XX}}}
   $$
+  S^2_{\hat{\beta}_1} = \frac{MSE}{\sum(X_i - \bar{X})^2} = \frac{MSE}{S_{XX}} \hspace{20pt} \longrightarrow \hspace{20pt} s_{\hat{\beta}_1} = \sqrt{\frac{MSE}{S_{XX}}} = \frac{S}{\sqrt{S_{XX}}}
+$$
 
--   Thus, $S^2_{\hat{\beta}_1}$ is an unbiased estimator for the variance of the sampling distribution of $\hat{\beta}_1$ and
+-   Thus, $S^2_{\hat{\beta}_1}$ is an unbiased estimator for the variance of the sampling distribution of $\hat{\beta}_1$.
 
     -   This is also called the **standard error** (another way to think about it is the standard deviation of the sampling distribution) → $S_{\hat{\beta}_1} = SE(\hat{\beta}_1)$
 
@@ -269,7 +269,7 @@ Overview
 
     -   A more complex relationship between $Y$ and $X$ may exist, which would require fitting a model other than the straight-line model.
 
--   All assumptions about the error terms ($\epsilon_i \overset{iid}\sim \text{Normal}\,(0,\sigma^2)$) should be satisfied.
+-   All assumptions about the error terms ($\epsilon_i \followsp{iid}{Normal}(0,\sigma^2)$) should be satisfied.
 
 Two-tailed test (most common)
 
@@ -2092,7 +2092,9 @@ Overview
 
 $$
 R^2 = \frac{SSR}{SSTO} = 1-\frac{SSE}{SSTO}, \hspace{20pt} \text{range:} \hspace{10pt} 0 \le R^2 \le 1
-$$ Interpretation
+$$
+
+Interpretation
 
 -   \< $R^2 *100$ \>% of the variation in \< $Y$ context \> can be explained by the *linear* relationship between \< $Y$ context \> and \< $X$ context \>.
 

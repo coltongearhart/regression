@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.517">
+<meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Regression - 3&nbsp; Diagnostics and remedial measures</title>
+<title>3&nbsp; Diagnostics and remedial measures – Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -91,29 +91,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script><script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 </head>
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-diagnostics-and-remedial-measures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Diagnostics and remedial measures</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-diagnostics-and-remedial-measures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Diagnostics and remedial measures</span></a></li></ol></nav><div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
+  </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-diagnostics-and-remedial-measures.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Diagnostics and remedial measures</span></a></li></ol></nav>
       <div class="quarto-title-block"><div><h1 class="title"><span id="sec-diag-remedial-measures" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Diagnostics and remedial measures</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
                       </div>
   </div>
@@ -151,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="./part1-slr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simple linear regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -186,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="./part2-mlr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Multiple linear regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -206,7 +232,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./notes-reg-models-quan-and-qual.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quanititative and qualitative predictors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quantitative and qualitative predictors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes-building-reg-model-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Building the regression model 1 – Model selection and validation</span></span></a>
   </div>
 </li>
       </ul>
@@ -1042,29 +1074,29 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:right;"> 6.908 </td>
-   <td style="text-align:right;"> 0.952 </td>
-   <td style="text-align:right;"> 0.976 </td>
+<td style="text-align:right;"> 5.258 </td>
+   <td style="text-align:right;"> -0.080 </td>
+   <td style="text-align:right;"> 0.283 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> -0.959 </td>
-   <td style="text-align:right;"> 0.160 </td>
-   <td style="text-align:right;"> 0.400 </td>
+<td style="text-align:right;"> 5.258 </td>
+   <td style="text-align:right;"> -0.276 </td>
+   <td style="text-align:right;"> 0.525 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 3.100 </td>
-   <td style="text-align:right;"> 1.414 </td>
-   <td style="text-align:right;"> 1.189 </td>
+<td style="text-align:right;"> -0.521 </td>
+   <td style="text-align:right;"> 1.442 </td>
+   <td style="text-align:right;"> 1.201 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 10.981 </td>
-   <td style="text-align:right;"> -0.084 </td>
-   <td style="text-align:right;"> 0.289 </td>
+<td style="text-align:right;"> 2.209 </td>
+   <td style="text-align:right;"> -0.402 </td>
+   <td style="text-align:right;"> 0.634 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> -10.068 </td>
-   <td style="text-align:right;"> 1.015 </td>
-   <td style="text-align:right;"> 1.007 </td>
+<td style="text-align:right;"> -7.529 </td>
+   <td style="text-align:right;"> 1.130 </td>
+   <td style="text-align:right;"> 1.063 </td>
   </tr>
 </tbody>
 </table>
@@ -1488,7 +1520,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <div class="cell-output cell-output-error">
 <pre><code>Error in `autoplot()`:
 ! Objects of class &lt;lm&gt; are not supported by autoplot.
-ℹ have you loaded the required package?</code></pre>
+ℹ Have you loaded the required package?</code></pre>
 </div>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># residuals vs lev plot uses standardized residuals (and not transforming them with sqrt(abs(.)) like the scale-location plot)</span></span>
 <span><span class="co"># -&gt; so could add the +/- 3 lines to this plot (and for now ignore the leverage lines)</span></span>
@@ -1572,7 +1604,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      31 
-38.61047 </code></pre>
+38.20448 </code></pre>
 </div>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data_outlier</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">mod_outlier</span><span class="op">$</span><span class="va">residuals</span> <span class="op">==</span> <span class="va">outlier</span><span class="op">)</span>,<span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">display_nice</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1585,7 +1617,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <tbody><tr>
 <td style="text-align:left;"> 31 </td>
    <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 80.804 </td>
+   <td style="text-align:right;"> 79.319 </td>
   </tr></tbody>
 </table>
 </div>
@@ -1603,7 +1635,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span><span class="fu"><a href="https://rdrr.io/r/stats/influence.measures.html">rstandard</a></span><span class="op">(</span><span class="va">mod_outlier</span><span class="op">)</span><span class="op">[</span><span class="fl">31</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      31 
-4.838793 </code></pre>
+4.177826 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1966,7 +1998,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <p>Overview</p>
 <ul>
 <li><p>Small departures from normality do not create any serious problems, but major departures should be of concern.</p></li>
-<li><p>We can check the normality of error terms in a variety of errors:</p></li>
+<li><p>We can check the normality of error terms in a variety of ways:</p></li>
 </ul>
 <ol type="1">
 <li>
@@ -2072,7 +2104,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span>  <span class="fu">map_dbl</span><span class="op">(</span>\<span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">z</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ± sqrt(MSE) ± 2 sqrt(MSE) ± 3 sqrt(MSE) 
-        0.667         0.967         1.000 </code></pre>
+        0.733         0.933         0.967 </code></pre>
 </div>
 </div>
 <ul>
@@ -2141,7 +2173,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span>  <span class="fu">map_dbl</span><span class="op">(</span>\<span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">z</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ± sqrt(MSE) ± 2 sqrt(MSE) ± 3 sqrt(MSE) 
-         0.76          0.96          1.00 </code></pre>
+         0.82          0.96          0.98 </code></pre>
 </div>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># boxplot of residuals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_skewed_error</span><span class="op">)</span>, horizontal <span class="op">=</span> <span class="cn">TRUE</span>,  main <span class="op">=</span> <span class="st">"Right-skewed error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2202,7 +2234,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span>  <span class="fu">map_dbl</span><span class="op">(</span>\<span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">z</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ± sqrt(MSE) ± 2 sqrt(MSE) ± 3 sqrt(MSE) 
-         0.66          1.00          1.00 </code></pre>
+         0.56          1.00          1.00 </code></pre>
 </div>
 <div class="sourceCode" id="cb88"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># boxplot of residuals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_light_tailed_error</span><span class="op">)</span>, horizontal <span class="op">=</span> <span class="cn">TRUE</span>,  main <span class="op">=</span> <span class="st">"Light-tailed error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2265,7 +2297,7 @@ e_i^* = \frac{e_i - \bar{e}}{\sqrt{MSE}} = \frac{e_i}{\sqrt{MSE}}
 <span>  <span class="fu">map_dbl</span><span class="op">(</span>\<span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">z</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ± sqrt(MSE) ± 2 sqrt(MSE) ± 3 sqrt(MSE) 
-         0.70          0.98          0.98 </code></pre>
+         0.76          0.96          0.98 </code></pre>
 </div>
 <div class="sourceCode" id="cb94"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># boxplot of residuals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">mod_heavy_tailed_error</span><span class="op">)</span>, horizontal <span class="op">=</span> <span class="cn">TRUE</span>,  main <span class="op">=</span> <span class="st">"Heavy-tailed error"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2616,12 +2648,12 @@ sim6                   outlier 50      2      2      0     5      6</code></pre>
 <pre><code># A tibble: 6 × 9
   sim_id model n     beta_0 beta_1 beta_2 sigma statistic     value
   &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt; &lt;chr&gt;         &lt;dbl&gt;
-1 1      ideal 50    2      2      0      5     beta0_hat     4.84 
-2 1      ideal 50    2      2      0      5     beta1_hat     1.79 
-3 1      ideal 50    2      2      0      5     se_beta1_hat  0.239
-4 1      ideal 50    2      2      0      5     t_star        7.49 
-5 1      ideal 50    2      2      0      5     mse          22.8  
-6 1      ideal 50    2      2      0      5     r_squared     0.539</code></pre>
+1 1      ideal 50    2      2      0      5     beta0_hat    -0.668
+2 1      ideal 50    2      2      0      5     beta1_hat     2.20 
+3 1      ideal 50    2      2      0      5     se_beta1_hat  0.237
+4 1      ideal 50    2      2      0      5     t_star        9.32 
+5 1      ideal 50    2      2      0      5     mse          21.0  
+6 1      ideal 50    2      2      0      5     r_squared     0.644</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -2768,7 +2800,7 @@ sim6                   outlier 50      2      2      0     5      6</code></pre>
 </ul>
 <p><span class="math display">\[df_F = \sum_j^c (n_j - 1) = \sum_j^c n_j - c = n - c\]</span></p>
 <ul>
-<li>Note that any <span class="math inline">\(X\)</span> level with no replications makes no contribution to <span class="math inline">\(df_F\)</span> because <span class="math inline">\(n_j - 1 = 1 - 1 = 0\)</span>.</li>
+<li>Note that any <span class="math inline">\(X\)</span> level with no replications makes no contribution to <span class="math inline">\(df_F\)</span> because <span class="math inline">\(n_j - 1 = 1 -  1 = 0\)</span>.</li>
 </ul>
 <p>Reduced model</p>
 <ul>
@@ -2902,28 +2934,28 @@ Call:
 lm(formula = y ~ as.factor(x))
 
 Residuals:
-     Min       1Q   Median       3Q      Max 
--11.7247  -3.4244   0.6088   3.0766   8.0136 
+    Min      1Q  Median      3Q     Max 
+-9.7481 -2.5202 -0.3219  2.6018  9.0833 
 
 Coefficients:
                Estimate Std. Error t value    Pr(&gt;|t|)    
-(Intercept)       2.198      1.983   1.109     0.27435    
-as.factor(x)1    -1.695      2.941  -0.576     0.56760    
-as.factor(x)2     6.579      3.135   2.099     0.04237 *  
-as.factor(x)3     4.610      2.941   1.568     0.12507    
-as.factor(x)4     6.282      2.560   2.454     0.01868 *  
-as.factor(x)5     8.974      3.135   2.863     0.00673 ** 
-as.factor(x)6    17.361      5.245   3.310     0.00202 ** 
-as.factor(x)7     9.252      3.434   2.694     0.01035 *  
-as.factor(x)8    11.293      3.135   3.603     0.00088 ***
-as.factor(x)9    17.365      2.804   6.193 0.000000279 ***
-as.factor(x)10   16.196      3.434   4.716 0.000030524 ***
+(Intercept)       1.857      2.161   0.859    0.395503    
+as.factor(x)1     2.522      3.529   0.715    0.479081    
+as.factor(x)2     3.060      2.695   1.135    0.263191    
+as.factor(x)3     4.537      3.241   1.400    0.169552    
+as.factor(x)4     5.190      3.056   1.698    0.097418 .  
+as.factor(x)5     8.514      3.529   2.413    0.020631 *  
+as.factor(x)6    12.332      3.056   4.035    0.000247 ***
+as.factor(x)7    15.318      3.529   4.341 0.000097597 ***
+as.factor(x)8    16.856      3.056   5.516 0.000002436 ***
+as.factor(x)9    16.156      3.529   4.578 0.000046906 ***
+as.factor(x)10   18.337      3.056   6.000 0.000000518 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 4.856 on 39 degrees of freedom
-Multiple R-squared:  0.6621,    Adjusted R-squared:  0.5754 
-F-statistic: 7.641 on 10 and 39 DF,  p-value: 0.000001339</code></pre>
+Residual standard error: 4.832 on 39 degrees of freedom
+Multiple R-squared:  0.6946,    Adjusted R-squared:  0.6163 
+F-statistic: 8.871 on 10 and 39 DF,  p-value: 0.000000222</code></pre>
 </div>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># fit reduced model</span></span>
 <span><span class="co"># -&gt; SLR model E(Y) + B0 + B1X</span></span>
@@ -2935,19 +2967,19 @@ Call:
 lm(formula = y ~ x)
 
 Residuals:
-     Min       1Q   Median       3Q      Max 
--10.1129  -3.1738   0.6838   3.4474   8.6448 
+   Min     1Q Median     3Q    Max 
+-8.696 -2.422 -0.864  3.540  9.405 
 
 Coefficients:
-            Estimate Std. Error t value       Pr(&gt;|t|)    
-(Intercept)   1.6835     1.2018   1.401          0.168    
-x             1.7714     0.2169   8.167 0.000000000123 ***
+            Estimate Std. Error t value          Pr(&gt;|t|)    
+(Intercept)   1.2109     1.1448   1.058             0.295    
+x             1.9876     0.2011   9.883 0.000000000000372 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 4.871 on 48 degrees of freedom
-Multiple R-squared:  0.5815,    Adjusted R-squared:  0.5728 
-F-statistic:  66.7 on 1 and 48 DF,  p-value: 0.0000000001233</code></pre>
+Residual standard error: 4.525 on 48 degrees of freedom
+Multiple R-squared:  0.6705,    Adjusted R-squared:  0.6636 
+F-statistic: 97.66 on 1 and 48 DF,  p-value: 0.0000000000003724</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -2959,9 +2991,9 @@ F-statistic:  66.7 on 1 and 48 DF,  p-value: 0.0000000001233</code></pre>
 
 Model 1: y ~ as.factor(x)
 Model 2: y ~ x
-  Res.Df     RSS Df Sum of Sq      F Pr(&gt;F)
-1     39  919.79                           
-2     48 1139.10 -9   -219.31 1.0332 0.4318</code></pre>
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1     39 910.61                           
+2     48 982.62 -9   -72.014 0.3427 0.9546</code></pre>
 </div>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># other terms</span></span>
 <span><span class="co"># -&gt; Sum of Sq = SSLF --&gt; MSLF = SSLF / change in Df</span></span>
@@ -3000,17 +3032,17 @@ Model 2: y ~ x
 <span>         lof_error <span class="op">=</span> <span class="va">group_mean</span> <span class="op">-</span> <span class="va">predicted_value</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data_lof_process</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            y x predicted_value   residual group_mean pure_error  lof_error
-1  -2.9550243 0        1.683506 -4.6385303  2.1980926 -5.1531169  0.5145866
-2   5.1170018 0        1.683506  3.4334958  2.1980926  2.9189092  0.5145866
-3   6.2590605 0        1.683506  4.5755545  2.1980926  4.0609679  0.5145866
-4  -1.3297035 0        1.683506 -3.0132094  2.1980926 -3.5277960  0.5145866
-5  -0.3316449 0        1.683506 -2.0151509  2.1980926 -2.5297375  0.5145866
-6   6.4288659 0        1.683506  4.7453600  2.1980926  4.2307734  0.5145866
-7   3.0812703 1        3.454932 -0.3736615  0.5028265  2.5784438 -2.9521054
-8   0.8713813 1        3.454932 -2.5835506  0.5028265  0.3685548 -2.9521054
-9   4.2705524 1        3.454932  0.8156205  0.5028265  3.7677259 -2.9521054
-10 -0.7151128 1        3.454932 -4.1700447  0.5028265 -1.2179394 -2.9521054</code></pre>
+<pre><code>           y x predicted_value    residual group_mean pure_error  lof_error
+1  -6.198976 0        1.210904 -7.40988023   1.856616 -8.0555926  0.6457124
+2   2.462339 0        1.210904  1.25143455   1.856616  0.6057222  0.6457124
+3   6.148262 0        1.210904  4.93735791   1.856616  4.2916456  0.6457124
+4  10.615555 0        1.210904  9.40465124   1.856616  8.7589389  0.6457124
+5  -3.744098 0        1.210904 -4.95500170   1.856616 -5.6007141  0.6457124
+6   3.125743 1        3.198511 -0.07276864   4.378507 -1.2527646  1.1799959
+7   4.049028 1        3.198511  0.85051606   4.378507 -0.3294799  1.1799959
+8   5.960752 1        3.198511  2.76224033   4.378507  1.5822444  1.1799959
+9   4.194942 2        5.186119 -0.99117676   4.916399 -0.7214570 -0.2697198
+10  3.502219 2        5.186119 -1.68389966   4.916399 -1.4141799 -0.2697198</code></pre>
 </div>
 </div>
 <p>Find sum of squares.</p>
@@ -3023,8 +3055,8 @@ Model 2: y ~ x
 <span>            lf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">lof_error</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>            pe <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pure_error</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   error       lf       pe
-1 1139.1 219.3104 919.7898</code></pre>
+<pre><code>     error       lf       pe
+1 982.6224 72.01433 910.6081</code></pre>
 </div>
 <div class="sourceCode" id="cb123"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">compare</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">at</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"Sum of Sq"</span><span class="op">]</span><span class="op">)</span>, <span class="va">data_ss</span><span class="op">$</span><span class="va">lf</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3032,10 +3064,10 @@ Model 2: y ~ x
 [1] TRUE
 
 $`abs(at[2, "Sum of Sq"])`
-[1] 219.3104
+[1] 72.01433
 
 $`data_ss$lf`
-[1] 219.3104</code></pre>
+[1] 72.01433</code></pre>
 </div>
 <div class="sourceCode" id="cb125"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">compare</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">at</span><span class="op">[</span><span class="fl">1</span>, <span class="st">"RSS"</span><span class="op">]</span><span class="op">)</span>, <span class="va">data_ss</span><span class="op">$</span><span class="va">pe</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3043,10 +3075,10 @@ $`data_ss$lf`
 [1] TRUE
 
 $`abs(at[1, "RSS"])`
-[1] 919.7898
+[1] 910.6081
 
 $`data_ss$pe`
-[1] 919.7898</code></pre>
+[1] 910.6081</code></pre>
 </div>
 <div class="sourceCode" id="cb127"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># sums of squares are additive and SSPE and SSLF are partitioning SSE</span></span>
 <span><span class="co"># -&gt; so check that SSE = SSPE + SSLF</span></span>
@@ -3056,10 +3088,10 @@ $`data_ss$pe`
 [1] TRUE
 
 $`sum(data_ss[, 2:3])`
-[1] 1139.1
+[1] 982.6224
 
 $`data_ss[, 1]`
-[1] 1139.1</code></pre>
+[1] 982.6224</code></pre>
 </div>
 </div>
 <p>Find df.</p>
@@ -3084,9 +3116,9 @@ $`data_ss[, 1]`
 <pre><code># A tibble: 3 × 3
   type     ss    df
 * &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;
-1 error 1139.    48
-2 lf     219.     9
-3 pe     920.    39</code></pre>
+1 error 983.     48
+2 lf     72.0     9
+3 pe    911.     39</code></pre>
 </div>
 </div>
 <p>Calculate mean squares.</p>
@@ -3099,16 +3131,16 @@ $`data_ss[, 1]`
 <pre><code># A tibble: 3 × 4
   type     ss    df    ms
   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-1 error 1139.    48  23.7
-2 lf     219.     9  24.4
-3 pe     920.    39  23.6</code></pre>
+1 error 983.     48 20.5 
+2 lf     72.0     9  8.00
+3 pe    911.     39 23.3 </code></pre>
 </div>
 <div class="sourceCode" id="cb133"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># compute final LOF test statistic</span></span>
 <span><span class="co"># -&gt; F* = MSLF / MSPE</span></span>
 <span><span class="co"># -&gt; convert to numeric so end result isn't a dataframe</span></span>
 <span><span class="op">(</span><span class="va">F_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">data_anova_table</span><span class="op">[</span><span class="va">data_anova_table</span><span class="op">$</span><span class="va">type</span> <span class="op">==</span> <span class="st">"lf"</span>, <span class="st">"ms"</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">data_anova_table</span><span class="op">[</span><span class="va">data_anova_table</span><span class="op">$</span><span class="va">type</span> <span class="op">==</span> <span class="st">"pe"</span>, <span class="st">"ms"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.03322</code></pre>
+<pre><code>[1] 0.3426964</code></pre>
 </div>
 <div class="sourceCode" id="cb135"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">compare</span><span class="op">(</span><span class="va">at</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"F"</span><span class="op">]</span>, <span class="va">F_star</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3116,10 +3148,10 @@ $`data_ss[, 1]`
 [1] TRUE
 
 $`at[2, "F"]`
-[1] 1.03322
+[1] 0.3426964
 
 $F_star
-[1] 1.03322</code></pre>
+[1] 0.3426964</code></pre>
 </div>
 <div class="sourceCode" id="cb137"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># compute critical value</span></span>
 <span><span class="co"># -&gt; LOF critical value (and test statistic) ~ F(c-2, n-c)</span></span>
@@ -3141,7 +3173,7 @@ $F_star
 </div>
 <div class="sourceCode" id="cb141"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="op">(</span><span class="va">p_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Fdist.html">pf</a></span><span class="op">(</span>q <span class="op">=</span> <span class="va">F_star</span>, df1 <span class="op">=</span> <span class="va">c</span> <span class="op">-</span> <span class="fl">2</span>, df2 <span class="op">=</span> <span class="va">n</span> <span class="op">-</span> <span class="va">c</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4318399</code></pre>
+<pre><code>[1] 0.954596</code></pre>
 </div>
 <div class="sourceCode" id="cb143"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p_value</span> <span class="op">&lt;</span> <span class="va">alpha</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3153,10 +3185,10 @@ $F_star
 [1] TRUE
 
 $`at[2, "Pr(&gt;F)"]`
-[1] 0.4318399
+[1] 0.954596
 
 $p_value
-[1] 0.4318399</code></pre>
+[1] 0.954596</code></pre>
 </div>
 </div>
 <p>FAIL TO REJECT. There is not a lack of fit issue with the data.</p>
@@ -3210,26 +3242,26 @@ lm(formula = y ~ as.factor(x))
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--16.366  -4.428   0.000   5.072  17.926 
+-16.366  -5.048  -1.182   4.810  19.324 
 
 Coefficients:
                Estimate Std. Error t value             Pr(&gt;|t|)    
-(Intercept)       8.152      3.462   2.354               0.0235 *  
-as.factor(x)2     2.972      6.924   0.429               0.6701    
-as.factor(x)3    22.301      4.718   4.727   0.0000281807336870 ***
-as.factor(x)4    29.737      4.580   6.493   0.0000000959642153 ***
-as.factor(x)5    55.992      4.896  11.436   0.0000000000000351 ***
-as.factor(x)6    82.163      9.160   8.970   0.0000000000403176 ***
-as.factor(x)7   103.263      6.924  14.913 &lt; 0.0000000000000002 ***
-as.factor(x)8   141.486      4.379  32.307 &lt; 0.0000000000000002 ***
-as.factor(x)9   185.246      9.160  20.223 &lt; 0.0000000000000002 ***
-as.factor(x)10  218.477      4.718  46.305 &lt; 0.0000000000000002 ***
+(Intercept)       4.986      3.241   1.538                0.132    
+as.factor(x)2     5.301      4.584   1.156                0.254    
+as.factor(x)3    25.173      4.771   5.276    0.000004897349306 ***
+as.factor(x)4    44.119      4.771   9.247    0.000000000017580 ***
+as.factor(x)5    71.487      6.876  10.396    0.000000000000622 ***
+as.factor(x)6    82.453      5.918  13.932 &lt; 0.0000000000000002 ***
+as.factor(x)7   105.557      6.876  15.351 &lt; 0.0000000000000002 ***
+as.factor(x)8   139.367      4.771  29.210 &lt; 0.0000000000000002 ***
+as.factor(x)9   173.071      4.584  37.755 &lt; 0.0000000000000002 ***
+as.factor(x)10  212.277      5.375  39.491 &lt; 0.0000000000000002 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 8.481 on 40 degrees of freedom
-Multiple R-squared:  0.9899,    Adjusted R-squared:  0.9876 
-F-statistic: 434.1 on 9 and 40 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 8.576 on 40 degrees of freedom
+Multiple R-squared:  0.9889,    Adjusted R-squared:  0.9864 
+F-statistic:   397 on 9 and 40 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 <div class="sourceCode" id="cb150"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># fit reduced model</span></span>
 <span><span class="co"># -&gt; polynomial model E(Y) + B0 + B1 X + B2 ln(X)</span></span>
@@ -3241,20 +3273,20 @@ Call:
 lm(formula = y ~ x + I(log(x)))
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--19.290  -7.101   0.161   5.859  24.809 
+     Min       1Q   Median       3Q      Max 
+-17.0174  -7.0840  -0.1601   5.4293  20.3323 
 
 Coefficients:
             Estimate Std. Error t value             Pr(&gt;|t|)    
-(Intercept)  -27.815      3.411  -8.154   0.0000000001501681 ***
-x             39.764      1.493  26.634 &lt; 0.0000000000000002 ***
-I(log(x))    -65.181      6.202 -10.510   0.0000000000000628 ***
+(Intercept)  -26.641      2.818  -9.453      0.0000000000019 ***
+x             33.352      1.501  22.216 &lt; 0.0000000000000002 ***
+I(log(x))    -43.364      6.077  -7.136      0.0000000050826 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 10.14 on 47 degrees of freedom
-Multiple R-squared:  0.983, Adjusted R-squared:  0.9822 
-F-statistic:  1356 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 9.557 on 47 degrees of freedom
+Multiple R-squared:  0.9838,    Adjusted R-squared:  0.9832 
+F-statistic:  1431 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 <div class="sourceCode" id="cb152"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># perform lack of fit test</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_full</span>, <span class="va">mod_reduced</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3263,9 +3295,9 @@ F-statistic:  1356 on 2 and 47 DF,  p-value: &lt; 0.00000000000000022</code></pr
 
 Model 1: y ~ as.factor(x)
 Model 2: y ~ x + I(log(x))
-  Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)   
-1     40 2876.8                               
-2     47 4836.5 -7   -1959.7 3.8926 0.00254 **
+  Res.Df    RSS Df Sum of Sq     F  Pr(&gt;F)  
+1     40 2941.9                             
+2     47 4292.4 -7   -1350.4 2.623 0.02503 *
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -3305,26 +3337,26 @@ lm(formula = y ~ as.factor(x))
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--16.366  -4.428   0.000   5.072  17.926 
+-16.366  -5.048  -1.182   4.810  19.324 
 
 Coefficients:
                Estimate Std. Error t value             Pr(&gt;|t|)    
-(Intercept)       8.152      3.462   2.354               0.0235 *  
-as.factor(x)2     2.972      6.924   0.429               0.6701    
-as.factor(x)3    22.301      4.718   4.727   0.0000281807336870 ***
-as.factor(x)4    29.737      4.580   6.493   0.0000000959642153 ***
-as.factor(x)5    55.992      4.896  11.436   0.0000000000000351 ***
-as.factor(x)6    82.163      9.160   8.970   0.0000000000403176 ***
-as.factor(x)7   103.263      6.924  14.913 &lt; 0.0000000000000002 ***
-as.factor(x)8   141.486      4.379  32.307 &lt; 0.0000000000000002 ***
-as.factor(x)9   185.246      9.160  20.223 &lt; 0.0000000000000002 ***
-as.factor(x)10  218.477      4.718  46.305 &lt; 0.0000000000000002 ***
+(Intercept)       4.986      3.241   1.538                0.132    
+as.factor(x)2     5.301      4.584   1.156                0.254    
+as.factor(x)3    25.173      4.771   5.276    0.000004897349306 ***
+as.factor(x)4    44.119      4.771   9.247    0.000000000017580 ***
+as.factor(x)5    71.487      6.876  10.396    0.000000000000622 ***
+as.factor(x)6    82.453      5.918  13.932 &lt; 0.0000000000000002 ***
+as.factor(x)7   105.557      6.876  15.351 &lt; 0.0000000000000002 ***
+as.factor(x)8   139.367      4.771  29.210 &lt; 0.0000000000000002 ***
+as.factor(x)9   173.071      4.584  37.755 &lt; 0.0000000000000002 ***
+as.factor(x)10  212.277      5.375  39.491 &lt; 0.0000000000000002 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 8.481 on 40 degrees of freedom
-Multiple R-squared:  0.9899,    Adjusted R-squared:  0.9876 
-F-statistic: 434.1 on 9 and 40 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 8.576 on 40 degrees of freedom
+Multiple R-squared:  0.9889,    Adjusted R-squared:  0.9864 
+F-statistic:   397 on 9 and 40 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 <div class="sourceCode" id="cb158"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># fit reduced model</span></span>
 <span><span class="co"># -&gt; polynomial model E(Y) + B0 + B1 X + B2 ln(X)</span></span>
@@ -3336,21 +3368,21 @@ Call:
 lm(formula = y ~ poly(x, 2, raw = TRUE) + I(log(x)))
 
 Residuals:
-     Min       1Q   Median       3Q      Max 
--20.5869  -5.8260  -0.0571   7.4095  16.9882 
+    Min      1Q  Median      3Q     Max 
+-16.986  -5.665  -1.486   5.851  18.704 
 
 Coefficients:
-                        Estimate Std. Error t value  Pr(&gt;|t|)    
-(Intercept)               3.8511     7.4339   0.518     0.607    
-poly(x, 2, raw = TRUE)1   2.2591     8.2266   0.275     0.785    
-poly(x, 2, raw = TRUE)2   2.0766     0.4502   4.612 0.0000319 ***
-I(log(x))                -2.8363    14.4765  -0.196     0.846    
+                        Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)              -4.4481     7.3011  -0.609  0.54536   
+poly(x, 2, raw = TRUE)1   6.4247     8.4044   0.764  0.44851   
+poly(x, 2, raw = TRUE)2   1.5391     0.4740   3.247  0.00218 **
+I(log(x))                 0.2874    14.5391   0.020  0.98431   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 8.479 on 46 degrees of freedom
-Multiple R-squared:  0.9883,    Adjusted R-squared:  0.9876 
-F-statistic:  1301 on 3 and 46 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 8.713 on 46 degrees of freedom
+Multiple R-squared:  0.9869,    Adjusted R-squared:  0.986 
+F-statistic:  1152 on 3 and 46 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 <div class="sourceCode" id="cb160"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># perform lack of fit test</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_full</span>, <span class="va">mod_reduced</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3359,9 +3391,9 @@ F-statistic:  1301 on 3 and 46 DF,  p-value: &lt; 0.00000000000000022</code></pr
 
 Model 1: y ~ as.factor(x)
 Model 2: y ~ poly(x, 2, raw = TRUE) + I(log(x))
-  Res.Df    RSS Df Sum of Sq     F Pr(&gt;F)
-1     40 2876.8                          
-2     46 3307.0 -6   -430.22 0.997 0.4407</code></pre>
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1     40 2941.9                           
+2     46 3491.9 -6   -549.96 1.2462 0.3039</code></pre>
 </div>
 </div>
 <p>This shows no lack of fit now!</p>
@@ -3781,18 +3813,18 @@ lm(formula = y ~ log10(x))
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--0.94691 -0.14858 -0.00726  0.18588  0.51417 
+-0.48449 -0.17303  0.00477  0.18981  0.57549 
 
 Coefficients:
-            Estimate Std. Error t value         Pr(&gt;|t|)    
-(Intercept)   1.7006     0.1652   10.30 0.00000000005028 ***
-log10(x)      2.3615     0.1829   12.91 0.00000000000026 ***
+            Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept)   2.0812     0.1319   15.77 0.00000000000000184 ***
+log10(x)      2.0364     0.1294   15.73 0.00000000000000197 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.2991 on 28 degrees of freedom
-Multiple R-squared:  0.8562,    Adjusted R-squared:  0.8511 
-F-statistic: 166.7 on 1 and 28 DF,  p-value: 0.0000000000002598</code></pre>
+Residual standard error: 0.2807 on 28 degrees of freedom
+Multiple R-squared:  0.8984,    Adjusted R-squared:  0.8947 
+F-statistic: 247.5 on 1 and 28 DF,  p-value: 0.00000000000000197</code></pre>
 </div>
 <div class="sourceCode" id="cb180"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_ln_x</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3802,26 +3834,26 @@ lm(formula = y ~ log(x))
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--0.94691 -0.14858 -0.00726  0.18588  0.51417 
+-0.48449 -0.17303  0.00477  0.18981  0.57549 
 
 Coefficients:
-            Estimate Std. Error t value         Pr(&gt;|t|)    
-(Intercept)  1.70061    0.16516   10.30 0.00000000005028 ***
-log(x)       1.02557    0.07943   12.91 0.00000000000026 ***
+            Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept)  2.08115    0.13194   15.77 0.00000000000000184 ***
+log(x)       0.88440    0.05622   15.73 0.00000000000000197 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.2991 on 28 degrees of freedom
-Multiple R-squared:  0.8562,    Adjusted R-squared:  0.8511 
-F-statistic: 166.7 on 1 and 28 DF,  p-value: 0.0000000000002598</code></pre>
+Residual standard error: 0.2807 on 28 degrees of freedom
+Multiple R-squared:  0.8984,    Adjusted R-squared:  0.8947 
+F-statistic: 247.5 on 1 and 28 DF,  p-value: 0.00000000000000197</code></pre>
 </div>
 <div class="sourceCode" id="cb182"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_sqrt_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8727202</code></pre>
+<pre><code>[1] 0.9444231</code></pre>
 </div>
 </div>
 <ul>
-<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.85</li>
+<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.9</li>
 </ul>
 </div>
 <div id="tabset-15-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-2-tab">
@@ -3919,15 +3951,15 @@ F-statistic: 166.7 on 1 and 28 DF,  p-value: 0.0000000000002598</code></pre>
 <div class="sourceCode" id="cb186"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># view model summaries (just the R^2)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_squared_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8071781</code></pre>
+<pre><code>[1] 0.9054508</code></pre>
 </div>
 <div class="sourceCode" id="cb188"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_exp_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8116208</code></pre>
+<pre><code>[1] 0.9091815</code></pre>
 </div>
 </div>
 <ul>
-<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.731</li>
+<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.814</li>
 </ul>
 </div>
 <div id="tabset-15-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-3-tab">
@@ -4032,15 +4064,15 @@ F-statistic: 166.7 on 1 and 28 DF,  p-value: 0.0000000000002598</code></pre>
 <div class="sourceCode" id="cb192"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># view model summaries (just the R^2)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_reciprocal_x_k</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8103082</code></pre>
+<pre><code>[1] 0.8441997</code></pre>
 </div>
 <div class="sourceCode" id="cb194"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_exp_neg_x</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.785654</code></pre>
+<pre><code>[1] 0.8128284</code></pre>
 </div>
 </div>
 <ul>
-<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.729</li>
+<li>Compare these the models <span class="math inline">\(R^2\)</span> to the original untransformed: 0.728</li>
 </ul>
 </div>
 <div id="tabset-15-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-15-4-tab">
@@ -4103,147 +4135,147 @@ F-statistic: 166.7 on 1 and 28 DF,  p-value: 0.0000000000002598</code></pre>
 <tbody>
 <tr>
 <td style="text-align:left;"> lm = y ~ x </td>
-   <td style="text-align:right;"> -0.770 </td>
-   <td style="text-align:right;"> 1.346 </td>
-   <td style="text-align:right;"> 2.179 </td>
-   <td style="text-align:right;"> 0.135 </td>
-   <td style="text-align:right;"> 0.903 </td>
-   <td style="text-align:right;"> 0.900 </td>
-   <td style="text-align:right;"> 3.084 </td>
-   <td style="text-align:right;"> 260.690 </td>
+   <td style="text-align:right;"> 1.211 </td>
+   <td style="text-align:right;"> 1.028 </td>
+   <td style="text-align:right;"> 2.000 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.875 </td>
+   <td style="text-align:right;"> 0.871 </td>
+   <td style="text-align:right;"> 3.187 </td>
+   <td style="text-align:right;"> 196.706 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -75.317 </td>
-   <td style="text-align:right;"> 156.635 </td>
-   <td style="text-align:right;"> 160.838 </td>
+   <td style="text-align:right;"> -76.303 </td>
+   <td style="text-align:right;"> 158.605 </td>
+   <td style="text-align:right;"> 162.809 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ I(x + k1) </td>
-   <td style="text-align:right;"> -7.307 </td>
-   <td style="text-align:right;"> 1.722 </td>
-   <td style="text-align:right;"> 2.179 </td>
-   <td style="text-align:right;"> 0.135 </td>
-   <td style="text-align:right;"> 0.903 </td>
-   <td style="text-align:right;"> 0.900 </td>
-   <td style="text-align:right;"> 3.084 </td>
-   <td style="text-align:right;"> 260.690 </td>
+   <td style="text-align:right;"> -4.790 </td>
+   <td style="text-align:right;"> 1.402 </td>
+   <td style="text-align:right;"> 2.000 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.875 </td>
+   <td style="text-align:right;"> 0.871 </td>
+   <td style="text-align:right;"> 3.187 </td>
+   <td style="text-align:right;"> 196.706 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -75.317 </td>
-   <td style="text-align:right;"> 156.635 </td>
-   <td style="text-align:right;"> 160.838 </td>
+   <td style="text-align:right;"> -76.303 </td>
+   <td style="text-align:right;"> 158.605 </td>
+   <td style="text-align:right;"> 162.809 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(y + k1) ~ x </td>
-   <td style="text-align:right;"> 2.230 </td>
-   <td style="text-align:right;"> 1.346 </td>
-   <td style="text-align:right;"> 2.179 </td>
-   <td style="text-align:right;"> 0.135 </td>
-   <td style="text-align:right;"> 0.903 </td>
-   <td style="text-align:right;"> 0.900 </td>
-   <td style="text-align:right;"> 3.084 </td>
-   <td style="text-align:right;"> 260.690 </td>
+   <td style="text-align:right;"> 4.211 </td>
+   <td style="text-align:right;"> 1.028 </td>
+   <td style="text-align:right;"> 2.000 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.875 </td>
+   <td style="text-align:right;"> 0.871 </td>
+   <td style="text-align:right;"> 3.187 </td>
+   <td style="text-align:right;"> 196.706 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -75.317 </td>
-   <td style="text-align:right;"> 156.635 </td>
-   <td style="text-align:right;"> 160.838 </td>
+   <td style="text-align:right;"> -76.303 </td>
+   <td style="text-align:right;"> 158.605 </td>
+   <td style="text-align:right;"> 162.809 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(y + k1) ~ I(x + k1) </td>
-   <td style="text-align:right;"> -4.307 </td>
-   <td style="text-align:right;"> 1.722 </td>
-   <td style="text-align:right;"> 2.179 </td>
-   <td style="text-align:right;"> 0.135 </td>
-   <td style="text-align:right;"> 0.903 </td>
-   <td style="text-align:right;"> 0.900 </td>
-   <td style="text-align:right;"> 3.084 </td>
-   <td style="text-align:right;"> 260.690 </td>
+   <td style="text-align:right;"> -1.790 </td>
+   <td style="text-align:right;"> 1.402 </td>
+   <td style="text-align:right;"> 2.000 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.875 </td>
+   <td style="text-align:right;"> 0.871 </td>
+   <td style="text-align:right;"> 3.187 </td>
+   <td style="text-align:right;"> 196.706 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -75.317 </td>
-   <td style="text-align:right;"> 156.635 </td>
-   <td style="text-align:right;"> 160.838 </td>
+   <td style="text-align:right;"> -76.303 </td>
+   <td style="text-align:right;"> 158.605 </td>
+   <td style="text-align:right;"> 162.809 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ I(k2 * x) </td>
-   <td style="text-align:right;"> -0.770 </td>
-   <td style="text-align:right;"> 1.346 </td>
-   <td style="text-align:right;"> 1.090 </td>
-   <td style="text-align:right;"> 0.067 </td>
-   <td style="text-align:right;"> 0.903 </td>
-   <td style="text-align:right;"> 0.900 </td>
-   <td style="text-align:right;"> 3.084 </td>
-   <td style="text-align:right;"> 260.690 </td>
+   <td style="text-align:right;"> 1.211 </td>
+   <td style="text-align:right;"> 1.028 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 0.071 </td>
+   <td style="text-align:right;"> 0.875 </td>
+   <td style="text-align:right;"> 0.871 </td>
+   <td style="text-align:right;"> 3.187 </td>
+   <td style="text-align:right;"> 196.706 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -75.317 </td>
-   <td style="text-align:right;"> 156.635 </td>
-   <td style="text-align:right;"> 160.838 </td>
+   <td style="text-align:right;"> -76.303 </td>
+   <td style="text-align:right;"> 158.605 </td>
+   <td style="text-align:right;"> 162.809 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(k2 * y) ~ x </td>
-   <td style="text-align:right;"> -1.539 </td>
-   <td style="text-align:right;"> 2.691 </td>
-   <td style="text-align:right;"> 4.358 </td>
-   <td style="text-align:right;"> 0.270 </td>
-   <td style="text-align:right;"> 0.903 </td>
-   <td style="text-align:right;"> 0.900 </td>
-   <td style="text-align:right;"> 6.167 </td>
-   <td style="text-align:right;"> 260.690 </td>
+   <td style="text-align:right;"> 2.422 </td>
+   <td style="text-align:right;"> 2.057 </td>
+   <td style="text-align:right;"> 4.001 </td>
+   <td style="text-align:right;"> 0.285 </td>
+   <td style="text-align:right;"> 0.875 </td>
+   <td style="text-align:right;"> 0.871 </td>
+   <td style="text-align:right;"> 6.373 </td>
+   <td style="text-align:right;"> 196.706 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -96.112 </td>
-   <td style="text-align:right;"> 198.223 </td>
-   <td style="text-align:right;"> 202.427 </td>
+   <td style="text-align:right;"> -97.097 </td>
+   <td style="text-align:right;"> 200.194 </td>
+   <td style="text-align:right;"> 204.397 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = I(k2 * y) ~ I(k2 * x) </td>
-   <td style="text-align:right;"> -1.539 </td>
-   <td style="text-align:right;"> 2.691 </td>
-   <td style="text-align:right;"> 2.179 </td>
-   <td style="text-align:right;"> 0.135 </td>
-   <td style="text-align:right;"> 0.903 </td>
-   <td style="text-align:right;"> 0.900 </td>
-   <td style="text-align:right;"> 6.167 </td>
-   <td style="text-align:right;"> 260.690 </td>
+   <td style="text-align:right;"> 2.422 </td>
+   <td style="text-align:right;"> 2.057 </td>
+   <td style="text-align:right;"> 2.000 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.875 </td>
+   <td style="text-align:right;"> 0.871 </td>
+   <td style="text-align:right;"> 6.373 </td>
+   <td style="text-align:right;"> 196.706 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -96.112 </td>
-   <td style="text-align:right;"> 198.223 </td>
-   <td style="text-align:right;"> 202.427 </td>
+   <td style="text-align:right;"> -97.097 </td>
+   <td style="text-align:right;"> 200.194 </td>
+   <td style="text-align:right;"> 204.397 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ log(x) </td>
-   <td style="text-align:right;"> -2.260 </td>
-   <td style="text-align:right;"> 2.685 </td>
-   <td style="text-align:right;"> 10.562 </td>
-   <td style="text-align:right;"> 1.248 </td>
-   <td style="text-align:right;"> 0.719 </td>
-   <td style="text-align:right;"> 0.709 </td>
-   <td style="text-align:right;"> 5.250 </td>
-   <td style="text-align:right;"> 71.598 </td>
+   <td style="text-align:right;"> 3.043 </td>
+   <td style="text-align:right;"> 1.660 </td>
+   <td style="text-align:right;"> 7.046 </td>
+   <td style="text-align:right;"> 0.950 </td>
+   <td style="text-align:right;"> 0.663 </td>
+   <td style="text-align:right;"> 0.651 </td>
+   <td style="text-align:right;"> 5.243 </td>
+   <td style="text-align:right;"> 55.020 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -91.281 </td>
-   <td style="text-align:right;"> 188.561 </td>
-   <td style="text-align:right;"> 192.765 </td>
+   <td style="text-align:right;"> -91.238 </td>
+   <td style="text-align:right;"> 188.476 </td>
+   <td style="text-align:right;"> 192.680 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> lm = y ~ log10(x) </td>
-   <td style="text-align:right;"> -2.260 </td>
-   <td style="text-align:right;"> 2.685 </td>
-   <td style="text-align:right;"> 24.320 </td>
-   <td style="text-align:right;"> 2.874 </td>
-   <td style="text-align:right;"> 0.719 </td>
-   <td style="text-align:right;"> 0.709 </td>
-   <td style="text-align:right;"> 5.250 </td>
-   <td style="text-align:right;"> 71.598 </td>
+   <td style="text-align:right;"> 3.043 </td>
+   <td style="text-align:right;"> 1.660 </td>
+   <td style="text-align:right;"> 16.223 </td>
+   <td style="text-align:right;"> 2.187 </td>
+   <td style="text-align:right;"> 0.663 </td>
+   <td style="text-align:right;"> 0.651 </td>
+   <td style="text-align:right;"> 5.243 </td>
+   <td style="text-align:right;"> 55.020 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> -91.281 </td>
-   <td style="text-align:right;"> 188.561 </td>
-   <td style="text-align:right;"> 192.765 </td>
+   <td style="text-align:right;"> -91.238 </td>
+   <td style="text-align:right;"> 188.476 </td>
+   <td style="text-align:right;"> 192.680 </td>
   </tr>
 </tbody>
 </table>
@@ -4471,27 +4503,27 @@ Y^\lambda = \beta_0 + \beta_1 X_i + \epsilon_i
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   lambda       SSE
-1    -1.0 36633.253
-2    -0.9 26932.446
-3    -0.8 19895.789
-4    -0.7 14772.781
-5    -0.6 11030.558
-6    -0.5  8289.406
-7    -0.4  6277.752
-8    -0.3  4800.659
-9    -0.2  3717.704
-10   -0.1  2927.397
-21    0.0  2356.174
-11    0.1  1950.597
-12    0.2  1671.807
-13    0.3  1491.566
-14    0.4  1389.434
-15    0.5  1350.734
-16    0.6  1365.103
-17    0.7  1425.443
-18    0.8  1527.172
-19    0.9  1667.692
-20    1.0  1846.015</code></pre>
+1    -1.0 5233.8247
+2    -0.9 4372.5719
+3    -0.8 3664.2073
+4    -0.7 3081.1363
+5    -0.6 2601.0649
+6    -0.5 2205.9735
+7    -0.4 1881.2990
+8    -0.3 1615.2812
+9    -0.2 1398.4423
+10   -0.1 1223.1711
+21    0.0 1083.3934
+11    0.1  974.3100
+12    0.2  892.1916
+13    0.3  834.2179
+14    0.4  798.3553
+15    0.5  783.2663
+16    0.6  788.2449
+17    0.7  813.1761
+18    0.8  858.5166
+19    0.9  925.2949
+20    1.0 1015.1301</code></pre>
 </div>
 </div>
 </div>
@@ -5005,18 +5037,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -5048,7 +5069,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
   const viewSource = window.document.getElementById('quarto-view-source') ||
                      window.document.getElementById('quarto-code-tools-source');
   if (viewSource) {
@@ -5100,6 +5143,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -5134,7 +5195,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -5149,27 +5214,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -5184,10 +5228,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -5196,8 +5244,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -5418,12 +5473,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./notes-inference.html" class="pagination-link  aria-label=">
+      <a href="./notes-inference.html" class="pagination-link" aria-label="Inference">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./notes-matrix-slr.html" class="pagination-link" aria-label="<span class='chapter-number'>4</span>&nbsp; <span class='chapter-title'>Matrix approach to SLR</span>">
+      <a href="./notes-matrix-slr.html" class="pagination-link" aria-label="Matrix approach to SLR">
         <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrix approach to SLR</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -6743,7 +6798,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb224-1409"><a href="#cb224-1409" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb224-1410"><a href="#cb224-1410" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Small departures from normality do not create any serious problems, but major departures should be of concern.</span>
 <span id="cb224-1411"><a href="#cb224-1411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb224-1412"><a href="#cb224-1412" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>We can check the normality of error terms in a variety of errors:</span>
+<span id="cb224-1412"><a href="#cb224-1412" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>We can check the normality of error terms in a variety of ways:</span>
 <span id="cb224-1413"><a href="#cb224-1413" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb224-1414"><a href="#cb224-1414" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>*Distribution plots of residuals* → This is one of the two preferred plots.</span>
 <span id="cb224-1415"><a href="#cb224-1415" aria-hidden="true" tabindex="-1"></a></span>
@@ -8939,7 +8994,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb224-3739"><a href="#cb224-3739" aria-hidden="true" tabindex="-1"></a>conf_bands <span class="sc">%$%</span> <span class="fu">lines</span>(<span class="at">x =</span> x, <span class="at">y =</span> Upper.Band<span class="sc">^</span>(<span class="sc">-</span><span class="dv">2</span>), <span class="at">col =</span> <span class="st">"blue"</span>)</span>
 <span id="cb224-3740"><a href="#cb224-3740" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb224-3741"><a href="#cb224-3741" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

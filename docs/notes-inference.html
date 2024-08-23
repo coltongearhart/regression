@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.517">
+<meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Regression - 2&nbsp; Inference</title>
+<title>2&nbsp; Inference – Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -91,29 +91,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script><script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 </head>
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-inference.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-inference.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></a></li></ol></nav><div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
+  </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-inference.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></a></li></ol></nav>
       <div class="quarto-title-block"><div><h1 class="title"><span id="sec-inference" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
                       </div>
   </div>
@@ -151,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="./part1-slr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simple linear regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -186,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="./part2-mlr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Multiple linear regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -318,7 +344,7 @@ Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{20pt} \text{where} \hspace{10p
 <p><span class="math display">\[
 \begin{align*}
    E(\hat{\beta}_1) &amp;= \beta_1 \\
-  V (\hat{\beta}_1) &amp;= \frac{\sigma^2}{\sum(X_i - \bar{X})^2}
+   V(\hat{\beta}_1) &amp;= \frac{\sigma^2}{\sum(X_i - \bar{X})^2}
 \end{align*}
 \]</span></p>
 <ul>
@@ -326,10 +352,10 @@ Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{20pt} \text{where} \hspace{10p
 </ul>
 <p><span class="math display">\[
   S^2_{\hat{\beta}_1} = \frac{MSE}{\sum(X_i - \bar{X})^2} = \frac{MSE}{S_{XX}} \hspace{20pt} \longrightarrow \hspace{20pt} s_{\hat{\beta}_1} = \sqrt{\frac{MSE}{S_{XX}}} = \frac{S}{\sqrt{S_{XX}}}
-  \]</span></p>
+\]</span></p>
 <ul>
 <li>
-<p>Thus, <span class="math inline">\(S^2_{\hat{\beta}_1}\)</span> is an unbiased estimator for the variance of the sampling distribution of <span class="math inline">\(\hat{\beta}_1\)</span> and</p>
+<p>Thus, <span class="math inline">\(S^2_{\hat{\beta}_1}\)</span> is an unbiased estimator for the variance of the sampling distribution of <span class="math inline">\(\hat{\beta}_1\)</span>.</p>
 <ul>
 <li>This is also called the <strong>standard error</strong> (another way to think about it is the standard deviation of the sampling distribution) → <span class="math inline">\(S_{\hat{\beta}_1} = SE(\hat{\beta}_1)\)</span>
 </li>
@@ -463,17 +489,17 @@ Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{20pt} \text{where} \hspace{10p
 <span><span class="co"># display only coefficient summaries of slope</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_normal</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span> <span class="co"># Estimate is the middle of the interval</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                       Estimate                      Std. Error 
- 5.1414810526245302568781880836  0.3011478047002650315633331957 
-                        t value                        Pr(&gt;|t|) 
-17.0729488057928548982999927830  0.0000000000000000000005021324 </code></pre>
+<pre><code>                        Estimate                       Std. Error 
+ 5.08808868675245662416273262352  0.28185386038708926115248232236 
+                         t value                         Pr(&gt;|t|) 
+18.05222280711229387861749273725  0.00000000000000000000004917718 </code></pre>
 </div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate confidence interval for slope</span></span>
 <span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">0.05</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">mod_normal</span>, parm <span class="op">=</span> <span class="st">"x"</span>, level <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     2.5 %   97.5 %
-x 4.535983 5.746979</code></pre>
+x 4.521384 5.654794</code></pre>
 </div>
 </div>
 </div>
@@ -498,10 +524,10 @@ x 4.535983 5.746979</code></pre>
 [1] TRUE
 
 $`summary(mod_normal)$coefficients["x", "Std. Error"]`
-[1] 0.3011478
+[1] 0.2818539
 
 $se_beta1_hat
-[1] 0.3011478</code></pre>
+[1] 0.2818539</code></pre>
 </div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate confidence interval for beta1</span></span>
 <span><span class="va">ci_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">pe</span> <span class="op">-</span> <span class="va">t_crit</span> <span class="op">*</span> <span class="va">se_beta1_hat</span>, upper <span class="op">=</span> <span class="va">pe</span> <span class="op">+</span> <span class="va">t_crit</span> <span class="op">*</span> <span class="va">se_beta1_hat</span><span class="op">)</span></span>
@@ -524,11 +550,11 @@ NULL
 
 $`confint(mod_normal, parm = "x", level = 1 - alpha)`
      2.5 %   97.5 %
-x 4.535983 5.746979
+x 4.521384 5.654794
 
 $ci_limits
    lower    upper 
-4.535983 5.746979 </code></pre>
+4.521384 5.654794 </code></pre>
 </div>
 </div>
 </div>
@@ -629,19 +655,19 @@ Call:
 lm(formula = y ~ x)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--7.0242 -2.2280  0.5001  2.4176  6.0277 
+   Min     1Q Median     3Q    Max 
+-6.683 -2.429  0.619  2.243  5.302 
 
 Coefficients:
             Estimate Std. Error t value            Pr(&gt;|t|)    
-(Intercept)   1.0908     2.3068   0.473               0.638    
-x             5.1415     0.3011  17.073 &lt;0.0000000000000002 ***
+(Intercept)   0.6807     2.1004   0.324               0.747    
+x             5.0881     0.2819  18.052 &lt;0.0000000000000002 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 3.079 on 48 degrees of freedom
-Multiple R-squared:  0.8586,    Adjusted R-squared:  0.8557 
-F-statistic: 291.5 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 2.854 on 48 degrees of freedom
+Multiple R-squared:  0.8716,    Adjusted R-squared:  0.8689 
+F-statistic: 325.9 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 </div>
 </div>
@@ -659,10 +685,10 @@ F-statistic: 291.5 on 1 and 48 DF,  p-value: &lt; 0.00000000000000022</code></pr
 [1] TRUE
 
 $`summary(mod_normal)$coefficients["x", "t value"]`
-[1] 17.07295
+[1] 18.05222
 
 $t_star
-[1] 17.07295</code></pre>
+[1] 18.05222</code></pre>
 </div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate p-value = 2 * P(t_(n-2) &gt;= |t*|)</span></span>
 <span><span class="va">p_value</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">pt</a></span><span class="op">(</span>q <span class="op">=</span> <span class="va">t_star</span>, df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/df.residual.html">df.residual</a></span><span class="op">(</span><span class="va">mod_normal</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -674,10 +700,10 @@ $t_star
 [1] TRUE
 
 $`summary(mod_normal)$coefficients["x", "Pr(&gt;|t|)"]`
-[1] 0.0000000000000000000005021324
+[1] 0.00000000000000000000004917718
 
 $p_value
-[1] 0.0000000000000000000005021324</code></pre>
+[1] 0.00000000000000000000004917718</code></pre>
 </div>
 </div>
 </div>
@@ -779,12 +805,12 @@ $p_value
 <pre><code># A tibble: 6 × 8
   sim_id beta_1 ratio sigma n     beta_0 statistic value
   &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;  &lt;chr&gt;     &lt;dbl&gt;
-1 1      1      1     1     30    2      t         10.1 
-2 1      1      1     1     30    2      t          8.21
-3 1      1      1     1     30    2      t          7.26
-4 1      1      1     1     30    2      t          7.13
-5 1      1      1     1     30    2      t         11.8 
-6 1      1      1     1     30    2      t          7.72</code></pre>
+1 1      1      1     1     30    2      t          6.69
+2 1      1      1     1     30    2      t          9.24
+3 1      1      1     1     30    2      t         10.6 
+4 1      1      1     1     30    2      t          6.08
+5 1      1      1     1     30    2      t         11.1 
+6 1      1      1     1     30    2      t          7.40</code></pre>
 </div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create a plot facetted by beta value, with density curves for the sampling distributions of the t-stats for each value of the sigma / beta1 ratio</span></span>
 <span><span class="co"># -&gt; add reference line for significance cutoff</span></span>
@@ -979,14 +1005,14 @@ $p_value
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1 
-61.90785 </code></pre>
+64.22818 </code></pre>
 </div>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate lower and upper bounds of interval estimate for E(Y_h)</span></span>
 <span><span class="co"># -&gt; by default does 95% CI and returns the point estimate (fit) as well</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, interval <span class="op">=</span> <span class="st">"confidence"</span>, level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
-1 61.90785 56.85687 66.95883</code></pre>
+1 64.22818 60.28883 68.16752</code></pre>
 </div>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># show items related to standard error of estimation se(Y_h-hat)</span></span>
 <span><span class="co"># -&gt; residual.scale = S = sqrt(MSE)</span></span>
@@ -994,16 +1020,16 @@ $p_value
 <div class="cell-output cell-output-stdout">
 <pre><code>$fit
        1 
-61.90785 
+64.22818 
 
 $se.fit
-[1] 2.465808
+[1] 1.923126
 
 $df
 [1] 28
 
 $residual.scale
-[1] 10.839</code></pre>
+[1] 9.243313</code></pre>
 </div>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># alternate way from ALSM package</span></span>
 <span><span class="co"># -&gt; this is the package that goes with the textbook; provides some functions that are nowhere else, and some alternatives to common functions</span></span>
@@ -1014,7 +1040,7 @@ $residual.scale
 <span>  <span class="va">as.matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x      Fit Lower.Band Upper.Band
-1 12 61.90785   56.85687   66.95883</code></pre>
+1 12 64.22818   60.28883   68.16752</code></pre>
 </div>
 </div>
 </div>
@@ -1061,11 +1087,11 @@ NULL
 
 $`predict(mod, newdata = x_h, interval = "confidence")`
        fit      lwr      upr
-1 61.90785 56.85687 66.95883
+1 64.22818 60.28883 68.16752
 
 $`c(`point estimate` = pe, ci_limits)`
 point estimate          lower          upper 
-      61.90785       56.85687       66.95883 </code></pre>
+      64.22818       60.28883       68.16752 </code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; se of estimation</span></span>
 <span><span class="co"># --&gt; by default predict uses s = sqrt(mse) = residual standard error to get the se.fit (and the df as well = df.residual(mod)) ---&gt; assumes future obs have same error variance as originals used for fitting</span></span>
@@ -1076,41 +1102,41 @@ point estimate          lower          upper
 [1] TRUE
 
 $`predict(mod, newdata = x_h, se.fit = TRUE)$se.fit`
-[1] 2.465808
+[1] 1.923126
 
 $se_yh_hat
-[1] 2.465808</code></pre>
+[1] 1.923126</code></pre>
 </div>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># can return fit, bounds, and standard error info from predict using type = "terms"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, type <span class="op">=</span> <span class="st">"terms"</span>, interval <span class="op">=</span> <span class="st">"conf"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$fit
          x
-1 10.53711
+1 8.081096
 attr(,"constant")
-[1] 51.37074
+[1] 56.14708
 
 $se.fit
-         x
-1 1.471079
+          x
+1 0.9222007
 
 $lwr
          x
-1 7.523737
+1 6.192054
 attr(,"constant")
-[1] 51.37074
+[1] 56.14708
 
 $upr
          x
-1 13.55047
+1 9.970139
 attr(,"constant")
-[1] 51.37074
+[1] 56.14708
 
 $df
 [1] 28
 
 $residual.scale
-[1] 10.839</code></pre>
+[1] 9.243313</code></pre>
 </div>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; for the fit and bounds, for some reason this actually uses the alternate regression model -&gt; Y_h-hat = bar(y) + beta_1-hat (X_h - bar(x))</span></span>
 <span><span class="co"># -&gt; results: constant = beta_1-hat (X_h - X-bar) and attr = Y-bar</span></span>
@@ -1118,9 +1144,9 @@ $residual.scale
 <span><span class="op">(</span><span class="va">x_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, type <span class="op">=</span> <span class="st">"terms"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         x
-1 10.53711
+1 8.081096
 attr(,"constant")
-[1] 51.37074</code></pre>
+[1] 56.14708</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">compare</span><span class="op">(</span><span class="va">pe</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">+</span> <span class="va">b</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">x_h</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1128,10 +1154,10 @@ attr(,"constant")
 [1] TRUE
 
 $pe
-[1] 61.90785
+[1] 64.22818
 
 $`mean(y) + b[2] * (as.numeric(x_h) - mean(x))`
-[1] 61.90785</code></pre>
+[1] 64.22818</code></pre>
 </div>
 </div>
 </div>
@@ -1147,11 +1173,11 @@ $`mean(y) + b[2] * (as.numeric(x_h) - mean(x))`
 <span><span class="co"># calculate width of intervals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h_mean</span>, interval <span class="op">=</span> <span class="st">"confidence"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">diff</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 8.107277</code></pre>
+<pre><code>[1] 6.913744</code></pre>
 </div>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h2</span>, interval <span class="op">=</span> <span class="st">"confidence"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">diff</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 9.885128</code></pre>
+<pre><code>[1] 8.717547</code></pre>
 </div>
 </div>
 </div>
@@ -1329,19 +1355,19 @@ S^2_{pred} = MSE + S^2_{\hat{Y_h}} = MSE + MSE \bigg[\frac{1}{n} + \frac{(X_h - 
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1 
-61.90785 </code></pre>
+64.22818 </code></pre>
 </div>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate lower and upper bounds of prediction interval Y_h(new)</span></span>
 <span><span class="co"># -&gt; by default does 95% CI and returns the point estimate (fit) as well</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, interval <span class="op">=</span> <span class="st">"prediction"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
-1 61.90785 39.13787 84.67783</code></pre>
+1 64.22818 44.88865 83.56771</code></pre>
 </div>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, interval <span class="op">=</span> <span class="st">"confidence"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
-1 61.90785 56.85687 66.95883</code></pre>
+1 64.22818 60.28883 68.16752</code></pre>
 </div>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># show items related to standard error of ESTIMATION se(Y_h-hat)</span></span>
 <span><span class="co"># -&gt; ALWAYS returns this, even if specify interval = "pred"...</span></span>
@@ -1350,16 +1376,16 @@ S^2_{pred} = MSE + S^2_{\hat{Y_h}} = MSE + MSE \bigg[\frac{1}{n} + \frac{(X_h - 
 <div class="cell-output cell-output-stdout">
 <pre><code>$fit
        1 
-61.90785 
+64.22818 
 
 $se.fit
-[1] 2.465808
+[1] 1.923126
 
 $df
 [1] 28
 
 $residual.scale
-[1] 10.839</code></pre>
+[1] 9.243313</code></pre>
 </div>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># alternative way using ALSM</span></span>
 <span><span class="co"># -&gt; type = "n" gives PI for single new observation</span></span>
@@ -1367,7 +1393,7 @@ $residual.scale
 <span>  <span class="va">as.matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x      Fit Lower.Band Upper.Band
-1 12 61.90785   39.13787   84.67783</code></pre>
+1 12 64.22818   44.88865   83.56771</code></pre>
 </div>
 </div>
 </div>
@@ -1415,11 +1441,11 @@ NULL
 
 $`predict(mod, newdata = x_h, interval = "prediction")`
        fit      lwr      upr
-1 61.90785 39.13787 84.67783
+1 64.22818 44.88865 83.56771
 
 $`c(`point estimate` = pe, pi_limits)`
 point estimate          lower          upper 
-      61.90785       39.13787       84.67783 </code></pre>
+      64.22818       44.88865       83.56771 </code></pre>
 </div>
 </div>
 </div>
@@ -1435,22 +1461,22 @@ point estimate          lower          upper
 <span><span class="co"># calculate width of intervals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h_mean</span>, interval <span class="op">=</span> <span class="st">"prediction"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">diff</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 45.13941</code></pre>
+<pre><code>[1] 38.4941</code></pre>
 </div>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h2</span>, interval <span class="op">=</span> <span class="st">"prediction"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">diff</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 45.49235</code></pre>
+<pre><code>[1] 38.85861</code></pre>
 </div>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># compare widths of CI vs PI at the same X level</span></span>
 <span></span>
 <span><span class="co"># calculate width of intervals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, interval <span class="op">=</span> <span class="st">"conf"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">diff</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 10.10196</code></pre>
+<pre><code>[1] 7.878692</code></pre>
 </div>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, interval <span class="op">=</span> <span class="st">"pred"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">diff</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 45.53996</code></pre>
+<pre><code>[1] 38.67906</code></pre>
 </div>
 </div>
 <!-- question -->
@@ -1519,7 +1545,7 @@ S^2_{predmean} = \frac{MSE}{m} + S^2_{\hat{Y_h}}  = MSE \bigg[\frac{1}{m} + \fra
 <span>  <span class="va">as.matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   x      Fit Lower.Band Upper.Band
-1 12 61.90785   39.13787   84.67783</code></pre>
+1 12 64.22818   44.88865   83.56771</code></pre>
 </div>
 </div>
 </div>
@@ -1543,26 +1569,26 @@ S^2_{predmean} = \frac{MSE}{m} + S^2_{\hat{Y_h}}  = MSE \bigg[\frac{1}{m} + \fra
 <span><span class="op">(</span><span class="va">pi_limits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">pe</span> <span class="op">-</span> <span class="va">t_crit</span> <span class="op">*</span> <span class="va">se_pred</span>, upper <span class="op">=</span> <span class="va">pe</span> <span class="op">+</span> <span class="va">t_crit</span> <span class="op">*</span> <span class="va">se_pred</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   lower    upper 
-49.71145 74.10425 </code></pre>
+53.97424 74.48211 </code></pre>
 </div>
 <div class="sourceCode" id="cb67"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># compare to (widths) of previous types of intervals</span></span>
 <span><span class="co"># -&gt; order from most to least precise: CI for E(Y_h), PI for Y-bar_h(new), PI for single Y_h-hat</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, interval <span class="op">=</span> <span class="st">"conf"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
-1 61.90785 56.85687 66.95883</code></pre>
+1 64.22818 60.28883 68.16752</code></pre>
 </div>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">mod</span>, newdata <span class="op">=</span> <span class="va">x_h</span>, interval <span class="op">=</span> <span class="st">"pred"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
-1 61.90785 39.13787 84.67783</code></pre>
+1 64.22818 44.88865 83.56771</code></pre>
 </div>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># interval for sum (total) of m predictions at X_h</span></span>
 <span><span class="co"># -&gt; depends on context if this is meaningful</span></span>
 <span><span class="va">pi_limits</span> <span class="op">*</span> <span class="va">m</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   lower    upper 
-198.8458 296.4170 </code></pre>
+215.8970 297.9284 </code></pre>
 </div>
 </div>
 </div>
@@ -1648,7 +1674,7 @@ W^2 = 2 \cdot F_{(1-\alpha; \, 2, n-2)}
 <span>  <span class="fu">kable_styling</span><span class="op">(</span>full_width <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                position <span class="op">=</span> <span class="st">"left"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<table class="table caption-top table-sm table-striped small" data-quarto-postprocess="true">
 <thead><tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">x</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">Fit</th>
@@ -1657,34 +1683,34 @@ W^2 = 2 \cdot F_{(1-\alpha; \, 2, n-2)}
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">5.051</td>
-<td style="text-align: right;">26.424</td>
-<td style="text-align: right;">16.070</td>
-<td style="text-align: right;">36.777</td>
+<td style="text-align: right;">5.249</td>
+<td style="text-align: right;">31.419</td>
+<td style="text-align: right;">22.920</td>
+<td style="text-align: right;">39.917</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">5.549</td>
-<td style="text-align: right;">28.966</td>
-<td style="text-align: right;">19.400</td>
-<td style="text-align: right;">38.533</td>
+<td style="text-align: right;">5.759</td>
+<td style="text-align: right;">33.898</td>
+<td style="text-align: right;">26.018</td>
+<td style="text-align: right;">41.778</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">6.047</td>
-<td style="text-align: right;">31.509</td>
-<td style="text-align: right;">22.704</td>
-<td style="text-align: right;">40.314</td>
+<td style="text-align: right;">6.269</td>
+<td style="text-align: right;">36.377</td>
+<td style="text-align: right;">29.094</td>
+<td style="text-align: right;">43.659</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">6.545</td>
-<td style="text-align: right;">34.052</td>
-<td style="text-align: right;">25.977</td>
-<td style="text-align: right;">42.128</td>
+<td style="text-align: right;">6.779</td>
+<td style="text-align: right;">38.856</td>
+<td style="text-align: right;">32.145</td>
+<td style="text-align: right;">45.567</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">7.043</td>
-<td style="text-align: right;">36.595</td>
-<td style="text-align: right;">29.207</td>
-<td style="text-align: right;">43.984</td>
+<td style="text-align: right;">7.289</td>
+<td style="text-align: right;">41.335</td>
+<td style="text-align: right;">35.161</td>
+<td style="text-align: right;">47.509</td>
 </tr>
 </tbody>
 </table>
@@ -1694,7 +1720,7 @@ W^2 = 2 \cdot F_{(1-\alpha; \, 2, n-2)}
 <span>  <span class="fu">set_names</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"fit"</span>, <span class="st">"lwr"</span>, <span class="st">"upr"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        x       fit       lwr       upr 
- 5.051026 26.423569 18.218055 34.629083 </code></pre>
+ 5.248661 31.418696 24.683385 38.154008 </code></pre>
 </div>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># plot fitted line and confidence bands on scatterplot</span></span>
 <span><span class="co"># -&gt; also add reference line for X-bar showing where the most precision is</span></span>
@@ -1756,84 +1782,84 @@ W^2 = 2 \cdot F_{(1-\alpha; \, 2, n-2)}
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:right;"> 5.051 </td>
-   <td style="text-align:right;"> 26.424 </td>
-   <td style="text-align:right;"> 4.006 </td>
-   <td style="text-align:right;"> 16.070 </td>
-   <td style="text-align:right;"> 36.777 </td>
-   <td style="text-align:right;"> 20.708 </td>
+<td style="text-align:right;"> 5.249 </td>
+   <td style="text-align:right;"> 31.419 </td>
+   <td style="text-align:right;"> 3.288 </td>
+   <td style="text-align:right;"> 22.920 </td>
+   <td style="text-align:right;"> 39.917 </td>
+   <td style="text-align:right;"> 16.997 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 5.549 </td>
-   <td style="text-align:right;"> 28.966 </td>
-   <td style="text-align:right;"> 3.701 </td>
-   <td style="text-align:right;"> 19.400 </td>
-   <td style="text-align:right;"> 38.533 </td>
-   <td style="text-align:right;"> 19.134 </td>
+<td style="text-align:right;"> 5.759 </td>
+   <td style="text-align:right;"> 33.898 </td>
+   <td style="text-align:right;"> 3.049 </td>
+   <td style="text-align:right;"> 26.018 </td>
+   <td style="text-align:right;"> 41.778 </td>
+   <td style="text-align:right;"> 15.760 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 6.047 </td>
-   <td style="text-align:right;"> 31.509 </td>
-   <td style="text-align:right;"> 3.407 </td>
-   <td style="text-align:right;"> 22.704 </td>
-   <td style="text-align:right;"> 40.314 </td>
-   <td style="text-align:right;"> 17.610 </td>
+<td style="text-align:right;"> 6.269 </td>
+   <td style="text-align:right;"> 36.377 </td>
+   <td style="text-align:right;"> 2.817 </td>
+   <td style="text-align:right;"> 29.094 </td>
+   <td style="text-align:right;"> 43.659 </td>
+   <td style="text-align:right;"> 14.565 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 6.545 </td>
-   <td style="text-align:right;"> 34.052 </td>
-   <td style="text-align:right;"> 3.124 </td>
-   <td style="text-align:right;"> 25.977 </td>
-   <td style="text-align:right;"> 42.128 </td>
-   <td style="text-align:right;"> 16.151 </td>
+<td style="text-align:right;"> 6.779 </td>
+   <td style="text-align:right;"> 38.856 </td>
+   <td style="text-align:right;"> 2.596 </td>
+   <td style="text-align:right;"> 32.145 </td>
+   <td style="text-align:right;"> 45.567 </td>
+   <td style="text-align:right;"> 13.422 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 7.043 </td>
-   <td style="text-align:right;"> 36.595 </td>
-   <td style="text-align:right;"> 2.859 </td>
-   <td style="text-align:right;"> 29.207 </td>
-   <td style="text-align:right;"> 43.984 </td>
-   <td style="text-align:right;"> 14.777 </td>
+<td style="text-align:right;"> 7.289 </td>
+   <td style="text-align:right;"> 41.335 </td>
+   <td style="text-align:right;"> 2.389 </td>
+   <td style="text-align:right;"> 35.161 </td>
+   <td style="text-align:right;"> 47.509 </td>
+   <td style="text-align:right;"> 12.347 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 7.541 </td>
-   <td style="text-align:right;"> 39.138 </td>
-   <td style="text-align:right;"> 2.614 </td>
-   <td style="text-align:right;"> 32.382 </td>
-   <td style="text-align:right;"> 45.894 </td>
-   <td style="text-align:right;"> 13.513 </td>
+<td style="text-align:right;"> 7.799 </td>
+   <td style="text-align:right;"> 43.814 </td>
+   <td style="text-align:right;"> 2.197 </td>
+   <td style="text-align:right;"> 38.134 </td>
+   <td style="text-align:right;"> 49.494 </td>
+   <td style="text-align:right;"> 11.360 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 8.039 </td>
-   <td style="text-align:right;"> 41.681 </td>
-   <td style="text-align:right;"> 2.397 </td>
-   <td style="text-align:right;"> 35.485 </td>
-   <td style="text-align:right;"> 47.877 </td>
-   <td style="text-align:right;"> 12.392 </td>
+<td style="text-align:right;"> 8.309 </td>
+   <td style="text-align:right;"> 46.293 </td>
+   <td style="text-align:right;"> 2.028 </td>
+   <td style="text-align:right;"> 41.052 </td>
+   <td style="text-align:right;"> 51.535 </td>
+   <td style="text-align:right;"> 10.483 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 8.537 </td>
-   <td style="text-align:right;"> 44.224 </td>
-   <td style="text-align:right;"> 2.216 </td>
-   <td style="text-align:right;"> 38.496 </td>
-   <td style="text-align:right;"> 49.952 </td>
-   <td style="text-align:right;"> 11.457 </td>
+<td style="text-align:right;"> 8.820 </td>
+   <td style="text-align:right;"> 48.772 </td>
+   <td style="text-align:right;"> 1.886 </td>
+   <td style="text-align:right;"> 43.898 </td>
+   <td style="text-align:right;"> 53.647 </td>
+   <td style="text-align:right;"> 9.749 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 9.035 </td>
-   <td style="text-align:right;"> 46.767 </td>
-   <td style="text-align:right;"> 2.081 </td>
-   <td style="text-align:right;"> 41.389 </td>
-   <td style="text-align:right;"> 52.145 </td>
-   <td style="text-align:right;"> 10.756 </td>
+<td style="text-align:right;"> 9.330 </td>
+   <td style="text-align:right;"> 51.251 </td>
+   <td style="text-align:right;"> 1.778 </td>
+   <td style="text-align:right;"> 46.657 </td>
+   <td style="text-align:right;"> 55.846 </td>
+   <td style="text-align:right;"> 9.190 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 9.533 </td>
-   <td style="text-align:right;"> 49.310 </td>
-   <td style="text-align:right;"> 2.000 </td>
-   <td style="text-align:right;"> 44.141 </td>
-   <td style="text-align:right;"> 54.478 </td>
-   <td style="text-align:right;"> 10.337 </td>
+<td style="text-align:right;"> 9.840 </td>
+   <td style="text-align:right;"> 53.730 </td>
+   <td style="text-align:right;"> 1.710 </td>
+   <td style="text-align:right;"> 49.311 </td>
+   <td style="text-align:right;"> 58.150 </td>
+   <td style="text-align:right;"> 8.840 </td>
   </tr>
 </tbody>
 </table>
@@ -1846,31 +1872,31 @@ W^2 = 2 \cdot F_{(1-\alpha; \, 2, n-2)}
 
 $`head(ALSM::ci.reg(mod, newdata = x_h, type = "w", alpha = 0.05))`
          x      Fit Lower.Band Upper.Band
-1 5.051026 26.42357   16.06970   36.77744
-2 5.549008 28.96647   19.39967   38.53327
-3 6.046990 31.50937   22.70433   40.31440
-4 6.544972 34.05226   25.97652   42.12801
-5 7.042954 36.59516   29.20661   43.98372
-6 7.540936 39.13806   32.38175   45.89437
+1 5.248661 31.41870   22.91995   39.91744
+2 5.758791 33.89777   26.01767   41.77788
+3 6.268920 36.37685   29.09448   43.65923
+4 6.779050 38.85593   32.14480   45.56706
+5 7.289180 41.33501   35.16128   47.50874
+6 7.799310 43.81409   38.13429   49.49388
 
 $`head(data_conf_band[, c(1, 2, 4, 5)])`
        x_h      fit    lower    upper
-1 5.051026 26.42357 16.06970 36.77744
-2 5.549008 28.96647 19.39967 38.53327
-3 6.046990 31.50937 22.70433 40.31440
-4 6.544972 34.05226 25.97652 42.12801
-5 7.042954 36.59516 29.20661 43.98372
-6 7.540936 39.13806 32.38175 45.89437</code></pre>
+1 5.248661 31.41870 22.91995 39.91744
+2 5.758791 33.89777 26.01767 41.77788
+3 6.268920 36.37685 29.09448 43.65923
+4 6.779050 38.85593 32.14480 45.56706
+5 7.289180 41.33501 35.16128 47.50874
+6 7.799310 43.81409 38.13429 49.49388</code></pre>
 </div>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data_conf_band</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       x_h      fit   se_fit    lower    upper    width
-1 5.051026 26.42357 4.005802 16.06970 36.77744 20.70774
-2 5.549008 28.96647 3.701293 19.39967 38.53327 19.13360
-3 6.046990 31.50937 3.406575 22.70433 40.31440 17.61007
-4 6.544972 34.05226 3.124420 25.97652 42.12801 16.15149
-5 7.042954 36.59516 2.858552 29.20661 43.98372 14.77711
-6 7.540936 39.13806 2.613945 32.38175 45.89437 13.51262</code></pre>
+1 5.248661 31.41870 3.288073 22.91995 39.91744 16.99749
+2 5.758791 33.89777 3.048729 26.01767 41.77788 15.76021
+3 6.268920 36.37685 2.817472 29.09448 43.65923 14.56475
+4 6.779050 38.85593 2.596463 32.14480 45.56706 13.42226
+5 7.289180 41.33501 2.388550 35.16128 47.50874 12.34746
+6 7.799310 43.81409 2.197451 38.13429 49.49388 11.35959</code></pre>
 </div>
 </div>
 </div>
@@ -2190,7 +2216,7 @@ SSR = \sum (\hat{Y_i} - \bar{Y})^2
 <li><p>The breakdowns of the total sum of squares and associated degrees of freedom are displayed in the form of an analysis of variance table.</p></li>
 <li><p>Below shows an extra column for expected mean squares, which will be needed for inference (usual ANOVA tables have everything except this column).</p></li>
 </ul>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 14%">
 <col style="width: 14%">
@@ -2285,7 +2311,7 @@ lm(formula = y ~ x)
 
 Coefficients:
 (Intercept)            x  
-     12.759        1.811  </code></pre>
+      8.039        2.292  </code></pre>
 </div>
 <div class="sourceCode" id="cb94"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; for aov object it gives breakdown of SS and df for each variable and sigma estimate</span></span>
 <span><span class="va">mod_aov</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2295,10 +2321,10 @@ Coefficients:
 
 Terms:
                        x Residuals
-Sum of Squares   623.072  4525.208
+Sum of Squares   835.060  5926.886
 Deg. of Freedom        1        28
 
-Residual standard error: 12.71277
+Residual standard error: 14.54904
 Estimated effects may be unbalanced</code></pre>
 </div>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># summary() function</span></span>
@@ -2310,26 +2336,26 @@ Call:
 lm(formula = y ~ x)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--26.797  -7.400  -1.628   9.829  23.640 
+     Min       1Q   Median       3Q      Max 
+-28.3369  -9.5934   0.0609   7.8225  28.7457 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)  
-(Intercept)  12.7587     9.7755   1.305   0.2025  
-x             1.8109     0.9223   1.963   0.0596 .
+(Intercept)    8.039     10.952   0.734   0.4691  
+x              2.292      1.154   1.986   0.0569 .
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 12.71 on 28 degrees of freedom
-Multiple R-squared:  0.121, Adjusted R-squared:  0.08963 
-F-statistic: 3.855 on 1 and 28 DF,  p-value: 0.05959</code></pre>
+Residual standard error: 14.55 on 28 degrees of freedom
+Multiple R-squared:  0.1235,    Adjusted R-squared:  0.09219 
+F-statistic: 3.945 on 1 and 28 DF,  p-value: 0.05688</code></pre>
 </div>
 <div class="sourceCode" id="cb98"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; for aov it gives anova table,which is the same information but represented as sums of squares estimates with F ratios</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod_aov</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
-x            1    623   623.1   3.855 0.0596 .
-Residuals   28   4525   161.6                 
+x            1    835   835.1   3.945 0.0569 .
+Residuals   28   5927   211.7                 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -2338,8 +2364,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/summary.aov.html">summary.aov</a></span><span class="op">(</span><span class="va">mod_lm</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
-x            1    623   623.1   3.855 0.0596 .
-Residuals   28   4525   161.6                 
+x            1    835   835.1   3.945 0.0569 .
+Residuals   28   5927   211.7                 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -2351,19 +2377,19 @@ Call:
 aov(formula = y ~ x)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--26.797  -7.400  -1.628   9.829  23.640 
+     Min       1Q   Median       3Q      Max 
+-28.3369  -9.5934   0.0609   7.8225  28.7457 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)  
-(Intercept)  12.7587     9.7755   1.305   0.2025  
-x             1.8109     0.9223   1.963   0.0596 .
+(Intercept)    8.039     10.952   0.734   0.4691  
+x              2.292      1.154   1.986   0.0569 .
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 12.71 on 28 degrees of freedom
-Multiple R-squared:  0.121, Adjusted R-squared:  0.08963 
-F-statistic: 3.855 on 1 and 28 DF,  p-value: 0.05959</code></pre>
+Residual standard error: 14.55 on 28 degrees of freedom
+Multiple R-squared:  0.1235,    Adjusted R-squared:  0.09219 
+F-statistic: 3.945 on 1 and 28 DF,  p-value: 0.05688</code></pre>
 </div>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># alternative (more straight-forward) way to get anova table </span></span>
 <span><span class="co"># -&gt; use anova() on lm object &lt;==&gt; anova.lm() -&gt; this is one of the two main uses of this function</span></span>
@@ -2372,8 +2398,8 @@ F-statistic: 3.855 on 1 and 28 DF,  p-value: 0.05959</code></pre>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_lm</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">as.matrix</span> <span class="co"># could do anova(mod_aov), but makes for sense just to do summary() if already have aov object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Df    Sum Sq  Mean Sq  F value     Pr(&gt;F)
-x          1  623.0717 623.0717 3.855294 0.05959022
-Residuals 28 4525.2084 161.6146       NA         NA</code></pre>
+x          1  835.0602 835.0602 3.945021 0.05687836
+Residuals 28 5926.8857 211.6745       NA         NA</code></pre>
 </div>
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># save usual lm model as another object to simplify notation</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="va">mod_lm</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2430,13 +2456,13 @@ $comparison$`element-wise`
 
 $`anova(mod_lm)[, 1:3]`
           Df Sum Sq Mean Sq
-x          1  623.1  623.07
-Residuals 28 4525.2  161.61
+x          1  835.1  835.06
+Residuals 28 5926.9  211.67
 
 $at
       df        SS       MS
-x      1  623.0717 623.0717
-error 28 4525.2084 161.6146</code></pre>
+x      1  835.0602 835.0602
+error 28 5926.8857 211.6745</code></pre>
 </div>
 </div>
 </div>
@@ -2457,10 +2483,10 @@ error 28 4525.2084 161.6146</code></pre>
 [1] TRUE
 
 $`c(sum(anova(mod)[, "Df"]), sum(anova(mod)[, "Sum Sq"]))`
-[1]   29.00 5148.28
+[1]   29.000 6761.946
 
 $`c(df_to, ssto)`
-[1]   29.00 5148.28</code></pre>
+[1]   29.000 6761.946</code></pre>
 </div>
 </div>
 </div>
@@ -2624,8 +2650,8 @@ TS = F^* = \frac{MSR}{MSE}
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">as.matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Df    Sum Sq  Mean Sq  F value     Pr(&gt;F)
-x          1  623.0717 623.0717 3.855294 0.05959022
-Residuals 28 4525.2084 161.6146       NA         NA</code></pre>
+x          1  835.0602 835.0602 3.945021 0.05687836
+Residuals 28 5926.8857 211.6745       NA         NA</code></pre>
 </div>
 <div class="sourceCode" id="cb113"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># equivalence of F test and two sided t-test</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">[</span><span class="st">"x"</span>,<span class="st">"F value"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">[</span><span class="st">"x"</span>,<span class="st">"t value"</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2634,10 +2660,10 @@ Residuals 28 4525.2084 161.6146       NA         NA</code></pre>
 [1] TRUE
 
 $`anova(mod)["x", "F value"]`
-[1] 3.855294
+[1] 3.945021
 
 $`summary(mod)$coefficients["x", "t value"]^2`
-[1] 3.855294</code></pre>
+[1] 3.945021</code></pre>
 </div>
 </div>
 </div>
@@ -2828,17 +2854,17 @@ F^* = \frac{SSTO - SSE}{(n - 1) - (n - 2)} \Big/ \frac{SSE}{n - 2} = \frac{SSR}{
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_reduced</span>, <span class="va">mod_full</span>, test <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">as.matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Res.Df      RSS Df Sum of Sq        F     Pr(&gt;F)
-1     29 5148.280 NA        NA       NA         NA
-2     28 4525.208  1  623.0717 3.855294 0.05959022</code></pre>
+1     29 6761.946 NA        NA       NA         NA
+2     28 5926.886  1  835.0602 3.945021 0.05687836</code></pre>
 </div>
 <div class="sourceCode" id="cb119"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># demo with more than two models</span></span>
 <span><span class="va">mod_squared</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html">I</a></span><span class="op">(</span><span class="va">x</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_reduced</span>, <span class="va">mod_full</span>, <span class="va">mod_squared</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">as.matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  Res.Df      RSS Df       Sum of Sq              F     Pr(&gt;F)
-1     29 5148.280 NA              NA             NA         NA
-2     28 4525.208  1 623.07171661587 3.717604849965 0.06441975
-3     27 4525.208  1   0.00008673216 0.000000517494 0.99943131</code></pre>
+<pre><code>  Res.Df      RSS Df Sum of Sq         F     Pr(&gt;F)
+1     29 6761.946 NA        NA        NA         NA
+2     28 5926.886  1  835.0602 3.8699197 0.05951207
+3     27 5826.123  1  100.7630 0.4669662 0.50020874</code></pre>
 </div>
 <div class="sourceCode" id="cb121"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># demo showing how the sequential comparison works</span></span>
 <span><span class="co"># -&gt; above compared mod 1 to mod 2 and then mod 2 to mod 3</span></span>
@@ -2846,8 +2872,8 @@ F^* = \frac{SSTO - SSE}{(n - 1) - (n - 2)} \Big/ \frac{SSE}{n - 2} = \frac{SSR}{
 <span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_reduced</span>, <span class="va">mod_squared</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">as.matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Res.Df      RSS Df Sum of Sq        F    Pr(&gt;F)
-1     29 5148.280 NA        NA       NA        NA
-2     27 4525.208  2  623.0718 1.858803 0.1752595</code></pre>
+1     29 6761.946 NA        NA       NA        NA
+2     27 5826.123  2  935.8233 2.168443 0.1338619</code></pre>
 </div>
 </div>
 </div>
@@ -2906,19 +2932,19 @@ Analysis of Variance Table
 
 Model 1: y ~ 1
 Model 2: y ~ x
-  Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
-1     29 5148.3                              
-2     28 4525.2  1    623.07 3.8553 0.05959 .
+  Res.Df    RSS Df Sum of Sq     F  Pr(&gt;F)  
+1     29 6761.9                             
+2     28 5926.9  1    835.06 3.945 0.05688 .
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 $at
                 df_E Original SSE Original Change df Change SSE       F*
-Mod 1 - Reduced            29     5148.280        NA         NA       NA
-Mod 2 - Full               28     4525.208         1   623.0717 3.855294
+Mod 1 - Reduced            29     6761.946        NA         NA       NA
+Mod 2 - Full               28     5926.886         1   835.0602 3.945021
                    p-value
 Mod 1 - Reduced         NA
-Mod 2 - Full    0.05959022</code></pre>
+Mod 2 - Full    0.05687836</code></pre>
 </div>
 <div class="sourceCode" id="cb125"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># for SLR ==&gt; equivalent to F test on beta 1</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_reduced</span>, <span class="va">mod_full</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"F"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod_full</span><span class="op">)</span><span class="op">[</span><span class="st">"x"</span>, <span class="st">"F value"</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2927,10 +2953,10 @@ Mod 2 - Full    0.05959022</code></pre>
 [1] TRUE
 
 $`anova(mod_reduced, mod_full)[2, "F"]`
-[1] 3.855294
+[1] 3.945021
 
 $`anova(mod_full)["x", "F value"]`
-[1] 3.855294</code></pre>
+[1] 3.945021</code></pre>
 </div>
 </div>
 </div>
@@ -2953,7 +2979,8 @@ $`anova(mod_full)["x", "F value"]`
 </ul>
 <p><span class="math display">\[
 R^2 = \frac{SSR}{SSTO} = 1-\frac{SSE}{SSTO}, \hspace{20pt} \text{range:} \hspace{10pt} 0 \le R^2 \le 1
-\]</span> Interpretation</p>
+\]</span></p>
+<p>Interpretation</p>
 <ul>
 <li>
 <p>&lt; <span class="math inline">\(R^2 *100\)</span> &gt;% of the variation in &lt; <span class="math inline">\(Y\)</span> context &gt; can be explained by the <em>linear</em> relationship between &lt; <span class="math inline">\(Y\)</span> context &gt; and &lt; <span class="math inline">\(X\)</span> context &gt;.</p>
@@ -3037,19 +3064,19 @@ Call:
 lm(formula = y ~ x)
 
 Residuals:
-     Min       1Q   Median       3Q      Max 
--20.5143  -7.5287   0.7645   7.3105  30.0512 
+    Min      1Q  Median      3Q     Max 
+-16.789  -7.255   1.494   6.289  19.406 
 
 Coefficients:
-            Estimate Std. Error t value     Pr(&gt;|t|)    
-(Intercept)  -5.3003     8.0966  -0.655        0.518    
-x             5.6130     0.7739   7.253 0.0000000678 ***
+            Estimate Std. Error t value      Pr(&gt;|t|)    
+(Intercept)  -1.5916     6.4776  -0.246         0.808    
+x             5.2781     0.5968   8.844 0.00000000135 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 12.45 on 28 degrees of freedom
-Multiple R-squared:  0.6526,    Adjusted R-squared:  0.6402 
-F-statistic:  52.6 on 1 and 28 DF,  p-value: 0.00000006779</code></pre>
+Residual standard error: 9.74 on 28 degrees of freedom
+Multiple R-squared:  0.7364,    Adjusted R-squared:  0.727 
+F-statistic: 78.21 on 1 and 28 DF,  p-value: 0.000000001348</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -3072,9 +3099,9 @@ F-statistic:  52.6 on 1 and 28 DF,  p-value: 0.00000006779</code></pre>
 <span><span class="va">at</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">at</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          Df   Sum Sq   Mean Sq  F value           Pr(&gt;F)
-x          1 8157.844 8157.8441 52.60132 0.00000006779036
-Residuals 28 4342.470  155.0882       NA               NA</code></pre>
+<pre><code>          Df   Sum Sq    Mean Sq  F value           Pr(&gt;F)
+x          1 7420.348 7420.34776 78.21394 0.00000000134759
+Residuals 28 2656.429   94.87245       NA               NA</code></pre>
 </div>
 <div class="sourceCode" id="cb133"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate R^2 from sums of squares from anova table</span></span>
 <span><span class="co"># R^2 = SSR / SSTO = SSR / (SSR + SSE) = 1 - SSE / SSTO</span></span>
@@ -3090,10 +3117,10 @@ Residuals 28 4342.470  155.0882       NA               NA</code></pre>
 [1] TRUE
 
 $`summary(mod)$r.squared`
-[1] 0.6526111
+[1] 0.7363811
 
 $r_squared
-[1] 0.6526111</code></pre>
+[1] 0.7363811</code></pre>
 </div>
 </div>
 </div>
@@ -3137,45 +3164,45 @@ $r_squared
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:right;"> 8.171 </td>
-   <td style="text-align:right;"> 20.197 </td>
+<td style="text-align:right;"> 11.965 </td>
+   <td style="text-align:right;"> 47.535 </td>
    <td style="text-align:left;"> smaller </td>
-   <td style="text-align:right;"> -6.316 </td>
+   <td style="text-align:right;"> 9.640 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 14.892 </td>
-   <td style="text-align:right;"> 40.361 </td>
+<td style="text-align:right;"> 2.603 </td>
+   <td style="text-align:right;"> 19.449 </td>
    <td style="text-align:left;"> larger </td>
-   <td style="text-align:right;"> -6.316 </td>
+   <td style="text-align:right;"> 9.640 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 8.716 </td>
-   <td style="text-align:right;"> 25.537 </td>
+<td style="text-align:right;"> 9.329 </td>
+   <td style="text-align:right;"> 25.828 </td>
    <td style="text-align:left;"> smaller </td>
-   <td style="text-align:right;"> -2.611 </td>
+   <td style="text-align:right;"> -4.160 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 7.948 </td>
-   <td style="text-align:right;"> 23.233 </td>
+<td style="text-align:right;"> 12.753 </td>
+   <td style="text-align:right;"> 36.099 </td>
    <td style="text-align:left;"> larger </td>
-   <td style="text-align:right;"> -2.611 </td>
+   <td style="text-align:right;"> -4.160 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 10.696 </td>
-   <td style="text-align:right;"> 38.072 </td>
+<td style="text-align:right;"> 11.905 </td>
+   <td style="text-align:right;"> 38.171 </td>
    <td style="text-align:left;"> smaller </td>
-   <td style="text-align:right;"> 3.985 </td>
+   <td style="text-align:right;"> 0.456 </td>
    <td style="text-align:right;"> 3 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 14.844 </td>
-   <td style="text-align:right;"> 50.516 </td>
+<td style="text-align:right;"> 2.650 </td>
+   <td style="text-align:right;"> 10.406 </td>
    <td style="text-align:left;"> larger </td>
-   <td style="text-align:right;"> 3.985 </td>
+   <td style="text-align:right;"> 0.456 </td>
    <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
@@ -3188,7 +3215,7 @@ $r_squared
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> larger smaller 
-  0.897   0.529 </code></pre>
+  0.831   0.380 </code></pre>
 </div>
 <div class="sourceCode" id="cb138"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create plot of both sets of points and regression line</span></span>
 <span><span class="co"># -&gt; add reference line for Y-bar for each dataset (to show how SSTO is calculated)</span></span>
@@ -3240,10 +3267,10 @@ r = \pm \sqrt{R^2}
 [1] TRUE
 
 $`summary(mod)$r.squared`
-[1] 0.6526111
+[1] 0.7363811
 
 $`r^2`
-[1] 0.6526111</code></pre>
+[1] 0.7363811</code></pre>
 </div>
 </div>
 <ul>
@@ -3299,18 +3326,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -3342,7 +3358,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
   const viewSource = window.document.getElementById('quarto-view-source') ||
                      window.document.getElementById('quarto-code-tools-source');
   if (viewSource) {
@@ -3394,6 +3432,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -3428,7 +3484,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -3443,27 +3503,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -3478,10 +3517,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -3490,8 +3533,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -3712,12 +3762,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./notes-slr.html" class="pagination-link  aria-label=" linear="" regression="">
+      <a href="./notes-slr.html" class="pagination-link" aria-label="Simple linear regression">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple linear regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./notes-diagnostics-and-remedial-measures.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Diagnostics and remedial measures</span>">
+      <a href="./notes-diagnostics-and-remedial-measures.html" class="pagination-link" aria-label="Diagnostics and remedial measures">
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Diagnostics and remedial measures</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -3805,17 +3855,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb141-83"><a href="#cb141-83" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb141-84"><a href="#cb141-84" aria-hidden="true" tabindex="-1"></a> \begin{align*}</span>
 <span id="cb141-85"><a href="#cb141-85" aria-hidden="true" tabindex="-1"></a>   E(\hat{\beta}_1) &amp;= \beta_1 <span class="sc">\\</span></span>
-<span id="cb141-86"><a href="#cb141-86" aria-hidden="true" tabindex="-1"></a>  V (\hat{\beta}_1) &amp;= \frac{\sigma^2}{\sum(X_i - \bar{X})^2}</span>
+<span id="cb141-86"><a href="#cb141-86" aria-hidden="true" tabindex="-1"></a>   V(\hat{\beta}_1) &amp;= \frac{\sigma^2}{\sum(X_i - \bar{X})^2}</span>
 <span id="cb141-87"><a href="#cb141-87" aria-hidden="true" tabindex="-1"></a> \end{align*}</span>
 <span id="cb141-88"><a href="#cb141-88" aria-hidden="true" tabindex="-1"></a> $$</span>
 <span id="cb141-89"><a href="#cb141-89" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb141-90"><a href="#cb141-90" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Then we can estimate the variance by replacing the parameter $\sigma^2$ with $MSE$, the unbiased estimator of $\sigma^2$. This gives us $S^2_{\hat{\beta}_1}$, which is an unbiased estimator for the variance of the sampling distribution of $\hat{\beta}_1$. And we can take the positive square root to give us $S_{\hat{\beta}_1}$, which is the point estimator of $\sigma_{\hat{\beta}_1}$.</span>
 <span id="cb141-91"><a href="#cb141-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-92"><a href="#cb141-92" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb141-92"><a href="#cb141-92" aria-hidden="true" tabindex="-1"></a>  $$</span>
 <span id="cb141-93"><a href="#cb141-93" aria-hidden="true" tabindex="-1"></a>  S^2_{\hat{\beta}_1} = \frac{MSE}{\sum(X_i - \bar{X})^2} = \frac{MSE}{S_{XX}} \hspace{20pt} \longrightarrow \hspace{20pt} s_{\hat{\beta}_1} = \sqrt{\frac{MSE}{S_{XX}}} = \frac{S}{\sqrt{S_{XX}}}</span>
-<span id="cb141-94"><a href="#cb141-94" aria-hidden="true" tabindex="-1"></a>  $$</span>
+<span id="cb141-94"><a href="#cb141-94" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb141-95"><a href="#cb141-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-96"><a href="#cb141-96" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Thus, $S^2_{\hat{\beta}_1}$ is an unbiased estimator for the variance of the sampling distribution of $\hat{\beta}_1$ and</span>
+<span id="cb141-96"><a href="#cb141-96" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Thus, $S^2_{\hat{\beta}_1}$ is an unbiased estimator for the variance of the sampling distribution of $\hat{\beta}_1$.</span>
 <span id="cb141-97"><a href="#cb141-97" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb141-98"><a href="#cb141-98" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This is also called the **standard error** (another way to think about it is the standard deviation of the sampling distribution) → $S_{\hat{\beta}_1} = SE(\hat{\beta}_1)$</span>
 <span id="cb141-99"><a href="#cb141-99" aria-hidden="true" tabindex="-1"></a></span>
@@ -3991,7 +4041,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb141-275"><a href="#cb141-275" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb141-276"><a href="#cb141-276" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>A more complex relationship between $Y$ and $X$ may exist, which would require fitting a model other than the straight-line model.</span>
 <span id="cb141-277"><a href="#cb141-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-278"><a href="#cb141-278" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>All assumptions about the error terms ($\epsilon_i \overset{iid}\sim \text{Normal}\,(0,\sigma^2)$) should be satisfied.</span>
+<span id="cb141-278"><a href="#cb141-278" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>All assumptions about the error terms ($\epsilon_i \followsp{iid}{Normal}(0,\sigma^2)$) should be satisfied.</span>
 <span id="cb141-279"><a href="#cb141-279" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb141-280"><a href="#cb141-280" aria-hidden="true" tabindex="-1"></a>Two-tailed test (most common)</span>
 <span id="cb141-281"><a href="#cb141-281" aria-hidden="true" tabindex="-1"></a></span>
@@ -5791,210 +5841,212 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb141-2129"><a href="#cb141-2129" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb141-2130"><a href="#cb141-2130" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb141-2131"><a href="#cb141-2131" aria-hidden="true" tabindex="-1"></a>R^2 = \frac{SSR}{SSTO} = 1-\frac{SSE}{SSTO}, \hspace{20pt} \text{range:} \hspace{10pt} 0 \le R^2 \le 1</span>
-<span id="cb141-2132"><a href="#cb141-2132" aria-hidden="true" tabindex="-1"></a>$$ Interpretation</span>
+<span id="cb141-2132"><a href="#cb141-2132" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb141-2133"><a href="#cb141-2133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2134"><a href="#cb141-2134" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="sc">\&lt;</span> $R^2 *100$ \&gt;% of the variation in \&lt; $Y$ context \&gt; can be explained by the *linear* relationship between <span class="sc">\&lt;</span> $Y$ context <span class="sc">\&gt;</span> and <span class="sc">\&lt;</span> $X$ context <span class="sc">\&gt;</span>.</span>
+<span id="cb141-2134"><a href="#cb141-2134" aria-hidden="true" tabindex="-1"></a>Interpretation</span>
 <span id="cb141-2135"><a href="#cb141-2135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2136"><a href="#cb141-2136" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>So, the larger $R^2$ is, the more the total variation of $Y$ is reduced by introducing the predictor variable $X$ $\Longleftrightarrow$ greater degree of linear association between $Y$ and $X$.</span>
+<span id="cb141-2136"><a href="#cb141-2136" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="sc">\&lt;</span> $R^2 *100$ \&gt;% of the variation in \&lt; $Y$ context \&gt; can be explained by the *linear* relationship between <span class="sc">\&lt;</span> $Y$ context <span class="sc">\&gt;</span> and <span class="sc">\&lt;</span> $X$ context <span class="sc">\&gt;</span>.</span>
 <span id="cb141-2137"><a href="#cb141-2137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2138"><a href="#cb141-2138" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Practically, this indicates the quality of the fit by measuring the proportion of variability explained by the fitted model.</span>
+<span id="cb141-2138"><a href="#cb141-2138" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>So, the larger $R^2$ is, the more the total variation of $Y$ is reduced by introducing the predictor variable $X$ $\Longleftrightarrow$ greater degree of linear association between $Y$ and $X$.</span>
 <span id="cb141-2139"><a href="#cb141-2139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2140"><a href="#cb141-2140" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Limiting values</span>
+<span id="cb141-2140"><a href="#cb141-2140" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Practically, this indicates the quality of the fit by measuring the proportion of variability explained by the fitted model.</span>
 <span id="cb141-2141"><a href="#cb141-2141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2142"><a href="#cb141-2142" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>When the fitted regression line is horizontal ($\hat{\beta}_1 = 0$ and $\hat{Y_i} = \bar{Y}$) $\Longrightarrow$ $SSE = SSTO$ and $R^2 = 0$.</span>
+<span id="cb141-2142"><a href="#cb141-2142" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Limiting values</span>
 <span id="cb141-2143"><a href="#cb141-2143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2144"><a href="#cb141-2144" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>When there is a perfect fit (all of the points lie on the fitted regression line) $\Longrightarrow$ $SSE = 0$ and $R^2 = 1$.</span>
+<span id="cb141-2144"><a href="#cb141-2144" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>When the fitted regression line is horizontal ($\hat{\beta}_1 = 0$ and $\hat{Y_i} = \bar{Y}$) $\Longrightarrow$ $SSE = SSTO$ and $R^2 = 0$.</span>
 <span id="cb141-2145"><a href="#cb141-2145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2146"><a href="#cb141-2146" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>In practice, unlikely to be exactly equal to either of these. Also note that context of data (scientific field of the application) has a big impact on general values of $R^2$ and consequently what is interpreted as "strong".</span>
+<span id="cb141-2146"><a href="#cb141-2146" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>When there is a perfect fit (all of the points lie on the fitted regression line) $\Longrightarrow$ $SSE = 0$ and $R^2 = 1$.</span>
 <span id="cb141-2147"><a href="#cb141-2147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2148"><a href="#cb141-2148" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>If $R^2$ is small, we can consider adding other independent variables that can explain a significant portion of the remaining unexplained variability in the model.</span>
+<span id="cb141-2148"><a href="#cb141-2148" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>In practice, unlikely to be exactly equal to either of these. Also note that context of data (scientific field of the application) has a big impact on general values of $R^2$ and consequently what is interpreted as "strong".</span>
 <span id="cb141-2149"><a href="#cb141-2149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2150"><a href="#cb141-2150" aria-hidden="true" tabindex="-1"></a>Limitations of $R^2$</span>
+<span id="cb141-2150"><a href="#cb141-2150" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>If $R^2$ is small, we can consider adding other independent variables that can explain a significant portion of the remaining unexplained variability in the model.</span>
 <span id="cb141-2151"><a href="#cb141-2151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2152"><a href="#cb141-2152" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Usefulness in prediction → A high coefficient of determination does not necessarily indicate that useful (precise) predictions can be made.</span>
+<span id="cb141-2152"><a href="#cb141-2152" aria-hidden="true" tabindex="-1"></a>Limitations of $R^2$</span>
 <span id="cb141-2153"><a href="#cb141-2153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2154"><a href="#cb141-2154" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This is because $R^2$ measures only a relative reduction from $SSTO$ and provides no information about absolute precision for estimating a mean response or predicting a new observation.</span>
+<span id="cb141-2154"><a href="#cb141-2154" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Usefulness in prediction → A high coefficient of determination does not necessarily indicate that useful (precise) predictions can be made.</span>
 <span id="cb141-2155"><a href="#cb141-2155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2156"><a href="#cb141-2156" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Quality of fit → A high coefficient of determination does not necessarily indicate that the estimated regression line is a good fit and similarly an $R^2$ near zero does not necessarily indicate that $Y$ and $X$ are not related.</span>
+<span id="cb141-2156"><a href="#cb141-2156" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This is because $R^2$ measures only a relative reduction from $SSTO$ and provides no information about absolute precision for estimating a mean response or predicting a new observation.</span>
 <span id="cb141-2157"><a href="#cb141-2157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2158"><a href="#cb141-2158" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This is because $R^2$ measures the degree of *linear* association between $Y$ and $X$, whereas the actual regression relation may be curvilinear. So make sure to look at the scatterplot.</span>
+<span id="cb141-2158"><a href="#cb141-2158" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Quality of fit → A high coefficient of determination does not necessarily indicate that the estimated regression line is a good fit and similarly an $R^2$ near zero does not necessarily indicate that $Y$ and $X$ are not related.</span>
 <span id="cb141-2159"><a href="#cb141-2159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2160"><a href="#cb141-2160" aria-hidden="true" tabindex="-1"></a><span class="al">![](files/images/r2-limitations.png)</span>{width="50%"}</span>
+<span id="cb141-2160"><a href="#cb141-2160" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>This is because $R^2$ measures the degree of *linear* association between $Y$ and $X$, whereas the actual regression relation may be curvilinear. So make sure to look at the scatterplot.</span>
 <span id="cb141-2161"><a href="#cb141-2161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2162"><a href="#cb141-2162" aria-hidden="true" tabindex="-1"></a>Inflating $R^2$</span>
+<span id="cb141-2162"><a href="#cb141-2162" aria-hidden="true" tabindex="-1"></a><span class="al">![](files/images/r2-limitations.png)</span>{width="50%"}</span>
 <span id="cb141-2163"><a href="#cb141-2163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2164"><a href="#cb141-2164" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$X$ level spacing → The value taken by $R^2$ in a given sample tends to be affected by the spacing of the $X$ observations: Wider spacing in $X_i$ $\Longrightarrow$ higher $R^2$. Here's why:</span>
+<span id="cb141-2164"><a href="#cb141-2164" aria-hidden="true" tabindex="-1"></a>Inflating $R^2$</span>
 <span id="cb141-2165"><a href="#cb141-2165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2166"><a href="#cb141-2166" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Wider spacing (larger spread) in $X_i$ in the sample when $\hat{\beta}_1 \ne 0$ $\Longrightarrow$ larger spread of the observed $Y_i$ around $\bar{Y}$ $\Longrightarrow$ Larger $SSTO$.</span>
+<span id="cb141-2166"><a href="#cb141-2166" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$X$ level spacing → The value taken by $R^2$ in a given sample tends to be affected by the spacing of the $X$ observations: Wider spacing in $X_i$ $\Longrightarrow$ higher $R^2$. Here's why:</span>
 <span id="cb141-2167"><a href="#cb141-2167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2168"><a href="#cb141-2168" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>And since $SSE$ is unaffected ($V(Y_i) = \sigma^2$ for all $X_i$), $SSR$ has to increase. Then we can see from either representation $R_2 = SSR/ SSTO = 1 - SSE / SSTO$, that $R^2$ will increase.</span>
+<span id="cb141-2168"><a href="#cb141-2168" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Wider spacing (larger spread) in $X_i$ in the sample when $\hat{\beta}_1 \ne 0$ $\Longrightarrow$ larger spread of the observed $Y_i$ around $\bar{Y}$ $\Longrightarrow$ Larger $SSTO$.</span>
 <span id="cb141-2169"><a href="#cb141-2169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2170"><a href="#cb141-2170" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Overfitting → $R^2$ can be artificially inflated by including additional model terms (adding extra predictors).</span>
+<span id="cb141-2170"><a href="#cb141-2170" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>And since $SSE$ is unaffected ($V(Y_i) = \sigma^2$ for all $X_i$), $SSR$ has to increase. Then we can see from either representation $R_2 = SSR/ SSTO = 1 - SSE / SSTO$, that $R^2$ will increase.</span>
 <span id="cb141-2171"><a href="#cb141-2171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2172"><a href="#cb141-2172" aria-hidden="true" tabindex="-1"></a><span class="ss">        -   </span>This is because $SSR$ always increases with more predictors, even if they are completely unrelated to the response variable.</span>
+<span id="cb141-2172"><a href="#cb141-2172" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Overfitting → $R^2$ can be artificially inflated by including additional model terms (adding extra predictors).</span>
 <span id="cb141-2173"><a href="#cb141-2173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2174"><a href="#cb141-2174" aria-hidden="true" tabindex="-1"></a><span class="ss">        -   </span>Later $R^2_{adj}$ will be discussed which corrects for the inclusion of extra predictors.</span>
+<span id="cb141-2174"><a href="#cb141-2174" aria-hidden="true" tabindex="-1"></a><span class="ss">        -   </span>This is because $SSR$ always increases with more predictors, even if they are completely unrelated to the response variable.</span>
 <span id="cb141-2175"><a href="#cb141-2175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2176"><a href="#cb141-2176" aria-hidden="true" tabindex="-1"></a>Demo</span>
+<span id="cb141-2176"><a href="#cb141-2176" aria-hidden="true" tabindex="-1"></a><span class="ss">        -   </span>Later $R^2_{adj}$ will be discussed which corrects for the inclusion of extra predictors.</span>
 <span id="cb141-2177"><a href="#cb141-2177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2178"><a href="#cb141-2178" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb141-2179"><a href="#cb141-2179" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R functions</span></span>
-<span id="cb141-2180"><a href="#cb141-2180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2183"><a href="#cb141-2183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb141-2184"><a href="#cb141-2184" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb141-2185"><a href="#cb141-2185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2186"><a href="#cb141-2186" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize items</span></span>
-<span id="cb141-2187"><a href="#cb141-2187" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; sample size, population parameters and error variance</span></span>
-<span id="cb141-2188"><a href="#cb141-2188" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span>; beta_0 <span class="ot">&lt;-</span> <span class="dv">2</span>; beta_1 <span class="ot">&lt;-</span> <span class="dv">5</span>; sigma <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb141-2189"><a href="#cb141-2189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2190"><a href="#cb141-2190" aria-hidden="true" tabindex="-1"></a><span class="co"># generate data</span></span>
-<span id="cb141-2191"><a href="#cb141-2191" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">5</span>, <span class="at">max =</span> <span class="dv">15</span>)</span>
-<span id="cb141-2192"><a href="#cb141-2192" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> x, <span class="at">sd =</span> sigma)</span>
-<span id="cb141-2193"><a href="#cb141-2193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2194"><a href="#cb141-2194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2195"><a href="#cb141-2195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2178"><a href="#cb141-2178" aria-hidden="true" tabindex="-1"></a>Demo</span>
+<span id="cb141-2179"><a href="#cb141-2179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2180"><a href="#cb141-2180" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb141-2181"><a href="#cb141-2181" aria-hidden="true" tabindex="-1"></a><span class="fu">#### R functions</span></span>
+<span id="cb141-2182"><a href="#cb141-2182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2185"><a href="#cb141-2185" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb141-2186"><a href="#cb141-2186" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb141-2187"><a href="#cb141-2187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2188"><a href="#cb141-2188" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize items</span></span>
+<span id="cb141-2189"><a href="#cb141-2189" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; sample size, population parameters and error variance</span></span>
+<span id="cb141-2190"><a href="#cb141-2190" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span>; beta_0 <span class="ot">&lt;-</span> <span class="dv">2</span>; beta_1 <span class="ot">&lt;-</span> <span class="dv">5</span>; sigma <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb141-2191"><a href="#cb141-2191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2192"><a href="#cb141-2192" aria-hidden="true" tabindex="-1"></a><span class="co"># generate data</span></span>
+<span id="cb141-2193"><a href="#cb141-2193" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">5</span>, <span class="at">max =</span> <span class="dv">15</span>)</span>
+<span id="cb141-2194"><a href="#cb141-2194" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> x, <span class="at">sd =</span> sigma)</span>
+<span id="cb141-2195"><a href="#cb141-2195" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb141-2196"><a href="#cb141-2196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2199"><a href="#cb141-2199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb141-2200"><a href="#cb141-2200" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb141-2201"><a href="#cb141-2201" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
-<span id="cb141-2202"><a href="#cb141-2202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2203"><a href="#cb141-2203" aria-hidden="true" tabindex="-1"></a><span class="co"># display summary</span></span>
-<span id="cb141-2204"><a href="#cb141-2204" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; looking for Multiple R-squared</span></span>
-<span id="cb141-2205"><a href="#cb141-2205" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span>
-<span id="cb141-2206"><a href="#cb141-2206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2207"><a href="#cb141-2207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2197"><a href="#cb141-2197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2198"><a href="#cb141-2198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2201"><a href="#cb141-2201" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb141-2202"><a href="#cb141-2202" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb141-2203"><a href="#cb141-2203" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb141-2204"><a href="#cb141-2204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2205"><a href="#cb141-2205" aria-hidden="true" tabindex="-1"></a><span class="co"># display summary</span></span>
+<span id="cb141-2206"><a href="#cb141-2206" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; looking for Multiple R-squared</span></span>
+<span id="cb141-2207"><a href="#cb141-2207" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span>
 <span id="cb141-2208"><a href="#cb141-2208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2211"><a href="#cb141-2211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb141-2212"><a href="#cb141-2212" aria-hidden="true" tabindex="-1"></a><span class="co">#| class.source = "fold-hide"</span></span>
-<span id="cb141-2213"><a href="#cb141-2213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2214"><a href="#cb141-2214" aria-hidden="true" tabindex="-1"></a><span class="co"># plot x and y with regression line</span></span>
-<span id="cb141-2215"><a href="#cb141-2215" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; add annotation for R^2 value</span></span>
-<span id="cb141-2216"><a href="#cb141-2216" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
-<span id="cb141-2217"><a href="#cb141-2217" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(mod, <span class="at">col =</span> <span class="st">"red"</span>)</span>
-<span id="cb141-2218"><a href="#cb141-2218" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x =</span> <span class="dv">14</span>, <span class="at">y =</span> <span class="dv">30</span>, <span class="at">labels =</span> <span class="fu">bquote</span>(R<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="st">" = "</span> <span class="sc">*</span> .(<span class="fu">round</span>(<span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared,<span class="dv">3</span>))), <span class="at">col =</span> <span class="st">"red"</span>)</span>
-<span id="cb141-2219"><a href="#cb141-2219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2220"><a href="#cb141-2220" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2209"><a href="#cb141-2209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2210"><a href="#cb141-2210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2213"><a href="#cb141-2213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb141-2214"><a href="#cb141-2214" aria-hidden="true" tabindex="-1"></a><span class="co">#| class.source = "fold-hide"</span></span>
+<span id="cb141-2215"><a href="#cb141-2215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2216"><a href="#cb141-2216" aria-hidden="true" tabindex="-1"></a><span class="co"># plot x and y with regression line</span></span>
+<span id="cb141-2217"><a href="#cb141-2217" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; add annotation for R^2 value</span></span>
+<span id="cb141-2218"><a href="#cb141-2218" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb141-2219"><a href="#cb141-2219" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(mod, <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb141-2220"><a href="#cb141-2220" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x =</span> <span class="dv">14</span>, <span class="at">y =</span> <span class="dv">30</span>, <span class="at">labels =</span> <span class="fu">bquote</span>(R<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="st">" = "</span> <span class="sc">*</span> .(<span class="fu">round</span>(<span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared,<span class="dv">3</span>))), <span class="at">col =</span> <span class="st">"red"</span>)</span>
 <span id="cb141-2221"><a href="#cb141-2221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2222"><a href="#cb141-2222" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Manual</span></span>
+<span id="cb141-2222"><a href="#cb141-2222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb141-2223"><a href="#cb141-2223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2226"><a href="#cb141-2226" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb141-2227"><a href="#cb141-2227" aria-hidden="true" tabindex="-1"></a><span class="co"># get anova table for model</span></span>
-<span id="cb141-2228"><a href="#cb141-2228" aria-hidden="true" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">anova</span>(mod)</span>
-<span id="cb141-2229"><a href="#cb141-2229" aria-hidden="true" tabindex="-1"></a><span class="fu">as.matrix</span>(at)</span>
-<span id="cb141-2230"><a href="#cb141-2230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2231"><a href="#cb141-2231" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate R^2 from sums of squares from anova table</span></span>
-<span id="cb141-2232"><a href="#cb141-2232" aria-hidden="true" tabindex="-1"></a><span class="co"># R^2 = SSR / SSTO = SSR / (SSR + SSE) = 1 - SSE / SSTO</span></span>
-<span id="cb141-2233"><a href="#cb141-2233" aria-hidden="true" tabindex="-1"></a>ssr <span class="ot">&lt;-</span> at[<span class="st">"x"</span>, <span class="st">"Sum Sq"</span>]</span>
-<span id="cb141-2234"><a href="#cb141-2234" aria-hidden="true" tabindex="-1"></a>sse <span class="ot">&lt;-</span> at[<span class="st">"Residuals"</span>, <span class="st">"Sum Sq"</span>]</span>
-<span id="cb141-2235"><a href="#cb141-2235" aria-hidden="true" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> ssr <span class="sc">/</span> (ssr <span class="sc">+</span> sse)</span>
-<span id="cb141-2236"><a href="#cb141-2236" aria-hidden="true" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> sse <span class="sc">/</span> (ssr <span class="sc">+</span> sse)</span>
-<span id="cb141-2237"><a href="#cb141-2237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2238"><a href="#cb141-2238" aria-hidden="true" tabindex="-1"></a><span class="co"># compare results from summary(lm())</span></span>
-<span id="cb141-2239"><a href="#cb141-2239" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(<span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared, r_squared)</span>
-<span id="cb141-2240"><a href="#cb141-2240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2241"><a href="#cb141-2241" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2224"><a href="#cb141-2224" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Manual</span></span>
+<span id="cb141-2225"><a href="#cb141-2225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2228"><a href="#cb141-2228" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb141-2229"><a href="#cb141-2229" aria-hidden="true" tabindex="-1"></a><span class="co"># get anova table for model</span></span>
+<span id="cb141-2230"><a href="#cb141-2230" aria-hidden="true" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">anova</span>(mod)</span>
+<span id="cb141-2231"><a href="#cb141-2231" aria-hidden="true" tabindex="-1"></a><span class="fu">as.matrix</span>(at)</span>
+<span id="cb141-2232"><a href="#cb141-2232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2233"><a href="#cb141-2233" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate R^2 from sums of squares from anova table</span></span>
+<span id="cb141-2234"><a href="#cb141-2234" aria-hidden="true" tabindex="-1"></a><span class="co"># R^2 = SSR / SSTO = SSR / (SSR + SSE) = 1 - SSE / SSTO</span></span>
+<span id="cb141-2235"><a href="#cb141-2235" aria-hidden="true" tabindex="-1"></a>ssr <span class="ot">&lt;-</span> at[<span class="st">"x"</span>, <span class="st">"Sum Sq"</span>]</span>
+<span id="cb141-2236"><a href="#cb141-2236" aria-hidden="true" tabindex="-1"></a>sse <span class="ot">&lt;-</span> at[<span class="st">"Residuals"</span>, <span class="st">"Sum Sq"</span>]</span>
+<span id="cb141-2237"><a href="#cb141-2237" aria-hidden="true" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> ssr <span class="sc">/</span> (ssr <span class="sc">+</span> sse)</span>
+<span id="cb141-2238"><a href="#cb141-2238" aria-hidden="true" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> sse <span class="sc">/</span> (ssr <span class="sc">+</span> sse)</span>
+<span id="cb141-2239"><a href="#cb141-2239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2240"><a href="#cb141-2240" aria-hidden="true" tabindex="-1"></a><span class="co"># compare results from summary(lm())</span></span>
+<span id="cb141-2241"><a href="#cb141-2241" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(<span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared, r_squared)</span>
 <span id="cb141-2242"><a href="#cb141-2242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2243"><a href="#cb141-2243" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Properties</span></span>
+<span id="cb141-2243"><a href="#cb141-2243" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb141-2244"><a href="#cb141-2244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2247"><a href="#cb141-2247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb141-2248"><a href="#cb141-2248" aria-hidden="true" tabindex="-1"></a><span class="co"># demo to show how more spacing of X levels increases R^2 value</span></span>
-<span id="cb141-2249"><a href="#cb141-2249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2250"><a href="#cb141-2250" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize items</span></span>
-<span id="cb141-2251"><a href="#cb141-2251" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; sample size, population parameters and error variance</span></span>
-<span id="cb141-2252"><a href="#cb141-2252" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span>; beta_0 <span class="ot">&lt;-</span> <span class="dv">2</span>; beta_1 <span class="ot">&lt;-</span> <span class="dv">3</span>; sigma <span class="ot">&lt;-</span> <span class="dv">5</span> </span>
-<span id="cb141-2253"><a href="#cb141-2253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2254"><a href="#cb141-2254" aria-hidden="true" tabindex="-1"></a><span class="co"># generate two datasets</span></span>
-<span id="cb141-2255"><a href="#cb141-2255" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; generate common error terms, so the only difference is the spacing of the X levels</span></span>
-<span id="cb141-2256"><a href="#cb141-2256" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; generate two X vectors, one with larger spread of X values</span></span>
-<span id="cb141-2257"><a href="#cb141-2257" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; calculate Y</span></span>
-<span id="cb141-2258"><a href="#cb141-2258" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; add indicator for spread and then combine into one dataframe</span></span>
-<span id="cb141-2259"><a href="#cb141-2259" aria-hidden="true" tabindex="-1"></a>epsilon <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)</span>
-<span id="cb141-2260"><a href="#cb141-2260" aria-hidden="true" tabindex="-1"></a>data_samples <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">8</span>, <span class="at">max =</span> <span class="dv">12</span>),</span>
-<span id="cb141-2261"><a href="#cb141-2261" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">2</span>, <span class="at">max =</span> <span class="dv">16</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2262"><a href="#cb141-2262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(\(x) <span class="fu">data.frame</span>(<span class="at">x =</span> x,</span>
-<span id="cb141-2263"><a href="#cb141-2263" aria-hidden="true" tabindex="-1"></a>                      <span class="at">y =</span> beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> x <span class="sc">+</span> epsilon)) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2264"><a href="#cb141-2264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"smaller"</span>, <span class="st">"larger"</span>), \(df, spread) <span class="fu">mutate</span>(df, <span class="at">spread =</span> spread)) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2265"><a href="#cb141-2265" aria-hidden="true" tabindex="-1"></a>  bind_rows</span>
-<span id="cb141-2266"><a href="#cb141-2266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2267"><a href="#cb141-2267" aria-hidden="true" tabindex="-1"></a><span class="co"># confirm same error terms</span></span>
-<span id="cb141-2268"><a href="#cb141-2268" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; calculate epsilon as Y - E(Y) and then add observation number column to sort by</span></span>
-<span id="cb141-2269"><a href="#cb141-2269" aria-hidden="true" tabindex="-1"></a>data_samples <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2270"><a href="#cb141-2270" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">epsilon =</span> y <span class="sc">-</span> (beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> x)) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2271"><a href="#cb141-2271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">observation =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">.by =</span> spread) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2272"><a href="#cb141-2272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(observation) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2273"><a href="#cb141-2273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">6</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2274"><a href="#cb141-2274" aria-hidden="true" tabindex="-1"></a>  display_nice</span>
-<span id="cb141-2275"><a href="#cb141-2275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2276"><a href="#cb141-2276" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate R^2 for each spread dataset</span></span>
-<span id="cb141-2277"><a href="#cb141-2277" aria-hidden="true" tabindex="-1"></a>data_samples <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2278"><a href="#cb141-2278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>spread) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2279"><a href="#cb141-2279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(\(df) <span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> df))<span class="sc">$</span>r.squared) <span class="sc">%&gt;%</span> </span>
-<span id="cb141-2280"><a href="#cb141-2280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">3</span>)</span>
-<span id="cb141-2281"><a href="#cb141-2281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2282"><a href="#cb141-2282" aria-hidden="true" tabindex="-1"></a><span class="co"># create plot of both sets of points and regression line</span></span>
-<span id="cb141-2283"><a href="#cb141-2283" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; add reference line for Y-bar for each dataset (to show how SSTO is calculated)</span></span>
-<span id="cb141-2284"><a href="#cb141-2284" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x,</span>
-<span id="cb141-2285"><a href="#cb141-2285" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> y,</span>
-<span id="cb141-2286"><a href="#cb141-2286" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> spread),</span>
-<span id="cb141-2287"><a href="#cb141-2287" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> data_samples) <span class="sc">+</span> </span>
-<span id="cb141-2288"><a href="#cb141-2288" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb141-2289"><a href="#cb141-2289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
-<span id="cb141-2290"><a href="#cb141-2290" aria-hidden="true" tabindex="-1"></a>              <span class="at">formula =</span> y <span class="sc">~</span> x,</span>
-<span id="cb141-2291"><a href="#cb141-2291" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb141-2292"><a href="#cb141-2292" aria-hidden="true" tabindex="-1"></a>              <span class="at">fullrange =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
-<span id="cb141-2293"><a href="#cb141-2293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="fu">aes</span>(<span class="at">yintercept =</span> y_bar,</span>
-<span id="cb141-2294"><a href="#cb141-2294" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color =</span> spread),</span>
-<span id="cb141-2295"><a href="#cb141-2295" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> <span class="fu">summarize</span>(data_samples, <span class="at">y_bar =</span> <span class="fu">mean</span>(y), <span class="at">.by =</span> spread),</span>
-<span id="cb141-2296"><a href="#cb141-2296" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span>
-<span id="cb141-2297"><a href="#cb141-2297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2298"><a href="#cb141-2298" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb141-2299"><a href="#cb141-2299" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb141-2300"><a href="#cb141-2300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2301"><a href="#cb141-2301" aria-hidden="true" tabindex="-1"></a><span class="fu">### Coefficient of correlation</span></span>
+<span id="cb141-2245"><a href="#cb141-2245" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Properties</span></span>
+<span id="cb141-2246"><a href="#cb141-2246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2249"><a href="#cb141-2249" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb141-2250"><a href="#cb141-2250" aria-hidden="true" tabindex="-1"></a><span class="co"># demo to show how more spacing of X levels increases R^2 value</span></span>
+<span id="cb141-2251"><a href="#cb141-2251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2252"><a href="#cb141-2252" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize items</span></span>
+<span id="cb141-2253"><a href="#cb141-2253" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; sample size, population parameters and error variance</span></span>
+<span id="cb141-2254"><a href="#cb141-2254" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span>; beta_0 <span class="ot">&lt;-</span> <span class="dv">2</span>; beta_1 <span class="ot">&lt;-</span> <span class="dv">3</span>; sigma <span class="ot">&lt;-</span> <span class="dv">5</span> </span>
+<span id="cb141-2255"><a href="#cb141-2255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2256"><a href="#cb141-2256" aria-hidden="true" tabindex="-1"></a><span class="co"># generate two datasets</span></span>
+<span id="cb141-2257"><a href="#cb141-2257" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; generate common error terms, so the only difference is the spacing of the X levels</span></span>
+<span id="cb141-2258"><a href="#cb141-2258" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; generate two X vectors, one with larger spread of X values</span></span>
+<span id="cb141-2259"><a href="#cb141-2259" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; calculate Y</span></span>
+<span id="cb141-2260"><a href="#cb141-2260" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; add indicator for spread and then combine into one dataframe</span></span>
+<span id="cb141-2261"><a href="#cb141-2261" aria-hidden="true" tabindex="-1"></a>epsilon <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)</span>
+<span id="cb141-2262"><a href="#cb141-2262" aria-hidden="true" tabindex="-1"></a>data_samples <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">8</span>, <span class="at">max =</span> <span class="dv">12</span>),</span>
+<span id="cb141-2263"><a href="#cb141-2263" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">runif</span>(<span class="at">n =</span> n, <span class="at">min =</span> <span class="dv">2</span>, <span class="at">max =</span> <span class="dv">16</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2264"><a href="#cb141-2264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(\(x) <span class="fu">data.frame</span>(<span class="at">x =</span> x,</span>
+<span id="cb141-2265"><a href="#cb141-2265" aria-hidden="true" tabindex="-1"></a>                      <span class="at">y =</span> beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> x <span class="sc">+</span> epsilon)) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2266"><a href="#cb141-2266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"smaller"</span>, <span class="st">"larger"</span>), \(df, spread) <span class="fu">mutate</span>(df, <span class="at">spread =</span> spread)) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2267"><a href="#cb141-2267" aria-hidden="true" tabindex="-1"></a>  bind_rows</span>
+<span id="cb141-2268"><a href="#cb141-2268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2269"><a href="#cb141-2269" aria-hidden="true" tabindex="-1"></a><span class="co"># confirm same error terms</span></span>
+<span id="cb141-2270"><a href="#cb141-2270" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; calculate epsilon as Y - E(Y) and then add observation number column to sort by</span></span>
+<span id="cb141-2271"><a href="#cb141-2271" aria-hidden="true" tabindex="-1"></a>data_samples <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2272"><a href="#cb141-2272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">epsilon =</span> y <span class="sc">-</span> (beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> x)) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2273"><a href="#cb141-2273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">observation =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">.by =</span> spread) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2274"><a href="#cb141-2274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(observation) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2275"><a href="#cb141-2275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">6</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2276"><a href="#cb141-2276" aria-hidden="true" tabindex="-1"></a>  display_nice</span>
+<span id="cb141-2277"><a href="#cb141-2277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2278"><a href="#cb141-2278" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate R^2 for each spread dataset</span></span>
+<span id="cb141-2279"><a href="#cb141-2279" aria-hidden="true" tabindex="-1"></a>data_samples <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2280"><a href="#cb141-2280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>spread) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2281"><a href="#cb141-2281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(\(df) <span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> df))<span class="sc">$</span>r.squared) <span class="sc">%&gt;%</span> </span>
+<span id="cb141-2282"><a href="#cb141-2282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb141-2283"><a href="#cb141-2283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2284"><a href="#cb141-2284" aria-hidden="true" tabindex="-1"></a><span class="co"># create plot of both sets of points and regression line</span></span>
+<span id="cb141-2285"><a href="#cb141-2285" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; add reference line for Y-bar for each dataset (to show how SSTO is calculated)</span></span>
+<span id="cb141-2286"><a href="#cb141-2286" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x,</span>
+<span id="cb141-2287"><a href="#cb141-2287" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> y,</span>
+<span id="cb141-2288"><a href="#cb141-2288" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> spread),</span>
+<span id="cb141-2289"><a href="#cb141-2289" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> data_samples) <span class="sc">+</span> </span>
+<span id="cb141-2290"><a href="#cb141-2290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb141-2291"><a href="#cb141-2291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb141-2292"><a href="#cb141-2292" aria-hidden="true" tabindex="-1"></a>              <span class="at">formula =</span> y <span class="sc">~</span> x,</span>
+<span id="cb141-2293"><a href="#cb141-2293" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb141-2294"><a href="#cb141-2294" aria-hidden="true" tabindex="-1"></a>              <span class="at">fullrange =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb141-2295"><a href="#cb141-2295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="fu">aes</span>(<span class="at">yintercept =</span> y_bar,</span>
+<span id="cb141-2296"><a href="#cb141-2296" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color =</span> spread),</span>
+<span id="cb141-2297"><a href="#cb141-2297" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> <span class="fu">summarize</span>(data_samples, <span class="at">y_bar =</span> <span class="fu">mean</span>(y), <span class="at">.by =</span> spread),</span>
+<span id="cb141-2298"><a href="#cb141-2298" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span>
+<span id="cb141-2299"><a href="#cb141-2299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2300"><a href="#cb141-2300" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2301"><a href="#cb141-2301" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb141-2302"><a href="#cb141-2302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2303"><a href="#cb141-2303" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A measure of linear association between $Y$ and $X$ when both $Y$ and $X$ are *random* is the coefficient of correlation. This is the signed square root of $R^2$:</span>
+<span id="cb141-2303"><a href="#cb141-2303" aria-hidden="true" tabindex="-1"></a><span class="fu">### Coefficient of correlation</span></span>
 <span id="cb141-2304"><a href="#cb141-2304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2305"><a href="#cb141-2305" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb141-2306"><a href="#cb141-2306" aria-hidden="true" tabindex="-1"></a>r = \pm \sqrt{R^2}</span>
+<span id="cb141-2305"><a href="#cb141-2305" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A measure of linear association between $Y$ and $X$ when both $Y$ and $X$ are *random* is the coefficient of correlation. This is the signed square root of $R^2$:</span>
+<span id="cb141-2306"><a href="#cb141-2306" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb141-2307"><a href="#cb141-2307" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb141-2308"><a href="#cb141-2308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2309"><a href="#cb141-2309" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A plus or minus sign is attached to this measure according to whether the slope of the fitted regression line is positive or negative. Thus, $-1 \le r \le 1$.</span>
+<span id="cb141-2308"><a href="#cb141-2308" aria-hidden="true" tabindex="-1"></a>r = \pm \sqrt{R^2}</span>
+<span id="cb141-2309"><a href="#cb141-2309" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb141-2310"><a href="#cb141-2310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2311"><a href="#cb141-2311" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>ONLY in SLR can the coefficient of determination $R^2$ be computed as the square of the correlation coefficient $r^2$.</span>
+<span id="cb141-2311"><a href="#cb141-2311" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>A plus or minus sign is attached to this measure according to whether the slope of the fitted regression line is positive or negative. Thus, $-1 \le r \le 1$.</span>
 <span id="cb141-2312"><a href="#cb141-2312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2315"><a href="#cb141-2315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb141-2316"><a href="#cb141-2316" aria-hidden="true" tabindex="-1"></a><span class="co"># continuing previous example</span></span>
-<span id="cb141-2317"><a href="#cb141-2317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2318"><a href="#cb141-2318" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate correlation</span></span>
-<span id="cb141-2319"><a href="#cb141-2319" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">cor</span>(x, y)</span>
-<span id="cb141-2320"><a href="#cb141-2320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2321"><a href="#cb141-2321" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to squared-correlation to R^2</span></span>
-<span id="cb141-2322"><a href="#cb141-2322" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(<span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared, r<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb141-2323"><a href="#cb141-2323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2324"><a href="#cb141-2324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb141-2313"><a href="#cb141-2313" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>ONLY in SLR can the coefficient of determination $R^2$ be computed as the square of the correlation coefficient $r^2$.</span>
+<span id="cb141-2314"><a href="#cb141-2314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2317"><a href="#cb141-2317" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb141-2318"><a href="#cb141-2318" aria-hidden="true" tabindex="-1"></a><span class="co"># continuing previous example</span></span>
+<span id="cb141-2319"><a href="#cb141-2319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2320"><a href="#cb141-2320" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate correlation</span></span>
+<span id="cb141-2321"><a href="#cb141-2321" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">cor</span>(x, y)</span>
+<span id="cb141-2322"><a href="#cb141-2322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2323"><a href="#cb141-2323" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to squared-correlation to R^2</span></span>
+<span id="cb141-2324"><a href="#cb141-2324" aria-hidden="true" tabindex="-1"></a><span class="fu">compare</span>(<span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared, r<span class="sc">^</span><span class="dv">2</span>)</span>
 <span id="cb141-2325"><a href="#cb141-2325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2326"><a href="#cb141-2326" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Note → Regression models do not contain a parameter to be estimated by $R^2$ or $r$. These are simply *descriptive measures* of the *degree of linear association* between $Y$ and $X$ in the sample observations that *may, or may not, be useful* in any instance.</span>
+<span id="cb141-2326"><a href="#cb141-2326" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb141-2327"><a href="#cb141-2327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2328"><a href="#cb141-2328" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- come back and add math 321 stuff about correlation? like the formula?? --&gt;</span></span>
+<span id="cb141-2328"><a href="#cb141-2328" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Note → Regression models do not contain a parameter to be estimated by $R^2$ or $r$. These are simply *descriptive measures* of the *degree of linear association* between $Y$ and $X$ in the sample observations that *may, or may not, be useful* in any instance.</span>
 <span id="cb141-2329"><a href="#cb141-2329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2330"><a href="#cb141-2330" aria-hidden="true" tabindex="-1"></a><span class="fu">## Considerations in applying regression analysis</span></span>
+<span id="cb141-2330"><a href="#cb141-2330" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- come back and add math 321 stuff about correlation? like the formula?? --&gt;</span></span>
 <span id="cb141-2331"><a href="#cb141-2331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2332"><a href="#cb141-2332" aria-hidden="true" tabindex="-1"></a>Reminders when implementing regression models</span>
+<span id="cb141-2332"><a href="#cb141-2332" aria-hidden="true" tabindex="-1"></a><span class="fu">## Considerations in applying regression analysis</span></span>
 <span id="cb141-2333"><a href="#cb141-2333" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2334"><a href="#cb141-2334" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Frequently, regression analysis is used to make inferences for the future (e.g. a school board wants to predict future enrollments by using a regression model containing several demographic variables as predictor variables). In these situations, the validity of the regression application depends on whether basic conditions in the future will be similar to those at the time the regression analysis is based on.</span>
+<span id="cb141-2334"><a href="#cb141-2334" aria-hidden="true" tabindex="-1"></a>Reminders when implementing regression models</span>
 <span id="cb141-2335"><a href="#cb141-2335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2336"><a href="#cb141-2336" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>In predicting new observations on $Y$, the predictor variable $X$ itself often has to be predicted. Therefore, predictions are dependent upon the correctness of the population projection (i.e. they are conditional predictions).</span>
+<span id="cb141-2336"><a href="#cb141-2336" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Frequently, regression analysis is used to make inferences for the future (e.g. a school board wants to predict future enrollments by using a regression model containing several demographic variables as predictor variables). In these situations, the validity of the regression application depends on whether basic conditions in the future will be similar to those at the time the regression analysis is based on.</span>
 <span id="cb141-2337"><a href="#cb141-2337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2338"><a href="#cb141-2338" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Be careful of extrapolation. We cannot be sure that the regression function that fits the past data is appropriate over a wider range of the predictor variable.</span>
+<span id="cb141-2338"><a href="#cb141-2338" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>In predicting new observations on $Y$, the predictor variable $X$ itself often has to be predicted. Therefore, predictions are dependent upon the correctness of the population projection (i.e. they are conditional predictions).</span>
 <span id="cb141-2339"><a href="#cb141-2339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2340"><a href="#cb141-2340" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>A statistical test that concludes $\beta_1 \ne 0$ does not establish a cause-and-effect relation between the predictor and response variables. With nonexperimental data, both the $X$ and $Y$ variables may be simultaneously influenced by other variables not in the regression model. On the other hand, the existence of a regression relation in controlled experiments is often good evidence of a cause-and-effect relation.</span>
+<span id="cb141-2340"><a href="#cb141-2340" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Be careful of extrapolation. We cannot be sure that the regression function that fits the past data is appropriate over a wider range of the predictor variable.</span>
 <span id="cb141-2341"><a href="#cb141-2341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2342"><a href="#cb141-2342" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>We frequently wish to estimate several mean responses or predict several new observations for different levels of the predictor variable; this causes some special problems to arise. The confidence coefficients for the limits for estimating a mean response and for the prediction limits for a new observation only for a *single level* of $X$ for a given sample.</span>
+<span id="cb141-2342"><a href="#cb141-2342" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>A statistical test that concludes $\beta_1 \ne 0$ does not establish a cause-and-effect relation between the predictor and response variables. With nonexperimental data, both the $X$ and $Y$ variables may be simultaneously influenced by other variables not in the regression model. On the other hand, the existence of a regression relation in controlled experiments is often good evidence of a cause-and-effect relation.</span>
 <span id="cb141-2343"><a href="#cb141-2343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2344"><a href="#cb141-2344" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>When observations on the predictor variable $X$ are subject to measurement errors, the resulting parameter estimates are generally no longer unbiased.</span>
+<span id="cb141-2344"><a href="#cb141-2344" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>We frequently wish to estimate several mean responses or predict several new observations for different levels of the predictor variable; this causes some special problems to arise. The confidence coefficients for the limits for estimating a mean response and for the prediction limits for a new observation only for a *single level* of $X$ for a given sample.</span>
 <span id="cb141-2345"><a href="#cb141-2345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb141-2346"><a href="#cb141-2346" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- skipping 2.1 normal correlation models, definitely want to come back to this --&gt;</span></span>
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb141-2346"><a href="#cb141-2346" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>When observations on the predictor variable $X$ are subject to measurement errors, the resulting parameter estimates are generally no longer unbiased.</span>
+<span id="cb141-2347"><a href="#cb141-2347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-2348"><a href="#cb141-2348" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- skipping 2.1 normal correlation models, definitely want to come back to this --&gt;</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

@@ -1357,7 +1357,7 @@ Overview
 
 -   Small departures from normality do not create any serious problems, but major departures should be of concern.
 
--   We can check the normality of error terms in a variety of errors:
+-   We can check the normality of error terms in a variety of ways:
 
 1.  *Distribution plots of residuals* → This is one of the two preferred plots.
 

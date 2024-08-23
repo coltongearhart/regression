@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.517">
+<meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Regression - 1&nbsp; Simple linear regression</title>
+<title>1&nbsp; Simple linear regression – Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -91,29 +91,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script><script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 </head>
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-slr.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple linear regression</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-slr.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple linear regression</span></a></li></ol></nav><div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
+  </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1-slr.html">Simple linear regression</a></li><li class="breadcrumb-item"><a href="./notes-slr.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple linear regression</span></a></li></ol></nav>
       <div class="quarto-title-block"><div><h1 class="title"><span id="sec-slr" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple linear regression</span></span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
                       </div>
   </div>
@@ -151,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="./part1-slr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Simple linear regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -186,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="sidebar-item-container"> 
             <a href="./part2-mlr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Multiple linear regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -206,7 +232,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./notes-reg-models-quan-and-qual.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quanititative and qualitative predictors</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression models for quantitative and qualitative predictors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notes-building-reg-model-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Building the regression model 1 – Model selection and validation</span></span></a>
   </div>
 </li>
       </ul>
@@ -233,7 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li>
 <a href="#normal-error-regression-model" id="toc-normal-error-regression-model" class="nav-link" data-scroll-target="#normal-error-regression-model"><span class="header-section-number">1.3</span> Normal error regression model</a>
   <ul class="collapse">
-<li><a href="#estimation-of-paramters-by-method-of-maximum-likelihood" id="toc-estimation-of-paramters-by-method-of-maximum-likelihood" class="nav-link" data-scroll-target="#estimation-of-paramters-by-method-of-maximum-likelihood"><span class="header-section-number">1.3.1</span> Estimation of paramters by method of maximum likelihood</a></li>
+<li><a href="#estimation-of-parameters-by-method-of-maximum-likelihood" id="toc-estimation-of-parameters-by-method-of-maximum-likelihood" class="nav-link" data-scroll-target="#estimation-of-parameters-by-method-of-maximum-likelihood"><span class="header-section-number">1.3.1</span> Estimation of parameters by method of maximum likelihood</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -321,62 +353,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr>
 <td style="text-align:right;"> 10 </td>
    <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> -1.448 </td>
-   <td style="text-align:right;"> 11.552 </td>
+   <td style="text-align:right;"> 0.060 </td>
+   <td style="text-align:right;"> 13.060 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 11 </td>
    <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> -0.554 </td>
-   <td style="text-align:right;"> 13.446 </td>
+   <td style="text-align:right;"> -0.166 </td>
+   <td style="text-align:right;"> 13.834 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 12 </td>
    <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> -0.847 </td>
-   <td style="text-align:right;"> 14.153 </td>
+   <td style="text-align:right;"> 1.026 </td>
+   <td style="text-align:right;"> 16.026 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 13 </td>
    <td style="text-align:right;"> 16 </td>
-   <td style="text-align:right;"> -1.012 </td>
-   <td style="text-align:right;"> 14.988 </td>
+   <td style="text-align:right;"> -0.418 </td>
+   <td style="text-align:right;"> 15.582 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 14 </td>
    <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> -0.815 </td>
-   <td style="text-align:right;"> 16.185 </td>
+   <td style="text-align:right;"> 0.444 </td>
+   <td style="text-align:right;"> 17.444 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 15 </td>
    <td style="text-align:right;"> 18 </td>
-   <td style="text-align:right;"> 0.631 </td>
-   <td style="text-align:right;"> 18.631 </td>
+   <td style="text-align:right;"> -0.674 </td>
+   <td style="text-align:right;"> 17.326 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 16 </td>
    <td style="text-align:right;"> 19 </td>
-   <td style="text-align:right;"> 0.342 </td>
-   <td style="text-align:right;"> 19.342 </td>
+   <td style="text-align:right;"> 0.060 </td>
+   <td style="text-align:right;"> 19.060 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 17 </td>
    <td style="text-align:right;"> 20 </td>
-   <td style="text-align:right;"> -0.429 </td>
-   <td style="text-align:right;"> 19.571 </td>
+   <td style="text-align:right;"> -0.459 </td>
+   <td style="text-align:right;"> 19.541 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 18 </td>
    <td style="text-align:right;"> 21 </td>
-   <td style="text-align:right;"> 1.031 </td>
-   <td style="text-align:right;"> 22.031 </td>
+   <td style="text-align:right;"> 1.115 </td>
+   <td style="text-align:right;"> 22.115 </td>
   </tr>
 <tr>
 <td style="text-align:right;"> 19 </td>
    <td style="text-align:right;"> 22 </td>
-   <td style="text-align:right;"> -0.555 </td>
-   <td style="text-align:right;"> 21.445 </td>
+   <td style="text-align:right;"> 1.122 </td>
+   <td style="text-align:right;"> 23.122 </td>
   </tr>
 </tbody>
 </table>
@@ -734,44 +766,44 @@ Y_i = \beta_0^* + \beta_1 (X_i - \bar{X}) + \epsilon_i, \hspace{20pt} \text{wher
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:right;"> 11.367 </td>
-   <td style="text-align:right;"> 23.234 </td>
+<td style="text-align:right;"> 12.129 </td>
+   <td style="text-align:right;"> 25.509 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 13.246 </td>
-   <td style="text-align:right;"> 27.062 </td>
+<td style="text-align:right;"> 9.247 </td>
+   <td style="text-align:right;"> 20.865 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 12.346 </td>
-   <td style="text-align:right;"> 25.333 </td>
+<td style="text-align:right;"> 10.056 </td>
+   <td style="text-align:right;"> 20.220 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 12.985 </td>
-   <td style="text-align:right;"> 26.612 </td>
+<td style="text-align:right;"> 12.868 </td>
+   <td style="text-align:right;"> 26.668 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 10.938 </td>
-   <td style="text-align:right;"> 23.266 </td>
+<td style="text-align:right;"> 14.524 </td>
+   <td style="text-align:right;"> 29.393 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 14.847 </td>
-   <td style="text-align:right;"> 31.541 </td>
+<td style="text-align:right;"> 10.507 </td>
+   <td style="text-align:right;"> 21.917 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 12.451 </td>
-   <td style="text-align:right;"> 25.742 </td>
+<td style="text-align:right;"> 12.553 </td>
+   <td style="text-align:right;"> 26.681 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 8.614 </td>
-   <td style="text-align:right;"> 17.924 </td>
+<td style="text-align:right;"> 8.656 </td>
+   <td style="text-align:right;"> 16.594 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 9.579 </td>
-   <td style="text-align:right;"> 18.669 </td>
+<td style="text-align:right;"> 8.856 </td>
+   <td style="text-align:right;"> 20.582 </td>
   </tr>
 <tr>
-<td style="text-align:right;"> 9.545 </td>
-   <td style="text-align:right;"> 21.889 </td>
+<td style="text-align:right;"> 8.134 </td>
+   <td style="text-align:right;"> 18.072 </td>
   </tr>
 </tbody>
 </table>
@@ -819,7 +851,7 @@ Y_i = \beta_0^* + \beta_1 (X_i - \bar{X}) + \epsilon_i, \hspace{20pt} \text{wher
 <span><span class="va">mod_slr</span><span class="op">$</span><span class="va">coefficients</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)           x 
-  0.7509903   2.0290123 </code></pre>
+   1.204946    2.012605 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -847,11 +879,11 @@ Y_i = \beta_0^* + \beta_1 (X_i - \bar{X}) + \epsilon_i, \hspace{20pt} \text{wher
 [1] TRUE
 
 $`c(b_0, b_1)`
-[1] 0.7509903 2.0290123
+[1] 1.204946 2.012605
 
 $`mod_slr$coefficients`
 (Intercept)           x 
-  0.7509903   2.0290123 </code></pre>
+   1.204946    2.012605 </code></pre>
 </div>
 </div>
 </div>
@@ -922,7 +954,7 @@ $`mod_slr$coefficients`
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">mod_noint</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       x 
-2.045387 </code></pre>
+1.812708 </code></pre>
 </div>
 </div>
 </div>
@@ -939,11 +971,11 @@ $`mod_slr$coefficients`
 [1] TRUE
 
 $b
-[1] 2.045387
+[1] 1.812708
 
 $`coefficients(mod_noint)`
        x 
-2.045387 </code></pre>
+1.812708 </code></pre>
 </div>
 </div>
 </div>
@@ -1016,7 +1048,7 @@ $`coefficients(mod_noint)`
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">mod_noint_squared</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  I(x^2) 
-2.008449 </code></pre>
+2.007592 </code></pre>
 </div>
 </div>
 </div>
@@ -1033,11 +1065,11 @@ $`coefficients(mod_noint)`
 [1] TRUE
 
 $b
-[1] 2.008449
+[1] 2.007592
 
 $`coef(mod_noint_squared)`
   I(x^2) 
-2.008449 </code></pre>
+2.007592 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1061,22 +1093,22 @@ NULL
 
 
 $`head(mod_noint_squared$x)`
-         I(x^2)
-1  3.2613261950
-2  0.0009098129
-3  4.6901977653
-4  3.6330092713
-5 10.3932160806
-6  4.6224014348
+      I(x^2)
+1  3.7472761
+2 18.2974851
+3  0.2851931
+4 11.3135236
+5 13.5949756
+6  0.1439314
 
 $`head(mod_transformed$x)`
-         x_star
-1  3.2613261950
-2  0.0009098129
-3  4.6901977653
-4  3.6330092713
-5 10.3932160806
-6  4.6224014348</code></pre>
+      x_star
+1  3.7472761
+2 18.2974851
+3  0.2851931
+4 11.3135236
+5 13.5949756
+6  0.1439314</code></pre>
 </div>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># calculate estimates B using LSE formula</span></span>
 <span><span class="va">b_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x_star</span> <span class="op">*</span> <span class="va">y</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x_star</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
@@ -1088,10 +1120,10 @@ $`head(mod_transformed$x)`
 [1] TRUE
 
 $b
-[1] 2.008449
+[1] 2.007592
 
 $b_star
-[1] 2.008449</code></pre>
+[1] 2.007592</code></pre>
 </div>
 </div>
 </div>
@@ -1192,27 +1224,27 @@ lm(formula = y ~ x)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--1.75713 -1.13057  0.04077  0.97828  1.75537 
+-2.10557 -0.53713 -0.09689  0.86028  1.75137 
 
 Coefficients:
             Estimate Std. Error t value            Pr(&gt;|t|)    
-(Intercept)  0.86963    0.66358   1.311               0.201    
-x            2.03049    0.06961  29.168 &lt;0.0000000000000002 ***
+(Intercept)  0.26209    0.80390   0.326               0.747    
+x            2.08003    0.07968  26.105 &lt;0.0000000000000002 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 1.155 on 28 degrees of freedom
-Multiple R-squared:  0.9681,    Adjusted R-squared:  0.967 
-F-statistic: 850.8 on 1 and 28 DF,  p-value: &lt; 0.00000000000000022</code></pre>
+Residual standard error: 1.11 on 28 degrees of freedom
+Multiple R-squared:  0.9605,    Adjusted R-squared:  0.9591 
+F-statistic: 681.4 on 1 and 28 DF,  p-value: &lt; 0.00000000000000022</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># display S and MSE = S^2</span></span>
 <span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.155072</code></pre>
+<pre><code>[1] 1.110427</code></pre>
 </div>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span><span class="op">^</span><span class="fl">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.334192</code></pre>
+<pre><code>[1] 1.233049</code></pre>
 </div>
 </div>
 <p>These are estimates of population quantities for the error terms, and when simulating the data we assumed <span class="math inline">\(\epsilon_i \sim \text{Uniform}\,(a, b) \Longrightarrow \sigma^2 = V(\epsilon_i) = \frac{(b - a)^2}{12}\)</span>. For <span class="math inline">\(a\)</span> = -2 and <span class="math inline">\(b\)</span> = 2, <span class="math inline">\(V(\epsilon_i)\)</span> = 1.333.</p>
@@ -1254,10 +1286,10 @@ F-statistic: 850.8 on 1 and 28 DF,  p-value: &lt; 0.00000000000000022</code></pr
 [1] TRUE
 
 $`summ$sigma`
-[1] 1.155072
+[1] 1.110427
 
 $s
-[1] 1.155072</code></pre>
+[1] 1.110427</code></pre>
 </div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; MSE</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span><span class="op">^</span><span class="fl">2</span>, <span class="va">mse</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1266,10 +1298,10 @@ $s
 [1] TRUE
 
 $`summ$sigma^2`
-[1] 1.334192
+[1] 1.233049
 
 $mse
-[1] 1.334192</code></pre>
+[1] 1.233049</code></pre>
 </div>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># -&gt; SSE = MSE * df</span></span>
 <span><span class="fu">compare</span><span class="op">(</span><span class="va">summ</span><span class="op">$</span><span class="va">sigma</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">summ</span><span class="op">$</span><span class="va">df</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">sse</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1278,10 +1310,10 @@ $mse
 [1] TRUE
 
 $`summ$sigma^2 * summ$df[2]`
-[1] 37.35737
+[1] 34.52536
 
 $sse
-[1] 37.35737</code></pre>
+[1] 34.52536</code></pre>
 </div>
 </div>
 <!-- alternate formula for sse = syy - beta1-hat sxy: from notes; not sure if needed -->
@@ -1315,8 +1347,8 @@ Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \hspace{20pt} \text{where} \hspace{10p
 <li><p>These random effects have a degree of mutual independence, the composite error term representing all these factors tends to normal as the number of factors becomes large (by the CLT).</p></li>
 <li><p>Also, the estimation and testing procedures shown later are based on the <span class="math inline">\(t\)</span> distribution and are usually only sensitive to large departures from normality. So, unless the departures from normality are serious, particularly with respect to skewness, the actual confidence coefficients and risks of errors will be close to the levels for exact normality.</p></li>
 </ul>
-<section id="estimation-of-paramters-by-method-of-maximum-likelihood" class="level3" data-number="1.3.1"><h3 data-number="1.3.1" class="anchored" data-anchor-id="estimation-of-paramters-by-method-of-maximum-likelihood">
-<span class="header-section-number">1.3.1</span> Estimation of paramters by method of maximum likelihood</h3>
+<section id="estimation-of-parameters-by-method-of-maximum-likelihood" class="level3" data-number="1.3.1"><h3 data-number="1.3.1" class="anchored" data-anchor-id="estimation-of-parameters-by-method-of-maximum-likelihood">
+<span class="header-section-number">1.3.1</span> Estimation of parameters by method of maximum likelihood</h3>
 <p>Overview</p>
 <ul>
 <li>
@@ -1371,7 +1403,7 @@ L(\boldsymbol{\theta} \mid \mathbf{y}) = \prod_{i = 1}^n f(\mathbf{y} \mid \bold
 </ul>
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 20%">
 <col style="width: 79%">
@@ -1472,18 +1504,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1515,7 +1536,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
   const viewSource = window.document.getElementById('quarto-view-source') ||
                      window.document.getElementById('quarto-code-tools-source');
   if (viewSource) {
@@ -1567,6 +1610,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1601,7 +1662,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -1616,27 +1681,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -1651,10 +1695,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             break;
           }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -1663,8 +1711,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
-      return note.innerHTML;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -1885,12 +1940,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./part1-slr.html" class="pagination-link  aria-label=" simple="" linear="" regression="">
+      <a href="./part1-slr.html" class="pagination-link" aria-label="Simple linear regression">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Simple linear regression</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./notes-inference.html" class="pagination-link" aria-label="<span class='chapter-number'>2</span>&nbsp; <span class='chapter-title'>Inference</span>">
+      <a href="./notes-inference.html" class="pagination-link" aria-label="Inference">
         <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Inference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -2750,7 +2805,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-893"><a href="#cb41-893" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-894"><a href="#cb41-894" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Also, the estimation and testing procedures shown later are based on the $t$ distribution and are usually only sensitive to large departures from normality. So, unless the departures from normality are serious, particularly with respect to skewness, the actual confidence coefficients and risks of errors will be close to the levels for exact normality.</span>
 <span id="cb41-895"><a href="#cb41-895" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-896"><a href="#cb41-896" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimation of paramters by method of maximum likelihood</span></span>
+<span id="cb41-896"><a href="#cb41-896" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimation of parameters by method of maximum likelihood</span></span>
 <span id="cb41-897"><a href="#cb41-897" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-898"><a href="#cb41-898" aria-hidden="true" tabindex="-1"></a>Overview</span>
 <span id="cb41-899"><a href="#cb41-899" aria-hidden="true" tabindex="-1"></a></span>
@@ -2841,7 +2896,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb41-984"><a href="#cb41-984" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-985"><a href="#cb41-985" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- demo calculating mle sigma2 in r based on residuals and compare to mse --&gt;</span></span>
 <span id="cb41-986"><a href="#cb41-986" aria-hidden="true" tabindex="-1"></a>:::</span>
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
