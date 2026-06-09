@@ -4,3 +4,6 @@
 .Ruserdata
 *_cache/
 /.quarto/
+.positai
+
+**/*.quarto_ipynb

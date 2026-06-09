@@ -990,11 +990,14 @@ plot(mod_ideal, which = 2)
 -   Residuals vs Leverage plot, Cook's distance plot and Cook's dist vs Leverage / (1 - Leverage) plot
 
 ```{r}
-
+#| eval: false
 # diagnostic plots of: residuals vs lev, cooks dist, and cooks dist vs lev
 # NOT RUN -> note works inline
 autoplot(mod_ideal, which = c(5,4,6))
 
+```
+
+```{r}
 # residuals vs lev plot uses standardized residuals (and not transforming them with sqrt(abs(.)) like the scale-location plot)
 # -> so could add the +/- 3 lines to this plot (and for now ignore the leverage lines)
 # note -> lines are off plot cause no outliers
