@@ -1,0 +1,14 @@
+### Regression
+
+::: columns
+::: {.column width="30%"}
+[![](files/images/regression.png){width="284"}](https://coltongearhart.github.io/regression/)
+:::
+
+::: {.column width="5%"}
+:::
+
+::: {.column width="65%"}
+These course notes introduce regression models and accompanying assumptions. In addition, they cover the theory of least squares to understand the statistical inference procedures behind linear models. Extensive applications of modeling in R will be demonstrated, with a goal of being able to understand strengths and limitations of models. These will be applied to predict and perform inference, while developing sensitivity to important model assumptions. [Click here to view the course notes!](https://coltongearhart.github.io/regression/)
+:::
+:::
